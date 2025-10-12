@@ -1,7 +1,7 @@
 type,count,current,previous
-Vannamei,100,235,240
-Vannamei,90,245,250
-Vannamei,80,265,265
+Vannamei,100,235,230
+Vannamei,90,245,240
+Vannamei,80,265,260
 Vannamei,70,295,285
 Vannamei,60,315,305
 Vannamei,50,335,320
@@ -11,4 +11,5 @@ Tiger,50,260,260
 Tiger,40,280,280
 Tiger,30,340,350
 Tiger,20,480,490
+
 
