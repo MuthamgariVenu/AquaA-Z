@@ -15,12 +15,17 @@
     .navbtn{border:1px solid rgb(226,232,240);padding:.55rem .9rem;border-radius:.75rem;background:#fff;text-align:center;font-weight:700;font-size:1rem;white-space:nowrap;}
     @media (min-width:640px){ .navbtn{font-size:.95rem;padding:.6rem 1rem} }
     .dark .navbtn{background:#0b1220;border-color:#1f2937}
+
+    /* ticker */
     .ticker{overflow:hidden;mask-image:linear-gradient(90deg,transparent,black 8%,black 92%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,black 8%,black 92%,transparent)}
-    .ticker-track{display:flex;gap:24px;white-space:nowrap;min-width:max-content;animation:ticker 35s linear infinite}
+    .ticker-track{display:flex;gap:24px;white-space:nowrap;min-width:max-content;animation:ticker 35s linear infinite;align-items:center}
+    .ticker-track > div{display:inline-flex;align-items:center;gap:12px;color:inherit;font-weight:600}
+    .ticker-track .tag { padding:.18rem .5rem;border-radius:9999px;font-size:11px; display:inline-flex; align-items:center; justify-content:center; white-space:nowrap; }
     @keyframes ticker{from{transform:translateX(0)} to{transform:translateX(-50%)}}
     @media (max-width:640px){.ticker{mask-image:none;-webkit-mask-image:none}.ticker-track{gap:16px;animation-duration:45s}}
     @keyframes blink{0%,100%{opacity:1;background-color:#facc15;color:#111827}50%{opacity:1;background-color:#dc2626;color:#fff}}
     .blink{animation:blink 1.2s infinite}
+
     .promo-dot{height:.5rem;width:.5rem;border-radius:9999px;border:1px solid currentColor;opacity:.5}
     .promo-dot.active{opacity:1;background:currentColor}
     .promo-slide{display:none}
@@ -31,17 +36,42 @@
     .chat-panel { position: fixed; right: 14px; bottom: 148px; width: 92%; max-width: 360px; height: 56vh; max-height: 520px; background: #fff; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); display: none; flex-direction: column; overflow: hidden; z-index: 1000; }
     .chat-panel.open { display: flex; }
     .chat-header { padding: 12px; border-bottom: 1px solid #eee; display:flex;align-items:center;justify-content:space-between; }
-    .chat-title { font-weight:600; font-size:15px; color:#0b5b5b; }
+    .chat-title { font-weight:700; font-size:15px; color:#0b5b5b; }
     .chat-messages { flex:1; padding:12px; overflow:auto; display:flex;flex-direction:column; gap:8px; background:#fbfbfb; }
-    .msg { max-width:78%; padding:8px 10px; border-radius:10px; font-size:14px; }
+    .msg { max-width:78%; padding:8px 10px; border-radius:10px; font-size:14px; line-height:1.3; }
     .msg.user { align-self:flex-end; background:#0b6b6b; color:#fff; border-bottom-right-radius:4px; }
     .msg.bot { align-self:flex-start; background:#fff; color:#111; border:1px solid #eee; }
     .reply-en { font-weight:700; margin-bottom:4px; }
     .reply-te { color:#475569; font-size:13px; opacity:0.95; }
     .chat-input { display:flex; gap:8px; padding:10px; border-top:1px solid #eee; }
-    .chat-input input { flex:1;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px }
+    .chat-input input { flex:1;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px; background:#fff; color:inherit; }
     .chat-input button { padding:10px 12px;border-radius:8px;border:none;background:#0b6b6b;color:#fff;font-weight:600 }
     @media(max-width:420px){ .chat-panel{right:8px;left:8px;max-width:none} }
+
+    /* Dark chat panel styles */
+    .dark .chat-panel { background: linear-gradient(180deg,#071424 0%,#071a1f 100%); color: #e6eef3; box-shadow: 0 12px 30px rgba(2,8,23,0.6); border: 1px solid rgba(255,255,255,0.03); }
+    .dark .chat-header { border-bottom-color: rgba(255,255,255,0.04); }
+    .dark .chat-title { color: #cfe8e6; }
+    .dark .chat-messages { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); }
+    .dark .msg.bot { background: rgba(255,255,255,0.03); color: #e6eef3; border: 1px solid rgba(255,255,255,0.04); }
+    .dark .msg.user { background: linear-gradient(180deg,#0b6b6b,#085e5e); color: #fff; }
+    .dark .reply-te { color: #cbd5e1; opacity: 0.95; }
+    .dark .chat-input { border-top-color: rgba(255,255,255,0.04); }
+    .dark .chat-input input { background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.06); color: #e6eef3; }
+
+    /* Ensure ticker text not pure white in dark, but readable */
+    .dark .ticker-track > div { color: #e6eef3; opacity: 0.95; }
+    .dark .ticker-track .tag { color: #031e22; }
+    .dark .ticker-track .tag.dark-tag { color: #e6eef3; background: rgba(255,255,255,0.06); padding:.18rem .5rem; border-radius:9999px; }
+
+    /* small accessibility tweaks */
+    .promo-slide h4 { font-weight:700; }
+    .promo-placeholder { color: #475569; }
+    .dark .promo-placeholder { color: #bcd0d0; }
+
+    /* remove default bottom nav: user requested removal */
+    /* bottom nav removed from DOM */
+
   </style>
 </head>
 <body class="text-slate-900 dark:text-slate-100">
@@ -84,7 +114,7 @@
     <!-- Flash News -->
     <section class="rounded-2xl p-4 bg-white dark:bg-slate-900 shadow-soft border border-slate-200/60 dark:border-slate-800">
       <div class="flex items-center justify-between">
-        <h3 class="font-semibold">📰 <span data-i18n="flash_news">Flash News</span></h3>
+        <h3 class="font-semibold">📰 <span data-i18n="flash_news">తాజా సమాచారం</span></h3>
         <span class="text-xs px-2 py-1 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-200">Live</span>
       </div>
       <div class="mt-3 ticker"><div id="newsTrackTop" class="ticker-track"></div></div>
@@ -140,26 +170,12 @@
 
   </main>
 
-  <!-- Bottom nav -->
-  <nav class="fixed bottom-0 inset-x-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700 flex justify-around py-2 z-40 sm:hidden"
-       style="padding-bottom: env(safe-area-inset-bottom);">
-    <a href="index.html" class="flex flex-col items-center text-base font-semibold">
-      <span>🏠</span><span data-i18n="m_home">Home</span>
-    </a>
-    <a href="history.html" class="flex flex-col items-center text-base font-semibold">
-      <span>🕘</span><span data-i18n="m_history">History</span>
-    </a>
-    <a href="aerator.html" class="flex flex-col items-center text-base font-semibold">
-      <span>⚙️</span><span data-i18n="m_aerator">Aerator</span>
-    </a>
-  </nav>
-
   <!-- Chat: floating button + panel (bilingual replies) -->
   <button class="chat-btn" id="openChat" aria-label="Open chat">💬</button>
 
   <div class="chat-panel" id="chatPanel" role="dialog" aria-label="Chat with Aqua A-Z">
     <div class="chat-header">
-      <div class="chat-title" id="chatTitle" data-i18n="chat_title">Help & Chat</div>
+      <div class="chat-title" id="chatTitle" data-i18n="chat_title">సహాయం & చాట్</div>
       <button id="closeChat" aria-label="Close chat" style="background:none;border:none;font-size:18px;padding:6px;cursor:pointer">✕</button>
     </div>
 
@@ -184,7 +200,7 @@
       }catch(e){return [];}
     }
 
-    // i18n dictionary (defaults)
+    // i18n dictionary (defaults) - UPDATED telugu flash label to "తాజా సమాచారం"
     window.dict = {
       en:{
         snapshot:"Live Snapshot",updated:"Updated",lbl_type:"Type",th_count:"Count",th_price:"Price (₹/kg)",th_change:"Change",
@@ -202,7 +218,7 @@
       te:{
         snapshot:"లైవ్ స్నాప్‌షాట్",updated:"అప్‌డేట్",lbl_type:"రకం",th_count:"కౌంట్",th_price:"ధర (₹/kg)",th_change:"మార్పు",
         promotions_title:"ప్రోమోషన్స్",m_aerator:"ఎరేటర్",m_home:"హోమ్",m_history:"చరిత్ర",m_shrimp:"రొయ్యలు",
-        t_harvest:"హార్వెస్ట్",t_seeds:"సీడ్స్",t_dealers:"వెండర్లు",contact:"సంప్రదింపులు",flash_news:"ఫ్లാഷ్ న్యూస్",
+        t_harvest:"హార్వెస్ట్",t_seeds:"సీడ్స్",t_dealers:"వెండర్లు",contact:"సంప్రదింపులు",flash_news:"తాజా సమాచారం",
         type_van:"వన్నామీ",type_tig:"టైగర్",
         aerator_summary:"ఎరేటర్లు చెరువుల ఆక్సిజన్ స్థాయిలను నిలుపుకోవడానికి సహాయపడతాయి. పూర్తి టూల్స్ & మోడల్స్ కోసం తెరవండి.",
         chat_title:"సహాయం & చాట్",chat_greeting:"హాయ్! నేను ఈరోజు ఎలా సహాయం చేయగలను?",chat_greeting_te:"Hi! How can I help you today?",
@@ -249,19 +265,41 @@
       $id('updatedAt').textContent=new Intl.DateTimeFormat('en-IN',{dateStyle:'medium',timeStyle:'short'}).format(new Date());
     }
 
+    // renderNews updated to support dark-mode-friendly tags & backgrounds
     function renderNews(data){
       const lang=localStorage.getItem('lang')||'te';
-      const list=data.filter(n=>n.lang===lang);
-      const row=list.map(n=>{
-        const blink=String(n.tag).toLowerCase().includes('harvest')||String(n.tag).includes('హార్వెస్ట్');
-        return `<div class="flex items-center gap-2 pr-4">
-                  <span class="px-2 py-0.5 rounded-full text-[11px] ${blink?'blink bg-sky-200':'bg-sky-100'}">${n.tag}</span>
-                  <span>${n.text}</span>
+      // pick only those items matching language, fallback to entries that have both
+      const list = data.filter(n => n.lang === lang || (!n.lang && (n.text && n.text.length>0)));
+      // detect dark
+      const isDark = document.documentElement.classList.contains('dark');
+      const row = list.map(n => {
+        // normalize tag text
+        const tagText = n.tag || '';
+        const lowerTag = String(tagText).toLowerCase();
+        // blink logic
+        const blink = lowerTag.includes('harvest') || lowerTag.includes('హార్వెస్ట్') || (n.tag && /harvest|హార్వెస్ట్/i.test(n.tag));
+        // choose tag classes for dark/light
+        let tagClass = 'tag';
+        let tagBg = '';
+        if (isDark) {
+          tagClass += ' dark-tag';
+          tagBg = '';
+        } else {
+          tagBg = blink ? ' style="background:#f0ab00;color:#081126"' : ' style="background:#bae6fd;color:#022c39"';
+        }
+        const textVal = (lang==='te' ? (n.text_te || n.text_en || n.text) : (n.text_en || n.text_te || n.text));
+        return `<div class="pr-4" style="display:inline-flex;align-items:center;gap:12px">
+                  <span class="${tagClass}" ${tagBg}>${escapeHtml(tagText || '—')}</span>
+                  <span style="display:inline-block; font-weight:600; opacity:0.95; color:inherit">${escapeHtml(textVal || '')}</span>
                 </div>`;
       }).join('');
-      $id('newsTrackTop').innerHTML=row+row+row;
+      // double/triple for smooth ticker
+      $id('newsTrackTop').innerHTML = row ? (row + row + row) : '<div class="pr-4">No flash news available</div>';
       $id('newsUpdatedTop').textContent=new Intl.DateTimeFormat('en-IN',{dateStyle:'medium',timeStyle:'short'}).format(new Date());
     }
+
+    // escape helper for news render
+    function escapeHtml(str){ return String(str||'').replace(/[&<>"']/g, function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];}); }
 
     let PROMOS=[],promoIdx=0,timer=null;
     function renderPromo(){const lang=localStorage.getItem('lang')||'te';
@@ -278,7 +316,7 @@
     function startPromo(){if(timer)clearInterval(timer);if(PROMOS.length>0) timer=setInterval(()=>{promoIdx=(promoIdx+1)%PROMOS.length;renderPromo();},6000);}
 
     /* ---------------- Chat (bilingual replies) ---------------- */
-    function escapeHtml(str){return (str||'').replace(/[&<>"']/g, function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];});}
+    // reuse escapeHtml defined above
     function appendUserMessage(text){const div=document.createElement('div');div.className='msg user';div.innerText=text; $id('chatMessages').appendChild(div); $id('chatMessages').scrollTop=$id('chatMessages').scrollHeight;}
     function appendBotMessage(en, te){const div=document.createElement('div');div.className='msg bot';div.innerHTML=`<div class="reply-en">${escapeHtml(en)}</div><div class="reply-te">${escapeHtml(te)}</div>`;$id('chatMessages').appendChild(div); $id('chatMessages').scrollTop=$id('chatMessages').scrollHeight;}
 
