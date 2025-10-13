@@ -36,14 +36,13 @@
 </head>
 <body>
 
-  <!-- Header: back + history + language selector -->
+  <!-- Header: only Back + language selector (History removed) -->
   <header>
     <div class="container flex items-center justify-between gap-3 py-3">
       <div class="flex items-center gap-3">
         <button id="backBtn" class="btn" onclick="history.back()">← <span id="lblBack">Back</span></button>
       </div>
       <div class="flex items-center gap-2">
-        <a href="history.html" class="btn" id="lblHistory">History</a>
         <select id="langSel" class="btn" aria-label="Language">
           <option value="en">English</option>
           <option value="te">తెలుగు</option>
@@ -80,7 +79,7 @@
         <button id="resetBtn" class="btn">Reset</button>
       </div>
 
-      <!-- Result (only units emphasized) -->
+      <!-- Result (number + "units") -->
       <div id="resultPanel" class="mt-4 hidden">
         <div id="unitsBox" class="p-4 rounded-lg" style="background:#ecfdf5;border:1px solid #bbf7d0">
           <div id="unitsLabel" class="text-sm text-slate-700">Units required</div>
@@ -97,9 +96,6 @@
           <button id="showNewBtn" class="btn">New</button>
           <button id="showOldBtn" class="btn">Old</button>
         </div>
-
-        <!-- Equivalent-per-device (concise) -->
-        <div id="equivSummary" class="mt-4 text-slate-700"></div>
 
         <div id="modelsSummary" class="mt-4 space-y-2"></div>
       </div>
@@ -286,7 +282,7 @@
   <script>
     const dict = {
       en: {
-        Back:'Back', History:'History',
+        Back:'Back',
         pageTitle:'Aerator', pageDesc:'Aerators help maintain oxygen levels in ponds — use the calculator to see how many devices you need.',
         calcTitle:'Aerator Calculator', lblArea:'Pond area (acres)', lblDepth:'Average depth (ft)', lblPrawn:'Prawn size',
         small:'Small', medium:'Medium (+20%)', large:'Large (+40%)',
@@ -294,11 +290,10 @@
         unitsLabel:'Units required', unitsNote:'Devices measured as units based on motor HP.',
         viewNew:'New', viewOld:'Old', backToCalc:'Back to calculator',
         details:'Details', buy:'Buy', calcNote:'Note: estimate only — verify product specs.',
-        mapping2:'2-fans → 1 HP = 1 unit', mapping4:'4-fans → 2 HP = 2 units',
-        equivLabel:'Equivalent:'
+        mapping2:'2-fans → 1 HP = 1 unit', mapping4:'4-fans → 2 HP = 2 units'
       },
       te: {
-        Back:'వెనక్కి', History:'చరిత్ర',
+        Back:'వెనక్కి',
         pageTitle:'ఎరేటర్', pageDesc:'ఎరేటర్లు చెరువుల్లో ఆక్సిజన్ స్థాయులను నిలుపుకునేందుకు ఉపయోగపడతాయి — కింద లెక్కింపు ద్వారా ఎంత అవసరం అనే తెలుసుకోండి.',
         calcTitle:'ఎరేటర్ కేల్క్యులేటర్', lblArea:'చెరువు ఉపరితలం (ఎకరాలు)', lblDepth:'సగటు లోతు (ఫుట్స్)', lblPrawn:'రొయ్యల పరుగు/కలవ',
         small:'చిన్న', medium:'మధ్యతరహా (+20%)', large:'పెద్ద (+40%)',
@@ -306,8 +301,7 @@
         unitsLabel:'అవసరమైన యూనిట్లు', unitsNote:'ఉపకరణాలు మోటార్ HP ఆధారంగా యూనిట్లుగా కొలవబడ్డాయి.',
         viewNew:'కొత్త', viewOld:'పాత', backToCalc:'క్యాల్క్యులేటర్‌కు వెళ్ళు',
         details:'వివరాలు', buy:'కొనండి', calcNote:'గమనిక: ఇది అంచనా మాత్రమే — స్పెక్స్ నిర్ధారించండి.',
-        mapping2:'2-fans → 1 HP = 1 يونిట్', mapping4:'4-fans → 2 HP = 2 يونిట్లు',
-        equivLabel:'సమానంగా:'
+        mapping2:'2-fans → 1 HP = 1 యూనిట్', mapping4:'4-fans → 2 HP = 2 యూనిట్లు'
       }
     };
 
@@ -319,7 +313,6 @@
       lang = localStorage.getItem('lang') || lang;
       const d = dict[lang];
       $('lblBack').textContent = d.Back;
-      $('lblHistory').textContent = d.History;
       $('pageTitle').textContent = d.pageTitle;
       $('pageDesc').textContent = d.pageDesc;
       $('calcTitle').textContent = d.calcTitle;
@@ -341,7 +334,6 @@
       $('mappingTitle').textContent = (lang==='te')? 'ఎరేటర్ మ్యాపింగ్' : 'Aerator Mapping';
       $('mapping2').textContent = d.mapping2;
       $('mapping4').textContent = d.mapping4;
-      $('equivLabel') && ($('equivLabel').textContent = d.equivLabel);
 
       // model names & descriptions
       qsa('.model-name').forEach(el=>{
@@ -400,10 +392,8 @@
         const units = calculateUnitsNeeded(acres, sizeKey);
         $('unitsBig').textContent = Math.ceil(units).toLocaleString('en-IN') + ' units';
 
-        // compute device counts and concise equivalent line
+        // compute device counts
         const devices = computeDevicesFromUnits(units);
-        const equivParts = devices.map(d => `${d.fans}-fans → ${d.devicesReq} device${d.devicesReq>1?'s':''}`);
-        $('equivSummary').innerHTML = `<div style="font-weight:800;color:#065f46">${(lang==='te')? 'సమానంగా:' : 'Equivalent:'}</div><div style="margin-top:6px">${escapeHtml(equivParts.join(' • '))}</div>`;
 
         // render per-model summary with recommended first (cheapest)
         const summary = $('modelsSummary'); summary.innerHTML='';
@@ -427,7 +417,7 @@
 
       $('resetBtn').addEventListener('click', ()=> {
         $('acreInput').value=''; $('depthFtInput').value=''; $('prawnSize').value='small';
-        $('resultPanel').classList.add('hidden'); $('modelsSummary').innerHTML=''; $('equivSummary').innerHTML=''; $('unitsBig').textContent='0 units';
+        $('resultPanel').classList.add('hidden'); $('modelsSummary').innerHTML=''; $('unitsBig').textContent='0 units';
         qsa('#modelsGrid article').forEach(a => { a.classList.remove('recommended'); const rb=a.querySelector('.recommend-badge'); if(rb) rb.remove(); });
       });
 
@@ -503,7 +493,7 @@
         $('purchaseModelKey').value = key; $('purchasePrice').value = price || ''; $('purchaseModal').style.display='flex';
       }
 
-      // initial set mapping text (only two lines)
+      // initial mapping text
       $('mapping2').textContent = dict[lang].mapping2;
       $('mapping4').textContent = dict[lang].mapping4;
     });
