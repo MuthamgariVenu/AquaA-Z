@@ -4,85 +4,44 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Aquaculture A–Z • Home</title>
-
-  <!-- Fonts: include Telugu font for better Telugu typing/rendering -->
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu&family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
-
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config={darkMode:'class',theme:{extend:{boxShadow:{soft:'0 12px 28px rgba(2,6,23,.08)'}}}}
   </script>
-
   <style>
-    :root { --chat-accent: #0b6b6b; --muted: #6b7280; }
     html{scroll-behavior:smooth}
-    body{font-family: "Noto Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Telugu", "Noto Sans Gujarati", "Helvetica Neue", Arial, sans-serif; background:linear-gradient(135deg,#dbeafe 0%,#e0f2fe 50%,#f0fdf4 100%); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
+    body{background:linear-gradient(135deg,#dbeafe 0%,#e0f2fe 50%,#f0fdf4 100%)}
     .dark body{background:linear-gradient(135deg,#0f172a 0%,#082f49 50%,#14532d 100%)}
     .navbtn{border:1px solid rgb(226,232,240);padding:.55rem .9rem;border-radius:.75rem;background:#fff;text-align:center;font-weight:700;font-size:1rem;white-space:nowrap;}
     @media (min-width:640px){ .navbtn{font-size:.95rem;padding:.6rem 1rem} }
     .dark .navbtn{background:#0b1220;border-color:#1f2937}
-
-    /* ticker */
     .ticker{overflow:hidden;mask-image:linear-gradient(90deg,transparent,black 8%,black 92%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,black 8%,black 92%,transparent)}
-    .ticker-track{display:flex;gap:24px;white-space:nowrap;min-width:max-content;animation:ticker 35s linear infinite;align-items:center}
-    .ticker-track > div{display:inline-flex;align-items:center;gap:12px;color:inherit;font-weight:600}
-    .ticker-track .tag { padding:.18rem .5rem;border-radius:9999px;font-size:11px; display:inline-flex; align-items:center; justify-content:center; white-space:nowrap; }
+    .ticker-track{display:flex;gap:24px;white-space:nowrap;min-width:max-content;animation:ticker 35s linear infinite}
     @keyframes ticker{from{transform:translateX(0)} to{transform:translateX(-50%)}}
     @media (max-width:640px){.ticker{mask-image:none;-webkit-mask-image:none}.ticker-track{gap:16px;animation-duration:45s}}
     @keyframes blink{0%,100%{opacity:1;background-color:#facc15;color:#111827}50%{opacity:1;background-color:#dc2626;color:#fff}}
     .blink{animation:blink 1.2s infinite}
-
     .promo-dot{height:.5rem;width:.5rem;border-radius:9999px;border:1px solid currentColor;opacity:.5}
     .promo-dot.active{opacity:1;background:currentColor}
     .promo-slide{display:none}
     .promo-slide.active{display:block}
 
-    /* CHAT styles */
-    .chat-btn { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); width: 56px; height: 56px; border-radius: 50%; background: var(--chat-accent); color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 18px rgba(11,107,107,0.18); border: none; z-index: 1200; font-size: 20px; }
-    /* On desktop keep as small floating panel; on mobile expand to near-full width but not full screen */
-    .chat-panel { position: fixed; right: 16px; bottom: 86px; width: 360px; max-width: calc(100% - 32px); height: 52vh; max-height: 520px; background: #fff; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); display: none; flex-direction: column; overflow: hidden; z-index: 1199; transition: transform .18s ease, opacity .18s ease; }
-    .chat-panel.open { display: flex; transform: translateY(0); opacity:1; }
-    /* mobile behaviour: place panel centered and slightly taller above keyboard */
-    @media (max-width: 480px) {
-      .chat-panel { right: 8px; left: 8px; bottom: env(safe-area-inset-bottom); width: auto; max-width: none; height: calc(100vh - 120px); max-height: calc(100vh - 120px); border-radius: 12px 12px 0 0; }
-    }
-
-    .chat-header { padding: 10px 12px; border-bottom: 1px solid #eee; display:flex;align-items:center;justify-content:space-between; gap:8px; }
-    .chat-title { font-weight:700; font-size:15px; color: #064646 }
-    .chat-messages { flex:1; padding:10px; overflow:auto; display:flex;flex-direction:column; gap:10px; background:#fbfbfb; }
-    .msg { max-width:78%; padding:9px 12px; border-radius:12px; font-size:14px; line-height:1.35; word-break:break-word; }
-    .msg.user { align-self:flex-end; background:var(--chat-accent); color:#fff; border-bottom-right-radius:6px; }
+    /* Chat styles */
+    .chat-btn { position: fixed; right: 16px; bottom: 78px; width: 56px; height: 56px; border-radius: 50%; background: #0b6b6b; color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 18px rgba(11,107,107,0.18); border: none; z-index: 1000; font-size: 20px; }
+    .chat-panel { position: fixed; right: 14px; bottom: 148px; width: 92%; max-width: 360px; height: 56vh; max-height: 520px; background: #fff; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); display: none; flex-direction: column; overflow: hidden; z-index: 1000; }
+    .chat-panel.open { display: flex; }
+    .chat-header { padding: 12px; border-bottom: 1px solid #eee; display:flex;align-items:center;justify-content:space-between; }
+    .chat-title { font-weight:600; font-size:15px; color:#0b5b5b; }
+    .chat-messages { flex:1; padding:12px; overflow:auto; display:flex;flex-direction:column; gap:8px; background:#fbfbfb; }
+    .msg { max-width:78%; padding:8px 10px; border-radius:10px; font-size:14px; }
+    .msg.user { align-self:flex-end; background:#0b6b6b; color:#fff; border-bottom-right-radius:4px; }
     .msg.bot { align-self:flex-start; background:#fff; color:#111; border:1px solid #eee; }
-    .reply-en { font-weight:700; margin-bottom:6px; font-size:14px; }
-    .reply-te { color: #475569; font-size:13px; opacity:0.95; }
-
-    .chat-input { display:flex; gap:8px; padding:10px; border-top:1px solid #eee; align-items:center; background:transparent; }
-    .chat-input input { flex:1;padding:10px 12px;border:1px solid #ddd;border-radius:10px;font-size:15px; background:#fff; color:inherit; min-height:42px; }
-    .chat-input button { padding:10px 14px;border-radius:10px;border:none;background:var(--chat-accent);color:#fff;font-weight:700; min-width:72px; }
-    @media (max-width:480px) {
-      .chat-input input { font-size:16px; min-height:46px; }
-      .reply-en { font-size:15px; }
-      .reply-te { font-size:14px; }
-    }
-
-    /* Dark mode chat tweaks */
-    .dark .chat-panel { background: linear-gradient(180deg,#071424 0%,#071a1f 100%); color: #e6eef3; box-shadow: 0 12px 30px rgba(2,8,23,0.6); border: 1px solid rgba(255,255,255,0.03); }
-    .dark .chat-header { border-bottom-color: rgba(255,255,255,0.04); }
-    .dark .chat-title { color: #cfe8e6; }
-    .dark .chat-messages { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); }
-    .dark .msg.bot { background: rgba(255,255,255,0.03); color: #e6eef3; border: 1px solid rgba(255,255,255,0.04); }
-    .dark .msg.user { background: linear-gradient(180deg,#0b6b6b,#085e5e); color: #fff; }
-    .dark .reply-te { color: #cbd5e1; opacity: 0.95; }
-    .dark .chat-input { border-top-color: rgba(255,255,255,0.04); }
-    .dark .chat-input input { background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.06); color: #e6eef3; }
-
-    /* Ensure ticker text not pure white in dark, but readable */
-    .dark .ticker-track > div { color: #e6eef3; opacity: 0.95; }
-    .dark .ticker-track .tag { color: #031e22; background: rgba(255,255,255,0.06); padding:.18rem .5rem; border-radius:9999px; }
-
-    /* small accessibility tweaks */
-    .promo-placeholder{color:#475569}
-    .dark .promo-placeholder{color:#bcd0d0}
+    .reply-en { font-weight:700; margin-bottom:4px; }
+    .reply-te { color:#475569; font-size:13px; opacity:0.95; }
+    .chat-input { display:flex; gap:8px; padding:10px; border-top:1px solid #eee; }
+    .chat-input input { flex:1;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px }
+    .chat-input button { padding:10px 12px;border-radius:8px;border:none;background:#0b6b6b;color:#fff;font-weight:600 }
+    @media(max-width:420px){ .chat-panel{right:8px;left:8px;max-width:none} }
   </style>
 </head>
 <body class="text-slate-900 dark:text-slate-100">
@@ -100,6 +59,7 @@
         <a href="harvest.html" class="navbtn">🚚 <span data-i18n="t_harvest">Harvest</span></a>
         <a href="seeds.html" class="navbtn">🦐 <span data-i18n="t_seeds">Seeds</span></a>
         <a href="vendors.html" class="navbtn">🏪 <span data-i18n="t_dealers">Dealers</span></a>
+        <a href="aerator.html" class="navbtn">⚙️ <span data-i18n="m_aerator">Aerator</span></a>
         <a href="history.html" class="navbtn">📜 <span data-i18n="m_history">History</span></a>
       </nav>
       <div class="flex items-center gap-2 flex-none">
@@ -124,15 +84,15 @@
     <!-- Flash News -->
     <section class="rounded-2xl p-4 bg-white dark:bg-slate-900 shadow-soft border border-slate-200/60 dark:border-slate-800">
       <div class="flex items-center justify-between">
-        <h3 class="font-semibold">📰 <span data-i18n="flash_news">తాజా వార్త</span></h3>
+        <h3 class="font-semibold">📰 <span data-i18n="flash_news">Flash News</span></h3>
         <span class="text-xs px-2 py-1 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-200">Live</span>
       </div>
       <div class="mt-3 ticker"><div id="newsTrackTop" class="ticker-track"></div></div>
       <p class="text-xs text-slate-500 mt-2"><span data-i18n="updated">Updated</span>: <span id="newsUpdatedTop">—</span></p>
     </section>
 
-    <!-- Rates + Promotions + Aerator (added Aerator as third card) -->
-    <section class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <!-- Rates + Promotions -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-4">
       <!-- Rates -->
       <div class="rounded-2xl p-4 bg-white dark:bg-slate-900 shadow-soft border border-slate-200/60 dark:border-slate-800">
         <div class="flex items-center justify-between">
@@ -167,31 +127,39 @@
           <div id="promoDots" class="mt-3 flex gap-2"></div>
         </div>
       </div>
+    </section>
 
-      <!-- Aerator (restored) -->
-      <div class="rounded-2xl p-4 bg-white dark:bg-slate-900 shadow-soft border border-slate-200/60 dark:border-slate-800">
-        <div class="flex items-center justify-between">
-          <h3 class="font-semibold">⚙️ <span data-i18n="m_aerator">ఎరేటర్</span></h3>
-          <a href="aerator.html" class="navbtn">See details</a>
-        </div>
-        <p class="mt-3 text-slate-600 dark:text-slate-300" data-i18n="aerator_summary">ఎరేటర్లు చెరువుల ఆక్సిజన్ స్థాయిలను నిలుపుకోవడానికి సహాయపడతాయి. పూర్తి టూల్స్ & మోడల్స్ కోసం తెరవండి.</p>
-        <div class="mt-3 grid grid-cols-2 gap-2">
-          <div class="rounded-md p-2 bg-slate-50 dark:bg-slate-800/30 text-sm">Model: A200</div>
-          <div class="rounded-md p-2 bg-slate-50 dark:bg-slate-800/30 text-sm">Capacity: 500 m³/h</div>
-          <div class="rounded-md p-2 bg-slate-50 dark:bg-slate-800/30 text-sm">Power: 2 HP</div>
-          <div class="rounded-md p-2 bg-slate-50 dark:bg-slate-800/30 text-sm">Usage: Pond / Farm</div>
-        </div>
+    <!-- Aerator summary (links to aerator.html) -->
+    <section class="rounded-2xl p-4 bg-white dark:bg-slate-900 shadow-soft border border-slate-200/60 dark:border-slate-800">
+      <div class="flex items-center justify-between">
+        <h3 class="font-semibold">⚙️ <span data-i18n="m_aerator">Aerator</span></h3>
+        <a href="aerator.html" class="navbtn">See details</a>
       </div>
+      <p class="mt-3 text-slate-600 dark:text-slate-300" data-i18n="aerator_summary">Aerators help maintain oxygen levels in ponds. Open full aerator tools & models.</p>
     </section>
 
   </main>
 
+  <!-- Bottom nav -->
+  <nav class="fixed bottom-0 inset-x-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700 flex justify-around py-2 z-40 sm:hidden"
+       style="padding-bottom: env(safe-area-inset-bottom);">
+    <a href="index.html" class="flex flex-col items-center text-base font-semibold">
+      <span>🏠</span><span data-i18n="m_home">Home</span>
+    </a>
+    <a href="history.html" class="flex flex-col items-center text-base font-semibold">
+      <span>🕘</span><span data-i18n="m_history">History</span>
+    </a>
+    <a href="aerator.html" class="flex flex-col items-center text-base font-semibold">
+      <span>⚙️</span><span data-i18n="m_aerator">Aerator</span>
+    </a>
+  </nav>
+
   <!-- Chat: floating button + panel (bilingual replies) -->
   <button class="chat-btn" id="openChat" aria-label="Open chat">💬</button>
 
-  <div class="chat-panel" id="chatPanel" role="dialog" aria-label="Chat with Aqua A-Z" aria-hidden="true">
+  <div class="chat-panel" id="chatPanel" role="dialog" aria-label="Chat with Aqua A-Z">
     <div class="chat-header">
-      <div class="chat-title" id="chatTitle" data-i18n="chat_title">సహాయం & చాట్</div>
+      <div class="chat-title" id="chatTitle" data-i18n="chat_title">Help & Chat</div>
       <button id="closeChat" aria-label="Close chat" style="background:none;border:none;font-size:18px;padding:6px;cursor:pointer">✕</button>
     </div>
 
@@ -200,38 +168,30 @@
     </div>
 
     <div class="chat-input" role="form" aria-label="Chat input">
-      <input id="chatInput" type="text" placeholder="మీ సందేశం రాయండి..." aria-label="Type a message" autocomplete="off" autocorrect="off" autocapitalize="sentences" enterkeyhint="send" />
+      <input id="chatInput" type="text" placeholder="Type a message..." aria-label="Type a message" />
       <button id="sendBtn" aria-label="Send message">Send</button>
     </div>
   </div>
 
   <script>
-    // helpers
-    const $id = s => document.getElementById(s);
-
+    // small helpers
+    const $id = s=>document.getElementById(s);
     async function loadCSV(url){
-      try {
-        const res = await fetch(url, {cache:'no-store'});
-        if (!res.ok) throw 0;
-        const txt = await res.text();
-        const lines = txt.trim().split(/\r?\n/);
-        const headers = lines[0].split(',').map(h=>h.trim());
-        return lines.slice(1).map(line => {
-          const vals = line.split(',');
-          const o = {};
-          headers.forEach((h,i)=>o[h]=vals[i]);
-          return o;
-        });
-      } catch(e) { return []; }
+      try{const res=await fetch(url,{cache:'no-store'});if(!res.ok) throw 0;
+        const txt=await res.text();const lines=txt.trim().split(/\r?\n/);
+        const headers=lines[0].split(',').map(h=>h.trim());
+        return lines.slice(1).map(line=>{const vals=line.split(',');const o={};headers.forEach((h,i)=>o[h]=vals[i]);return o;});
+      }catch(e){return [];}
     }
 
-    // i18n dictionary (flash_news changed to "తాజా వార్త")
+    // i18n dictionary (defaults)
     window.dict = {
       en:{
         snapshot:"Live Snapshot",updated:"Updated",lbl_type:"Type",th_count:"Count",th_price:"Price (₹/kg)",th_change:"Change",
-        promotions_title:"Promotions",m_home:"Home",m_history:"History",t_harvest:"Harvest",t_seeds:"Seeds",t_dealers:"Dealers",
-        flash_news:"Flash News",
+        promotions_title:"Promotions",m_aerator:"Aerator",m_home:"Home",m_history:"History",m_shrimp:"Shrimp",
+        t_harvest:"Harvest",t_seeds:"Seeds",t_dealers:"Dealers",contact:"Contact",flash_news:"Flash News",
         type_van:"Vannamei",type_tig:"Tiger",
+        aerator_summary:"Aerators help maintain oxygen levels in ponds. Open full aerator tools & models.",
         chat_title:"Help & Chat",chat_greeting:"Hi! How can I help you today?",chat_greeting_te:"హాయ్! నేను ఈరోజు ఎలా సహాయం చేయగలను?",
         chat_placeholder:"Type a message...",chat_open_aria:"Open chat",chat_close_aria:"Close chat",
         chat_reply_default:"Sorry, I cannot perform that now; but I can help. Please give more details.",
@@ -241,9 +201,10 @@
       },
       te:{
         snapshot:"లైవ్ స్నాప్‌షాట్",updated:"అప్‌డేట్",lbl_type:"రకం",th_count:"కౌంట్",th_price:"ధర (₹/kg)",th_change:"మార్పు",
-        promotions_title:"ప్రోమోషన్స్",m_home:"హోమ్",m_history:"చరిత్ర",t_harvest:"హార్వెస్ట్",t_seeds:"సీడ్స్",t_dealers:"వెండర్లు",
-        flash_news:"తాజా వార్త",
+        promotions_title:"ప్రోమోషన్స్",m_aerator:"ఎరేటర్",m_home:"హోమ్",m_history:"చరిత్ర",m_shrimp:"రొయ్యలు",
+        t_harvest:"హార్వెస్ట్",t_seeds:"సీడ్స్",t_dealers:"వెండర్లు",contact:"సంప్రదింపులు",flash_news:"ఫ్లാഷ్ న్యూస్",
         type_van:"వన్నామీ",type_tig:"టైగర్",
+        aerator_summary:"ఎరేటర్లు చెరువుల ఆక్సిజన్ స్థాయిలను నిలుపుకోవడానికి సహాయపడతాయి. పూర్తి టూల్స్ & మోడల్స్ కోసం తెరవండి.",
         chat_title:"సహాయం & చాట్",chat_greeting:"హాయ్! నేను ఈరోజు ఎలా సహాయం చేయగలను?",chat_greeting_te:"Hi! How can I help you today?",
         chat_placeholder:"మీ సందేశం రాయండి...",chat_open_aria:"చాట్ ఓపెన్ చేయండి",chat_close_aria:"చాట్ మూసివేయండి",
         chat_reply_default:"క్షమించండి, నేను దాన్ని ఇప్పుడే అమలు చేయలేను; కానీ నేను సహాయపడగలను. దయచేసి మరిన్ని వివరాలు ఇవ్వండి.",
@@ -254,19 +215,15 @@
     };
 
     function applyI18n(){
-      const lang = localStorage.getItem('lang') || 'te';
-      document.documentElement.lang = lang;
+      const lang=localStorage.getItem('lang')||'te';
+      document.documentElement.lang=lang;
       document.querySelectorAll('[data-i18n]').forEach(el=>{
-        const k = el.dataset.i18n;
+        const k=el.dataset.i18n;
         if(window.dict[lang] && window.dict[lang][k]) el.textContent = window.dict[lang][k];
       });
       // chat placeholders & aria
-      const langNow = localStorage.getItem('lang') || 'te';
-      if($id('chatInput')) {
-        $id('chatInput').placeholder = window.dict[langNow]['chat_placeholder'] || '';
-        // set input lang attribute so mobile keyboard may switch properly
-        $id('chatInput').setAttribute('lang', langNow === 'te' ? 'te' : 'en');
-      }
+      const langNow = localStorage.getItem('lang')||'te';
+      if($id('chatInput')) $id('chatInput').placeholder = window.dict[langNow]['chat_placeholder'] || '';
       if($id('openChat')) $id('openChat').setAttribute('aria-label', window.dict[langNow]['chat_open_aria'] || '');
       if($id('closeChat')) $id('closeChat').setAttribute('aria-label', window.dict[langNow]['chat_close_aria'] || '');
       if($id('chatTitle')) $id('chatTitle').textContent = window.dict[langNow]['chat_title'] || '';
@@ -280,71 +237,50 @@
       return `<span class="inline-flex px-2 py-0.5 rounded-full text-xs bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">—</span>`;
     }
 
-    function renderRates(data,type){
-      const body = $id('ratesTable').querySelector('tbody');
-      body.innerHTML='';
-      const rows = data.filter(r=>r.type===type);
-      rows.forEach(r=>{
-        const diff = (+r.current||0)-(+r.previous||0);
-        const tr = document.createElement('tr');
-        tr.className="border-b last:border-0 dark:border-slate-800";
+    function renderRates(data,type){const body=$id('ratesTable').querySelector('tbody');body.innerHTML='';
+      const rows=data.filter(r=>r.type===type);
+      rows.forEach(r=>{const diff=(+r.current||0)-(+r.previous||0);
+        const tr=document.createElement('tr');tr.className="border-b last:border-0 dark:border-slate-800";
         tr.innerHTML=`<td class="py-2 pr-4 font-medium">${r.count}c</td>
                       <td class="py-2 pr-4">₹ ${r.current}</td>
                       <td class="py-2 pr-4">${badge(diff)}</td>`;
         body.appendChild(tr);
       });
-      $id('updatedAt').textContent = new Intl.DateTimeFormat('en-IN',{dateStyle:'medium',timeStyle:'short'}).format(new Date());
+      $id('updatedAt').textContent=new Intl.DateTimeFormat('en-IN',{dateStyle:'medium',timeStyle:'short'}).format(new Date());
     }
 
-    // improved renderNews with dark-friendly tags & reading text and language matching
     function renderNews(data){
-      const lang = localStorage.getItem('lang') || 'te';
-      const list = data.filter(n => (n.lang && n.lang === lang) || !n.lang);
-      const isDark = document.documentElement.classList.contains('dark');
-      const row = list.map(n=>{
-        const tagText = n.tag || '—';
-        const lowerTag = String(tagText).toLowerCase();
-        const blink = /harvest|హార్వెస్ట్|హార్వెస్ట్/i.test(lowerTag) || (n.tag && /హార్వెస్ట్/i.test(n.tag));
-        const tagClass = isDark ? 'tag dark-tag' : 'tag';
-        const textVal = (lang === 'te') ? (n.text_te || n.text_en || n.text || '') : (n.text_en || n.text_te || n.text || '');
-        // pick tag inline style for light mode to ensure visibility
-        const tagInline = !isDark ? (blink ? 'style="background:#f0ab00;color:#081126"' : 'style="background:#bae6fd;color:#022c39"') : '';
-        return `<div class="pr-4" style="display:inline-flex;align-items:center;gap:12px">
-                  <span class="${tagClass}" ${tagInline}>${escapeHtml(tagText)}</span>
-                  <span style="display:inline-block;font-weight:600;opacity:0.95;color:inherit">${escapeHtml(textVal)}</span>
+      const lang=localStorage.getItem('lang')||'te';
+      const list=data.filter(n=>n.lang===lang);
+      const row=list.map(n=>{
+        const blink=String(n.tag).toLowerCase().includes('harvest')||String(n.tag).includes('హార్వెస్ట్');
+        return `<div class="flex items-center gap-2 pr-4">
+                  <span class="px-2 py-0.5 rounded-full text-[11px] ${blink?'blink bg-sky-200':'bg-sky-100'}">${n.tag}</span>
+                  <span>${n.text}</span>
                 </div>`;
       }).join('');
-      $id('newsTrackTop').innerHTML = row ? (row + row + row) : '<div class="pr-4">No flash news available</div>';
-      $id('newsUpdatedTop').textContent = new Intl.DateTimeFormat('en-IN',{dateStyle:'medium',timeStyle:'short'}).format(new Date());
+      $id('newsTrackTop').innerHTML=row+row+row;
+      $id('newsUpdatedTop').textContent=new Intl.DateTimeFormat('en-IN',{dateStyle:'medium',timeStyle:'short'}).format(new Date());
     }
 
-    function escapeHtml(str){ return String(str||'').replace(/[&<>"']/g, function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];}); }
-
-    let PROMOS=[], promoIdx=0, timer=null;
-    function renderPromo(){
-      const lang = localStorage.getItem('lang') || 'te';
-      const track = $id('promoTrack'), dots = $id('promoDots');
-      track.innerHTML = PROMOS.map((r,i)=>`
+    let PROMOS=[],promoIdx=0,timer=null;
+    function renderPromo(){const lang=localStorage.getItem('lang')||'te';
+      const track=$id('promoTrack'),dots=$id('promoDots');
+      track.innerHTML=PROMOS.map((r,i)=>`
         <div class="promo-slide rounded-xl p-4 bg-blue-50 dark:bg-slate-800/40 ${i===promoIdx?'active':''}">
           ${r.badge?`<span class="inline-block text-xs px-3 py-1 rounded-full bg-sky-200/70">${r.badge}</span>`:''}
-          <h4 class="mt-3 text-lg font-semibold">${lang==='te' ? (r.title_te||r.title_en) : (r.title_en||r.title_te)}</h4>
-          <p class="text-slate-600 dark:text-slate-300">${lang==='te' ? (r.desc_te||r.desc_en) : (r.desc_en||r.desc_te)}</p>
+          <h4 class="mt-3 text-lg font-semibold">${lang==='te'?(r.title_te||r.title_en):(r.title_en||r.title_te)}</h4>
+          <p class="text-slate-600 dark:text-slate-300">${lang==='te'?(r.desc_te||r.desc_en):(r.desc_en||r.desc_te)}</p>
         </div>`).join('');
-      dots.innerHTML = PROMOS.map((_,i)=>`<button class="promo-dot ${i===promoIdx?'active':''}" data-i="${i}"></button>`).join('');
-      dots.querySelectorAll('button').forEach(b=>b.onclick=()=>{ promoIdx=+b.dataset.i; renderPromo(); startPromo(); });
+      dots.innerHTML=PROMOS.map((_,i)=>`<button class="promo-dot ${i===promoIdx?'active':''}" data-i="${i}"></button>`).join('');
+      dots.querySelectorAll('button').forEach(b=>b.onclick=()=>{promoIdx=+b.dataset.i;renderPromo();startPromo();});
     }
-    function startPromo(){ if(timer) clearInterval(timer); if(PROMOS.length>0) timer = setInterval(()=>{ promoIdx=(promoIdx+1)%PROMOS.length; renderPromo(); }, 6000); }
+    function startPromo(){if(timer)clearInterval(timer);if(PROMOS.length>0) timer=setInterval(()=>{promoIdx=(promoIdx+1)%PROMOS.length;renderPromo();},6000);}
 
     /* ---------------- Chat (bilingual replies) ---------------- */
-    function appendUserMessage(text){
-      const div = document.createElement('div'); div.className='msg user'; div.innerText = text; $id('chatMessages').appendChild(div);
-      $id('chatMessages').scrollTop = $id('chatMessages').scrollHeight;
-    }
-    function appendBotMessage(en, te){
-      const div = document.createElement('div'); div.className='msg bot';
-      div.innerHTML = `<div class="reply-en">${escapeHtml(en)}</div><div class="reply-te">${escapeHtml(te)}</div>`;
-      $id('chatMessages').appendChild(div); $id('chatMessages').scrollTop = $id('chatMessages').scrollHeight;
-    }
+    function escapeHtml(str){return (str||'').replace(/[&<>"']/g, function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];});}
+    function appendUserMessage(text){const div=document.createElement('div');div.className='msg user';div.innerText=text; $id('chatMessages').appendChild(div); $id('chatMessages').scrollTop=$id('chatMessages').scrollHeight;}
+    function appendBotMessage(en, te){const div=document.createElement('div');div.className='msg bot';div.innerHTML=`<div class="reply-en">${escapeHtml(en)}</div><div class="reply-te">${escapeHtml(te)}</div>`;$id('chatMessages').appendChild(div); $id('chatMessages').scrollTop=$id('chatMessages').scrollHeight;}
 
     function injectInitialGreeting(){
       const enGreeting = window.dict.en.chat_greeting || 'Hi! How can I help you today?';
@@ -353,85 +289,51 @@
     }
 
     function botReply(userText){
-      const t = (userText||'').toLowerCase();
-      let en = window.dict.en.chat_reply_default, te = window.dict.te.chat_reply_default;
-      if(t.includes('aerator')||t.includes('ఎరేటర్')){ en = window.dict.en.chat_reply_aerator; te = window.dict.te.chat_reply_aerator; }
-      else if(t.includes('history')||t.includes('చరిత్ర')){ en = window.dict.en.chat_reply_history; te = window.dict.te.chat_reply_history; }
-      else if((userText||'').trim().length < 3){ en = window.dict.en.chat_more_info; te = window.dict.te.chat_more_info; }
-      setTimeout(()=>appendBotMessage(en, te), 420);
+      const t=(userText||'').toLowerCase();
+      let en=window.dict.en.chat_reply_default, te=window.dict.te.chat_reply_default;
+      if(t.includes('aerator')||t.includes('ఎరేటర్')){ en=window.dict.en.chat_reply_aerator; te=window.dict.te.chat_reply_aerator; }
+      else if(t.includes('history')||t.includes('చరిత్ర')){ en=window.dict.en.chat_reply_history; te=window.dict.te.chat_reply_history; }
+      else if((userText||'').trim().length<3){ en=window.dict.en.chat_more_info; te=window.dict.te.chat_more_info; }
+      setTimeout(()=>appendBotMessage(en,te),450);
     }
 
     document.addEventListener('DOMContentLoaded', async ()=>{
       if(!localStorage.getItem('lang')) localStorage.setItem('lang','te');
       applyI18n();
-
-      // theme: preserve user preference
-      const saved = localStorage.getItem('theme');
-      if(saved === 'dark' || (!saved && matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
-      $id('themeToggle').onclick = () => { document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'); renderNews([]); /* re-render news for tag color */ };
+      // theme
+      const saved=localStorage.getItem('theme'); if(saved==='dark'||(!saved&&matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
+      $id('themeToggle').onclick=()=>{ document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark')?'dark':'light'); };
 
       // load CSVs (if present)
       const rates = await loadCSV('data/rates.csv');
       const NEWS = await loadCSV('data/news.csv');
       PROMOS = await loadCSV('data/promotions.csv');
 
-      // prawn type options
-      function fillTypeOptions(){ const lang = localStorage.getItem('lang')||'te'; $id('prawnType').innerHTML = `<option value="Vannamei">${window.dict[lang].type_van}</option><option value="Tiger">${window.dict[lang].type_tig}</option>`; }
+      // fill prawn type options
+      function fillTypeOptions(){
+        const lang=localStorage.getItem('lang')||'te';
+        $id('prawnType').innerHTML=`<option value="Vannamei">${window.dict[lang].type_van}</option><option value="Tiger">${window.dict[lang].type_tig}</option>`;
+      }
       fillTypeOptions();
-      $id('prawnType').onchange = ()=>renderRates(rates, $id('prawnType').value);
-      renderRates(rates, "Vannamei");
+      $id('prawnType').onchange=()=>renderRates(rates,$id('prawnType').value);
+      renderRates(rates,"Vannamei");
       renderNews(NEWS); renderPromo(); startPromo();
 
       // language change
-      $id('langSel').value = localStorage.getItem('lang') || 'te';
       $id('langSel').onchange = e => {
         localStorage.setItem('lang', e.target.value);
-        applyI18n(); fillTypeOptions(); renderRates(rates, $id('prawnType').value); renderNews(NEWS); renderPromo();
+        applyI18n(); fillTypeOptions(); renderRates(rates,$id('prawnType').value); renderNews(NEWS); renderPromo();
       };
 
-      // CHAT wiring & mobile keyboard adjustments
+      // chat wiring
       const openChat = $id('openChat'), chatPanel = $id('chatPanel'), closeChat = $id('closeChat'), sendBtn = $id('sendBtn'), chatInput = $id('chatInput');
       injectInitialGreeting();
 
-      openChat.addEventListener('click', ()=>{
-        chatPanel.classList.add('open');
-        chatPanel.setAttribute('aria-hidden','false');
-        applyI18n();
-        // small delay then focus so mobile opens keyboard
-        setTimeout(()=>{ chatInput.focus(); scrollChatToBottom(); }, 120);
-      });
-
-      closeChat.addEventListener('click', ()=>{
-        chatPanel.classList.remove('open');
-        chatPanel.setAttribute('aria-hidden','true');
-        openChat.focus();
-      });
-
-      sendBtn.addEventListener('click', ()=>{
-        const txt = chatInput.value.trim();
-        if(!txt) return;
-        appendUserMessage(txt);
-        chatInput.value = '';
-        botReply(txt);
-        // keep focus for quick replies on mobile
-        setTimeout(()=>{ chatInput.focus(); }, 250);
-      });
-
-      chatInput.addEventListener('keydown', e => {
-        if (e.key === 'Enter') { e.preventDefault(); sendBtn.click(); }
-      });
-
-      // Ensure chat messages area stays visible when keyboard opens on mobile:
-      // when input receives focus, give the messages container some breathing room
-      chatInput.addEventListener('focus', ()=>{ setTimeout(scrollChatToBottom, 200); });
-      function scrollChatToBottom(){ try{ $id('chatMessages').scrollTop = $id('chatMessages').scrollHeight; } catch(e){} }
-
-      // handle ESC to close chat
-      document.addEventListener('keydown', e=>{ if(e.key === 'Escape' && chatPanel.classList.contains('open')){ chatPanel.classList.remove('open'); chatPanel.setAttribute('aria-hidden','true'); openChat.focus(); }});
-
-      // small improvement: if lang is te, hint mobile to use telugu keyboard by setting input lang attribute
-      const langNow = localStorage.getItem('lang') || 'te';
-      if(chatInput) chatInput.setAttribute('lang', langNow === 'te' ? 'te' : 'en');
+      openChat.addEventListener('click', ()=>{ chatPanel.classList.add('open'); applyI18n(); chatInput.focus(); });
+      closeChat.addEventListener('click', ()=>{ chatPanel.classList.remove('open'); openChat.focus(); });
+      sendBtn.addEventListener('click', ()=>{ const txt=chatInput.value.trim(); if(!txt) return; appendUserMessage(txt); chatInput.value=''; botReply(txt); });
+      chatInput.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); sendBtn.click(); } });
+      document.addEventListener('keydown', e=>{ if(e.key==='Escape' && chatPanel.classList.contains('open')){ chatPanel.classList.remove('open'); openChat.focus(); }});
     });
   </script>
 </body>
