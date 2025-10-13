@@ -80,7 +80,9 @@
     .dark .ticker-track > div { color: #e6eef3; opacity: 0.95; }
     .dark .ticker-track .tag { color: #031e22; background: rgba(255,255,255,0.06); padding:.18rem .5rem; border-radius:9999px; }
 
-    /* hide aerator / small details per request - (section removed from HTML) */
+    /* small accessibility tweaks */
+    .promo-placeholder{color:#475569}
+    .dark .promo-placeholder{color:#bcd0d0}
   </style>
 </head>
 <body class="text-slate-900 dark:text-slate-100">
@@ -129,8 +131,8 @@
       <p class="text-xs text-slate-500 mt-2"><span data-i18n="updated">Updated</span>: <span id="newsUpdatedTop">—</span></p>
     </section>
 
-    <!-- Rates + Promotions -->
-    <section class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <!-- Rates + Promotions + Aerator (added Aerator as third card) -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-4">
       <!-- Rates -->
       <div class="rounded-2xl p-4 bg-white dark:bg-slate-900 shadow-soft border border-slate-200/60 dark:border-slate-800">
         <div class="flex items-center justify-between">
@@ -165,9 +167,22 @@
           <div id="promoDots" class="mt-3 flex gap-2"></div>
         </div>
       </div>
-    </section>
 
-    <!-- removed Aerator section as requested -->
+      <!-- Aerator (restored) -->
+      <div class="rounded-2xl p-4 bg-white dark:bg-slate-900 shadow-soft border border-slate-200/60 dark:border-slate-800">
+        <div class="flex items-center justify-between">
+          <h3 class="font-semibold">⚙️ <span data-i18n="m_aerator">ఎరేటర్</span></h3>
+          <a href="aerator.html" class="navbtn">See details</a>
+        </div>
+        <p class="mt-3 text-slate-600 dark:text-slate-300" data-i18n="aerator_summary">ఎరేటర్లు చెరువుల ఆక్సిజన్ స్థాయిలను నిలుపుకోవడానికి సహాయపడతాయి. పూర్తి టూల్స్ & మోడల్స్ కోసం తెరవండి.</p>
+        <div class="mt-3 grid grid-cols-2 gap-2">
+          <div class="rounded-md p-2 bg-slate-50 dark:bg-slate-800/30 text-sm">Model: A200</div>
+          <div class="rounded-md p-2 bg-slate-50 dark:bg-slate-800/30 text-sm">Capacity: 500 m³/h</div>
+          <div class="rounded-md p-2 bg-slate-50 dark:bg-slate-800/30 text-sm">Power: 2 HP</div>
+          <div class="rounded-md p-2 bg-slate-50 dark:bg-slate-800/30 text-sm">Usage: Pond / Farm</div>
+        </div>
+      </div>
+    </section>
 
   </main>
 
