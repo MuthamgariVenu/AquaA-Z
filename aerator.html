@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="te">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ఎరేటర్ — Aquaculture A–Z</title>
+  <title>Aerator — Aquaculture A–Z</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -12,79 +12,96 @@
 
   <style>
     html { scroll-behavior:smooth; }
-    body { background: linear-gradient(135deg,#e6f3ff 0%,#f0fbf7 100%); font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
-    header { position: sticky; top:0; z-index:50; background: white; border-bottom: 1px solid #e6eef6; }
-    .btn { display:inline-flex; align-items:center; justify-content:center; gap:.5rem; padding:.6rem .9rem; border-radius: .85rem; font-weight:700; border:1px solid #e6eef6; background:white; }
-    .primary { background:#059669; color:#fff; border-color: #059669; }
-    .ghost { background:transparent; }
-    .card { border-radius: .75rem; overflow:hidden; border:1px solid #e6eef6; background:white; }
-    .card-img { width:100%; height:120px; object-fit:cover; display:block; background:#f0f6fb; }
-    .fans-pill { display:inline-block; padding:.18rem .45rem; border-radius:999px; font-weight:800; background:#ecfdf5; color:#065f46; margin-right:.5rem; }
-    .recommended { outline: 3px solid rgba(16,185,129,.14); box-shadow: 0 8px 26px rgba(16,185,129,0.06); position:relative; }
+    body { background: linear-gradient(135deg,#e6f3ff 0%,#f0fbf7 100%); font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial; color:#0f172a; }
+    header { position:sticky; top:0; z-index:40; background:white; border-bottom:1px solid #e6eef6; }
+    .container { max-width:1100px; margin:0 auto; padding:12px; }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:.5rem; padding:.6rem .9rem; border-radius:.75rem; font-weight:700; border:1px solid #e6eef6; background:white; cursor:pointer; }
+    .btn.primary { background:#059669; color:#fff; border-color:#059669; }
+    .card { border-radius:.75rem; background:white; border:1px solid #e6eef6; overflow:hidden; }
+    .card-img { width:100%; height:120px; object-fit:cover; background:#f0f6fb; display:block; }
+    .fans-pill { display:inline-block; padding:.12rem .5rem; border-radius:999px; font-weight:800; background:#ecfdf5; color:#065f46; margin-right:.5rem; }
+    .recommended { outline:3px solid rgba(16,185,129,.14); box-shadow:0 8px 26px rgba(16,185,129,0.06); position:relative; }
     .recommend-badge { position:absolute; right:10px; top:10px; background:#059669; color:white; padding:6px 10px; border-radius:999px; font-weight:800; font-size:13px; }
     .hidden { display:none; }
-    .container { max-width:1100px; margin:0 auto; padding:14px; }
     .toast { position:fixed; right:16px; bottom:24px; z-index:80; min-width:220px; background: rgba(2,6,23,0.9); color:white; padding:10px 14px; border-radius:12px; box-shadow:0 10px 30px rgba(2,6,23,0.2); display:none; }
     .modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,0.35); display:none; align-items:center; justify-content:center; z-index:70; }
     .modal { width:94%; max-width:520px; background:white; border-radius:12px; padding:16px; box-shadow:0 18px 40px rgba(2,6,23,0.12); }
-    .modal h3 { font-weight:800; margin-bottom:8px; }
-    .modal .sub { color:#475569; font-size:13px; margin-bottom:12px; }
-    @media (min-width: 768px) { .two-col { display:grid; grid-template-columns: 1fr 420px; gap:18px; } }
-    @media (max-width: 767px) { .card-img{height:140px} .recommend-badge{font-size:12px;padding:5px 8px} }
+    .big-units { font-size:40px; font-weight:900; color:#065f46; }
+    @media(min-width:768px){ .two-col { display:grid; grid-template-columns: 1fr 420px; gap:16px; } }
+    @media(max-width:767px){ .card-img{height:140px;} .big-units{font-size:32px} }
   </style>
 </head>
 <body>
 
-  <!-- Header: only Back + History per request -->
+  <!-- Header: back + history + language selector -->
   <header>
-    <div class="container flex items-center justify-between py-3">
+    <div class="container flex items-center justify-between gap-3 py-3">
       <div class="flex items-center gap-3">
-        <button id="backBtn" class="btn" title="Back" onclick="history.back()">
-          ← వెనక్కి
-        </button>
+        <button id="backBtn" class="btn" onclick="history.back()">← <span id="lblBack">Back</span></button>
       </div>
-      <div>
-        <a href="history.html" class="btn ghost" id="historyBtn">చరిత్ర</a>
+      <div class="flex items-center gap-2">
+        <a href="history.html" class="btn" id="lblHistory">History</a>
+        <select id="langSel" class="btn" aria-label="Language">
+          <option value="en">English</option>
+          <option value="te">తెలుగు</option>
+        </select>
       </div>
     </div>
   </header>
 
-  <main class="container pt-4 pb-20">
-
-    <!-- Hero / description -->
-    <section class="mb-4">
-      <div class="card p-4">
-        <h1 class="text-xl font-bold">ఎరేటర్</h1>
-        <p class="mt-2 text-slate-600">ఎరేటర్లు చెరువులో ఆక్సిజన్ స్థాయిలను నిలుపుకోవడానికి సహాయపడతాయి — క్రింది లెక్కింపు ఉపయోగించి ఎంత సామర్థ్యం కావాలో తెలుసుకోండి.</p>
-      </div>
+  <main class="container pb-24">
+    <section class="card p-4 mb-4">
+      <h1 id="pageTitle" class="text-xl font-bold">Aerator</h1>
+      <p id="pageDesc" class="mt-2 text-slate-600">Aerators help maintain oxygen levels in ponds — use the calculator to see how many devices you need.</p>
     </section>
 
-    <!-- Calculator -->
-    <section id="calculatorArea" class="card p-4">
-      <h2 class="font-semibold mb-3">ఎరేటర్ కేల్క్యులేటర్</h2>
+    <!-- Calculator area -->
+    <section id="calculatorArea" class="card p-4 mb-4">
+      <h2 id="calcTitle" class="font-semibold mb-3">Aerator Calculator</h2>
 
-      <label class="text-xs font-medium">చెరువు ఉపరితలం (ఎకరాలు)</label>
-      <input id="acreInput" type="number" step="0.01" min="0.01" placeholder="ఉదా. 0.5" class="mt-2 w-full rounded-lg border px-3 py-2" />
+      <label id="lblArea" class="text-xs font-medium">Pond area (acres)</label>
+      <input id="acreInput" type="number" step="0.01" min="0.01" placeholder="eg. 0.5" class="mt-2 w-full rounded-lg border px-3 py-2" />
 
-      <label class="text-xs font-medium mt-3 block">సగటు లోతు (ఫుట్స్)</label>
-      <input id="depthFtInput" type="number" step="0.1" min="0.1" placeholder="ఉదా. 4" class="mt-2 w-full rounded-lg border px-3 py-2" />
+      <label id="lblDepth" class="text-xs font-medium mt-3 block">Average depth (ft)</label>
+      <input id="depthFtInput" type="number" step="0.1" min="0.1" placeholder="eg. 4" class="mt-2 w-full rounded-lg border px-3 py-2" />
+
+      <label id="lblPrawn" class="text-xs font-medium mt-3 block">Prawn size</label>
+      <select id="prawnSize" class="mt-2 w-full rounded-lg border px-3 py-2">
+        <option value="small">Small</option>
+        <option value="medium">Medium (+20%)</option>
+        <option value="large">Large (+40%)</option>
+      </select>
 
       <div class="mt-4 flex gap-2">
-        <button id="calcBtn" class="btn primary flex-1">లెక్కించు</button>
-        <button id="resetBtn" class="btn">రీసెట్</button>
+        <button id="calcBtn" class="btn primary flex-1">Calculate</button>
+        <button id="resetBtn" class="btn">Reset</button>
       </div>
 
-      <div id="resultPanel" class="mt-4 hidden"></div>
+      <!-- Result (only units emphasized) -->
+      <div id="resultPanel" class="mt-4 hidden">
+        <div id="unitsBox" class="p-4 rounded-lg" style="background:#ecfdf5;border:1px solid #bbf7d0">
+          <div id="unitsLabel" class="text-sm text-slate-700">Units required</div>
+          <div id="unitsBig" class="big-units mt-2">0</div>
+          <div id="unitsNote" class="text-xs text-slate-600 mt-2">Mapping: 2-fans = 1 unit, 4-fans = 2 units, 6-fans = 3 units, 8-fans = 4 units.</div>
+        </div>
 
-      <p class="mt-4 text-xs text-slate-500">గమనిక: ఇది ఒక అంచనా మాత్రమే; ఖచ్చిత ఎంపిక కోసం ఉత్పత్తి స్పెక్స్ చూడండి.</p>
+        <div class="mt-4 flex gap-2">
+          <button id="showNewBtn" class="btn">New</button>
+          <button id="showOldBtn" class="btn">Old</button>
+        </div>
+
+        <div id="modelsSummary" class="mt-4 space-y-2"></div>
+      </div>
+
+      <p class="mt-4 text-xs text-slate-500" id="calcNote">Note: estimate only — verify product specs.</p>
     </section>
 
-    <!-- Models area -->
-    <section id="modelsArea" class="hidden mt-4">
+    <!-- Models area (hidden until user clicks New/Old) -->
+    <section id="modelsArea" class="hidden mb-8">
       <div class="flex items-center justify-between mb-3">
         <div class="flex items-center gap-2">
-          <button id="showNew" class="btn">కొత్త</button>
-          <button id="showOld" class="btn">పాత</button>
+          <button id="tabNew" class="btn">New Aerators</button>
+          <button id="tabOld" class="btn">Used Aerators</button>
         </div>
         <div>
           <button id="backToCalcBtn" class="btn">Back to calculator</button>
@@ -92,124 +109,118 @@
       </div>
 
       <div id="modelsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <!-- New models -->
-        <article class="card p-3" data-type="new" data-key="float-2" data-flow="8000" data-power="150" data-price="12000" data-fans="2">
-          <img class="card-img" src="assets/float-2.jpg" alt="Floating 2 Fans" onerror="this.style.opacity=.6" />
+        <!-- Example New models -->
+        <article class="card p-3" data-type="new" data-key="float-2" data-units="1" data-price="12000" data-flow="8000">
+          <img class="card-img" src="assets/float-2.jpg" alt="2 Fans" onerror="this.style.opacity=.6" />
           <div class="mt-3">
-            <div class="flex items-center justify-between">
+            <div class="flex items-start justify-between">
               <div>
                 <span class="fans-pill">2</span>
-                <div class="font-bold model-name">తేలే — 2 ఫ్యాన్స్</div>
-                <div class="text-xs text-slate-500 mt-1">ఫ్లో: 8000 L/h · శక్తి: 150 W</div>
+                <div class="font-bold model-name" data-name-en="Floating — 2 Fans" data-name-te="తేలే — 2 ఫ్యాన్స్">Floating — 2 Fans</div>
+                <div class="text-xs text-slate-500 mt-1">Flow: 8,000 L/h · Power: 150 W</div>
               </div>
               <div class="font-semibold">₹ 12,000</div>
             </div>
-            <p class="mt-2 text-sm text-slate-600">చిన్న చెరువుల కోసం సరసమైనది — 2 ఫ్యాన్స్‌తో ఉపరితల మిశ్రమం అందిస్తుంది.</p>
-
+            <p class="mt-2 text-sm text-slate-600 model-desc" data-desc-en="Surface floating; economical for small ponds." data-desc-te="పైన తేలే రకం; చిన్న చెరువుల కోసం సరసమైనది.">Surface floating; economical for small ponds.</p>
             <div class="mt-3 flex gap-2">
-              <button class="btn detailsBtn flex-1">వివరాలు</button>
-              <button class="btn primary buyBtn" data-key="float-2" data-price="12000">కొనండి</button>
+              <button class="btn detailsBtn flex-1">Details</button>
+              <button class="btn primary buyBtn" data-key="float-2" data-price="12000">Buy</button>
             </div>
           </div>
         </article>
 
-        <article class="card p-3" data-type="new" data-key="float-4" data-flow="16000" data-power="300" data-price="22000" data-fans="4">
-          <img class="card-img" src="assets/float-4.jpg" alt="Floating 4 Fans" onerror="this.style.opacity=.6" />
+        <article class="card p-3" data-type="new" data-key="float-4" data-units="2" data-price="22000" data-flow="16000">
+          <img class="card-img" src="assets/float-4.jpg" alt="4 Fans" onerror="this.style.opacity=.6" />
           <div class="mt-3">
-            <div class="flex items-center justify-between">
+            <div class="flex items-start justify-between">
               <div>
                 <span class="fans-pill">4</span>
-                <div class="font-bold model-name">తేలే — 4 ఫ్యాన్స్</div>
-                <div class="text-xs text-slate-500 mt-1">ఫ్లో: 16000 L/h · శక్తి: 300 W</div>
+                <div class="font-bold model-name" data-name-en="Floating — 4 Fans" data-name-te="తేలే — 4 ఫ్యాన్స్">Floating — 4 Fans</div>
+                <div class="text-xs text-slate-500 mt-1">Flow: 16,000 L/h · Power: 300 W</div>
               </div>
               <div class="font-semibold">₹ 22,000</div>
             </div>
-            <p class="mt-2 text-sm text-slate-600">మధ్యమ చెరువులకు మిక్సింగ్ మరియు శక్తివంతమైన ఉపరితల ఏరేషన్.</p>
-
+            <p class="mt-2 text-sm text-slate-600 model-desc" data-desc-en="Good for medium ponds." data-desc-te="మధ్యమైన చెరువులకు ఉపయుక్తం.">Good for medium ponds.</p>
             <div class="mt-3 flex gap-2">
-              <button class="btn detailsBtn flex-1">వివరాలు</button>
-              <button class="btn primary buyBtn" data-key="float-4" data-price="22000">కొనండి</button>
+              <button class="btn detailsBtn flex-1">Details</button>
+              <button class="btn primary buyBtn" data-key="float-4" data-price="22000">Buy</button>
             </div>
           </div>
         </article>
 
-        <article class="card p-3" data-type="new" data-key="float-6" data-flow="24000" data-power="450" data-price="32000" data-fans="6">
-          <img class="card-img" src="assets/float-6.jpg" alt="Floating 6 Fans" onerror="this.style.opacity=.6" />
+        <article class="card p-3" data-type="new" data-key="float-6" data-units="3" data-price="32000" data-flow="24000">
+          <img class="card-img" src="assets/float-6.jpg" alt="6 Fans" onerror="this.style.opacity=.6" />
           <div class="mt-3">
-            <div class="flex items-center justify-between">
+            <div class="flex items-start justify-between">
               <div>
                 <span class="fans-pill">6</span>
-                <div class="font-bold model-name">తేలే — 6 ఫ్యాన్స్</div>
-                <div class="text-xs text-slate-500 mt-1">ఫ్లో: 24000 L/h · శక్తి: 450 W</div>
+                <div class="font-bold model-name" data-name-en="Floating — 6 Fans" data-name-te="తేలే — 6 ఫ్యాన్స్">Floating — 6 Fans</div>
+                <div class="text-xs text-slate-500 mt-1">Flow: 24,000 L/h · Power: 450 W</div>
               </div>
               <div class="font-semibold">₹ 32,000</div>
             </div>
-            <p class="mt-2 text-sm text-slate-600">పెద్ద చెరువుల కోసం — అధిక సర్క్యులేషన్ మరియు ఆక్సిజనేషన్.</p>
-
+            <p class="mt-2 text-sm text-slate-600 model-desc" data-desc-en="High circulation for larger ponds." data-desc-te="పెద్ద చెరువులకు అధిక సర్క్యులేషన్.">High circulation for larger ponds.</p>
             <div class="mt-3 flex gap-2">
-              <button class="btn detailsBtn flex-1">వివరాలు</button>
-              <button class="btn primary buyBtn" data-key="float-6" data-price="32000">కొనండి</button>
+              <button class="btn detailsBtn flex-1">Details</button>
+              <button class="btn primary buyBtn" data-key="float-6" data-price="32000">Buy</button>
             </div>
           </div>
         </article>
 
-        <article class="card p-3" data-type="new" data-key="float-8" data-flow="32000" data-power="600" data-price="42000" data-fans="8">
-          <img class="card-img" src="assets/float-8.jpg" alt="Floating 8 Fans" onerror="this.style.opacity=.6" />
+        <article class="card p-3" data-type="new" data-key="float-8" data-units="4" data-price="42000" data-flow="32000">
+          <img class="card-img" src="assets/float-8.jpg" alt="8 Fans" onerror="this.style.opacity=.6" />
           <div class="mt-3">
-            <div class="flex items-center justify-between">
+            <div class="flex items-start justify-between">
               <div>
                 <span class="fans-pill">8</span>
-                <div class="font-bold model-name">తేలే — 8 ఫ్యాన్స్</div>
-                <div class="text-xs text-slate-500 mt-1">ఫ్లో: 32000 L/h · శక్తి: 600 W</div>
+                <div class="font-bold model-name" data-name-en="Floating — 8 Fans" data-name-te="తేలే — 8 ఫ్యాన్స్">Floating — 8 Fans</div>
+                <div class="text-xs text-slate-500 mt-1">Flow: 32,000 L/h · Power: 600 W</div>
               </div>
               <div class="font-semibold">₹ 42,000</div>
             </div>
-            <p class="mt-2 text-sm text-slate-600">వాణిజ్య చెరువులకు — ఒక్క యూనిట్ నుండి గరిష్ట ఉపరితల ఏరేషన్.</p>
-
+            <p class="mt-2 text-sm text-slate-600 model-desc" data-desc-en="Commercial ponds." data-desc-te="వాణిజ్య చెరువుల కోసంము">Commercial ponds.</p>
             <div class="mt-3 flex gap-2">
-              <button class="btn detailsBtn flex-1">వివరాలు</button>
-              <button class="btn primary buyBtn" data-key="float-8" data-price="42000">కొనండి</button>
+              <button class="btn detailsBtn flex-1">Details</button>
+              <button class="btn primary buyBtn" data-key="float-8" data-price="42000">Buy</button>
             </div>
           </div>
         </article>
 
-        <!-- Old items (hidden until 'పాత' clicked) -->
-        <article class="card p-3" data-type="old" data-key="used-2" data-flow="7000" data-power="140" data-price="7500" data-fans="2" style="display:none;">
+        <!-- Example used/old (hidden until tabOld) -->
+        <article class="card p-3" data-type="old" data-key="used-2" data-units="1" data-price="7500" data-flow="7000" style="display:none">
           <img class="card-img" src="assets/used-2.jpg" alt="Used 2 Fans" onerror="this.style.opacity=.6" />
           <div class="mt-3">
-            <div class="flex items-center justify-between">
+            <div class="flex items-start justify-between">
               <div>
                 <span class="fans-pill">2</span>
-                <div class="font-bold model-name">రెండవ చేతి — 2 ఫ్యాన్స్</div>
-                <div class="text-xs text-slate-500 mt-1">ఫ్లో: 7000 L/h · శక్తి: 140 W</div>
+                <div class="font-bold model-name" data-name-en="Used — 2 Fans" data-name-te="రెండవ చేతి — 2 ఫ్యాన్స్">Used — 2 Fans</div>
+                <div class="text-xs text-slate-500 mt-1">Flow: 7,000 L/h · Power: 140 W</div>
               </div>
               <div class="font-semibold">₹ 7,500</div>
             </div>
-            <p class="mt-2 text-sm text-slate-600">సరి చూసిన రెండవ చేతి యూనిట్ — బడ్జెట్ ఆప్షన్.</p>
-
+            <p class="mt-2 text-sm text-slate-600 model-desc" data-desc-en="Checked used unit." data-desc-te="సరి చూసిన రెండవ చేతి యూనిట్.">Checked used unit.</p>
             <div class="mt-3 flex gap-2">
-              <button class="btn detailsBtn flex-1">వివరాలు</button>
-              <button class="btn primary buyBtn" data-key="used-2" data-price="7500">కొనండి</button>
+              <button class="btn detailsBtn flex-1">Details</button>
+              <button class="btn primary buyBtn" data-key="used-2" data-price="7500">Buy</button>
             </div>
           </div>
         </article>
 
-        <article class="card p-3" data-type="old" data-key="used-4" data-flow="14000" data-power="280" data-price="13500" data-fans="4" style="display:none;">
+        <article class="card p-3" data-type="old" data-key="used-4" data-units="2" data-price="13500" data-flow="14000" style="display:none">
           <img class="card-img" src="assets/used-4.jpg" alt="Used 4 Fans" onerror="this.style.opacity=.6" />
           <div class="mt-3">
-            <div class="flex items-center justify-between">
+            <div class="flex items-start justify-between">
               <div>
                 <span class="fans-pill">4</span>
-                <div class="font-bold model-name">రెండవ చేతి — 4 ఫ్యాన్స్</div>
-                <div class="text-xs text-slate-500 mt-1">ఫ్లో: 14000 L/h · శక్తి: 280 W</div>
+                <div class="font-bold model-name" data-name-en="Used — 4 Fans" data-name-te="రెండవ చేతి — 4 ఫ్యాన్స్">Used — 4 Fans</div>
+                <div class="text-xs text-slate-500 mt-1">Flow: 14,000 L/h · Power: 280 W</div>
               </div>
               <div class="font-semibold">₹ 13,500</div>
             </div>
-            <p class="mt-2 text-sm text-slate-600">చెక్కించిన & సర్వీస్ చేసిన రెండవ చేతి యూనిట్.</p>
-
+            <p class="mt-2 text-sm text-slate-600 model-desc" data-desc-en="Serviced used unit." data-desc-te="సర్వీస్ చేసిన రెండవ చేతి.">Serviced used unit.</p>
             <div class="mt-3 flex gap-2">
-              <button class="btn detailsBtn flex-1">వివరాలు</button>
-              <button class="btn primary buyBtn" data-key="used-4" data-price="13500">కొనండి</button>
+              <button class="btn detailsBtn flex-1">Details</button>
+              <button class="btn primary buyBtn" data-key="used-4" data-price="13500">Buy</button>
             </div>
           </div>
         </article>
@@ -219,278 +230,338 @@
 
   </main>
 
-  <!-- Details Modal (replaces alert) -->
-  <div id="detailsModalBackdrop" class="modal-backdrop">
+  <!-- Details Modal -->
+  <div id="detailsModal" class="modal-backdrop">
     <div class="modal">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <h3 id="detailsTitle">Model Details</h3>
-        <button id="closeDetails" class="btn">✕</button>
+      <div class="flex items-center justify-between">
+        <h3 id="detailTitle">Model</h3>
+        <button id="closeDetail" class="btn">✕</button>
       </div>
-      <div class="sub" id="detailsSub"></div>
-      <div id="detailsBody" style="color:#0f172a"></div>
-      <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
-        <button id="detailsBuy" class="btn primary">కొనండి</button>
-        <button id="detailsClose" class="btn">Close</button>
+      <div id="detailSub" class="text-sm text-slate-600 mt-2"></div>
+      <div id="detailBody" class="mt-3 text-sm"></div>
+      <div class="mt-4 flex justify-end gap-2">
+        <button id="detailBuy" class="btn primary">Buy</button>
+        <button id="detailClose" class="btn">Close</button>
       </div>
     </div>
   </div>
 
   <!-- Purchase Modal -->
-  <div id="modalOverlay" class="modal-backdrop">
+  <div id="purchaseModal" class="modal-backdrop">
     <div class="modal">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <h3 id="purchaseTitle">కొనుగోలు</h3>
-        <button id="closeModal" class="btn">✕</button>
+      <div class="flex items-center justify-between">
+        <h3 id="purchaseTitle">Buy</h3>
+        <button id="closePurchase" class="btn">✕</button>
       </div>
       <form id="purchaseForm" class="mt-3">
-        <input type="hidden" id="modalModelKey" />
-        <input type="hidden" id="modalPrice" />
-        <label class="text-xs">పేరు</label>
+        <input type="hidden" id="purchaseModelKey" name="model" />
+        <input type="hidden" id="purchasePrice" name="price" />
+        <label class="text-xs">Name</label>
         <input id="buyerName" class="w-full rounded-lg border px-3 py-2 mt-1" required />
-        <label class="text-xs mt-2">ఫోన్</label>
+        <label class="text-xs mt-2">Phone</label>
         <input id="buyerPhone" class="w-full rounded-lg border px-3 py-2 mt-1" required />
-        <label class="text-xs mt-2">గ్రామం / పట్టణం</label>
+        <label class="text-xs mt-2">Place</label>
         <input id="buyerPlace" class="w-full rounded-lg border px-3 py-2 mt-1" />
-        <div class="mt-3 flex gap-2 justify-end">
-          <button class="btn primary" type="submit">అభ్యర్థన పంపు</button>
-          <button id="cancelPurchase" type="button" class="btn">రద్దు</button>
+        <div class="mt-3 flex justify-end gap-2">
+          <button class="btn primary" type="submit">Send request</button>
+          <button id="cancelPurchaseBtn" type="button" class="btn">Cancel</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Toast -->
   <div id="toast" class="toast"></div>
 
-  <!-- hidden chat prefill -->
-  <div id="chatPrefill" class="hidden" aria-hidden="true"></div>
-
   <script>
-    (function(){
-      const ACRE_TO_M2 = 4046.85642;
-      const FT_TO_M = 0.3048;
-
-      const acreInput = document.getElementById('acreInput');
-      const depthFtInput = document.getElementById('depthFtInput');
-      const calcBtn = document.getElementById('calcBtn');
-      const resetBtn = document.getElementById('resetBtn');
-      const resultPanel = document.getElementById('resultPanel');
-      const calculatorArea = document.getElementById('calculatorArea');
-
-      const modelsArea = document.getElementById('modelsArea');
-      const showNewBtn = document.getElementById('showNew');
-      const showOldBtn = document.getElementById('showOld');
-      const backToCalcBtn = document.getElementById('backToCalcBtn');
-
-      const detailsModalBackdrop = document.getElementById('detailsModalBackdrop');
-      const detailsTitle = document.getElementById('detailsTitle');
-      const detailsSub = document.getElementById('detailsSub');
-      const detailsBody = document.getElementById('detailsBody');
-      const closeDetails = document.getElementById('closeDetails');
-      const detailsClose = document.getElementById('detailsClose');
-      const detailsBuy = document.getElementById('detailsBuy');
-
-      const modalOverlay = document.getElementById('modalOverlay');
-      const closeModal = document.getElementById('closeModal');
-      const purchaseForm = document.getElementById('purchaseForm');
-      const cancelPurchase = document.getElementById('cancelPurchase');
-      const modalModelKey = document.getElementById('modalModelKey');
-      const modalPrice = document.getElementById('modalPrice');
-
-      const toast = document.getElementById('toast');
-
-      function showToast(text, time=3000) {
-        toast.textContent = text;
-        toast.style.display = 'block';
-        clearTimeout(toast._t);
-        toast._t = setTimeout(()=>{ toast.style.display='none'; }, time);
+    // ---------- i18n ----------
+    const dict = {
+      en: {
+        Back: 'Back', History: 'History',
+        pageTitle: 'Aerator', pageDesc: 'Aerators help maintain oxygen levels in ponds — use the calculator to see how many devices you need.',
+        calcTitle: 'Aerator Calculator', lblArea: 'Pond area (acres)', lblDepth: 'Average depth (ft)', lblPrawn: 'Prawn size',
+        small: 'Small', medium: 'Medium (+20%)', large: 'Large (+40%)',
+        calcBtn: 'Calculate', resetBtn: 'Reset',
+        unitsLabel: 'Units required', unitsNote: 'Mapping: 2-fans = 1 unit, 4-fans = 2 units, 6-fans = 3 units, 8-fans = 4 units.',
+        viewNew: 'New', viewOld: 'Old',
+        modelsTitleNew: 'New Aerators', modelsTitleOld: 'Used Aerators',
+        backToCalc: 'Back to calculator', details: 'Details', buy: 'Buy',
+        calcNote: 'Note: estimate only — verify product specs.',
+        model_desc_suffix_en: 'Details: Flow & Power shown.'
+      },
+      te: {
+        Back: 'వెనక్కి', History: 'చరిత్ర',
+        pageTitle: 'ఎరేటర్', pageDesc: 'ఎరేటర్లు చెరువుల్లో ఆక్సిజన్ స్థాయులను నిలుపుకునేందుకు ఉపయోగపడతాయి — కింద లెక్కింపు ద్వారా ఎంత అవసరం అనే తెలుసుకోండి.',
+        calcTitle: 'ఎరేటర్ కేల్క్యులేటర్', lblArea: 'చెరువు ఉపరితలం (ఎకరాలు)', lblDepth: 'సగటు లోతు (ఫుట్స్)', lblPrawn: 'రొయ్యల పరుగు/కలవ',
+        small: 'చిన్న', medium: 'మధ్యతరహా (+20%)', large: 'పెద్ద (+40%)',
+        calcBtn: 'లెక్కించు', resetBtn: 'రీసెట్',
+        unitsLabel: 'అవసరమైన యూనిట్లు', unitsNote: 'మ్యాపింగ్: 2 ఫ్యాన్స్ = 1 యూనిట్, 4 ఫ్యాన్స్ = 2 యూనిట్లు, 6 ఫ్యాన్స్ = 3 యూనిట్లు, 8 ఫ్యాన్స్ = 4 యూనిట్లు.',
+        viewNew: 'కొత్త', viewOld: 'పాత',
+        modelsTitleNew: 'కొత్త ఎరేటర్లు', modelsTitleOld: 'పాత ఎరేటర్లు',
+        backToCalc: 'క్యాల్క్యులేటర్‌కు వెళ్ళి', details: 'వివరాలు', buy: 'కొనండి',
+        calcNote: 'గమనిక: ఇది అంచనా మాత్రమే — స్పెక్స్ చూడండి.',
+        model_desc_suffix_en: 'వివరాలు: ఫ్లో & పవర్ చూపబడ్డాయి.'
       }
+    };
 
-      function getModelCards() { return Array.from(document.querySelectorAll('#modelsGrid article')); }
-      function formatNum(n){ return Number(n).toLocaleString('en-IN'); }
+    // ---------- helpers ----------
+    const $ = id => document.getElementById(id);
+    const qsa = (s, root=document) => Array.from(root.querySelectorAll(s));
+    let lang = localStorage.getItem('lang') || 'en';
 
-      function estimateFromAcresFeet(acres, depthFt) {
-        const depthM = depthFt * FT_TO_M;
-        const area_m2 = acres * ACRE_TO_M2;
-        const volume_m3 = area_m2 * depthM;
-        const liters = volume_m3 * 1000;
-        const needed_lph = Math.max(500, Math.round(liters * 0.10));
-        const recs = [];
-        getModelCards().forEach(card => {
-          const key = card.getAttribute('data-key');
-          const flow = parseFloat(card.getAttribute('data-flow')) || 0;
-          const price = parseFloat(card.getAttribute('data-price')) || 0;
-          const fans = card.getAttribute('data-fans') || '?';
-          if (flow <= 0) return;
-          const units = Math.ceil(needed_lph / flow);
-          recs.push({ key, units, flow, price, fans, totalFlow: units * flow, totalPrice: units * price, card });
-        });
-        recs.sort((a,b) => a.totalPrice - b.totalPrice);
-        return { area_m2, depth_m: depthM, volume_m3, liters, needed_lph, recommendations: recs };
-      }
+    function applyLang() {
+      lang = localStorage.getItem('lang') || lang;
+      const d = dict[lang];
+      $('lblBack').textContent = d.Back;
+      $('lblHistory').textContent = d.History;
+      $('pageTitle').textContent = d.pageTitle;
+      $('pageDesc').textContent = d.pageDesc;
+      $('calcTitle').textContent = d.calcTitle;
+      $('lblArea').textContent = d.lblArea;
+      $('lblDepth').textContent = d.lblDepth;
+      $('lblPrawn').textContent = d.lblPrawn;
+      // prawn options
+      const prawn = $('prawnSize');
+      prawn.options[0].text = d.small;
+      prawn.options[1].text = d.medium;
+      prawn.options[2].text = d.large;
+      $('calcBtn').textContent = d.calcBtn;
+      $('resetBtn').textContent = d.resetBtn;
+      $('unitsLabel').textContent = d.unitsLabel;
+      $('unitsNote').textContent = d.unitsNote;
+      $('showNewBtn').textContent = d.viewNew;
+      $('showOldBtn').textContent = d.viewOld;
+      $('backToCalcBtn').textContent = d.backToCalc;
+      $('calcNote').textContent = d.calcNote;
+      // models area tabs
+      $('tabNew').textContent = d.modelsTitleNew;
+      $('tabOld').textContent = d.modelsTitleOld;
+      // model description placeholders (we update individually)
+      // details/buy buttons inside models will be updated dynamically below
+      // update model name and desc labels
+      updateModelI18n();
+    }
 
-      function clearHighlights() {
-        getModelCards().forEach(c => {
-          c.classList.remove('recommended');
-          const rb = c.querySelector('.recommend-badge');
-          if (rb) rb.remove();
-        });
-      }
-      function highlightBest(best) {
-        clearHighlights();
-        if (!best) return;
-        const card = best.card;
-        card.classList.add('recommended');
-        const badge = document.createElement('div');
-        badge.className = 'recommend-badge';
-        badge.textContent = `${best.units} ×`;
-        card.appendChild(badge);
-        setTimeout(()=> card.scrollIntoView({behavior:'smooth', block:'center'}), 120);
-      }
+    function updateModelI18n() {
+      const d = dict[lang];
+      qsa('.model-name').forEach(el => {
+        const en = el.getAttribute('data-name-en') || el.textContent;
+        const te = el.getAttribute('data-name-te') || en;
+        el.textContent = (lang === 'te') ? te : en;
+      });
+      qsa('.model-desc').forEach(el => {
+        const en = el.getAttribute('data-desc-en') || '';
+        const te = el.getAttribute('data-desc-te') || en;
+        el.textContent = (lang === 'te') ? te : en;
+      });
+      qsa('.detailsBtn').forEach(b => b.textContent = dict[lang].details);
+      qsa('.buyBtn').forEach(b => b.textContent = dict[lang].buy);
+    }
 
-      function showResultTelugu(res) {
-        const best = res.recommendations[0];
-        const lines = [];
-        lines.push(`<div style="font-weight:800">అంచనా చెరువు: ${res.volume_m3.toFixed(2)} m³ (${formatNum(res.liters)} L).</div>`);
-        lines.push(`<div style="margin-top:6px">సమగ్ర అవసరం: సుమారు <strong>${formatNum(res.needed_lph)} L/h</strong>.</div>`);
-        if (best) {
-          const card = best.card;
-          const nameTe = card.querySelector('.model-name') ? card.querySelector('.model-name').textContent : best.key;
-          lines.push(`<div style="margin-top:8px;font-weight:800">ఉత్తమ ఎంపిక: ${best.units} × ${nameTe} — మొత్తం ఫ్లో ${formatNum(best.totalFlow)} L/h. (మొత్తం ధర ₹${formatNum(best.totalPrice)})</div>`);
+    function showToast(txt, time=3000) {
+      const t = $('toast');
+      t.textContent = txt;
+      t.style.display='block';
+      clearTimeout(t._t);
+      t._t = setTimeout(()=> t.style.display='none', time);
+    }
+
+    // ---------- calculation logic ----------
+    // Base: 8 base-units per acre (as requested)
+    const BASE_UNITS_PER_ACRE = 8;
+    // mapping device -> base-unit capacity: {data-units attribute}
+    // The HTML cards hold data-units that we use.
+
+    function calculateUnitsNeeded(acres, sizeKey) {
+      const sizeMultipliers = { small: 1.0, medium: 1.2, large: 1.4 };
+      const m = sizeMultipliers[sizeKey] || 1.0;
+      const units = acres * BASE_UNITS_PER_ACRE * m;
+      return Math.max(0, units);
+    }
+
+    function computeDevicesFromUnits(unitsNeeded) {
+      // for each card, deviceUnits = data-units ; devicesRequired = ceil(unitsNeeded / deviceUnits)
+      const cards = qsa('#modelsGrid article');
+      const results = cards.map(card => {
+        const key = card.getAttribute('data-key');
+        const deviceUnits = parseFloat(card.getAttribute('data-units')) || 1;
+        const price = parseFloat(card.getAttribute('data-price')) || 0;
+        const devicesReq = Math.ceil(unitsNeeded / deviceUnits);
+        return { key, card, deviceUnits, price, devicesReq, totalPrice: devicesReq * price, fans: card.querySelector('.fans-pill') ? card.querySelector('.fans-pill').textContent.trim() : '' };
+      });
+      // sort by totalPrice asc for recommendation
+      results.sort((a,b) => a.totalPrice - b.totalPrice);
+      return results;
+    }
+
+    // ---------- UI wiring ----------
+    document.addEventListener('DOMContentLoaded', () => {
+      // set language select
+      $('langSel').value = localStorage.getItem('lang') || lang;
+      $('langSel').addEventListener('change', e => {
+        localStorage.setItem('lang', e.target.value);
+        applyLang();
+      });
+      applyLang();
+
+      // wire buttons
+      $('calcBtn').addEventListener('click', () => {
+        const acres = parseFloat($('acreInput').value) || 0;
+        const depthFt = parseFloat($('depthFtInput').value) || 0;
+        const sizeKey = $('prawnSize').value || 'small';
+        if (acres <= 0 || depthFt <= 0) {
+          showToast((lang==='te') ? 'దయచేసి సరైన విలువలు ఇవ్వండి.' : 'Please enter valid values.');
+          return;
         }
-        // compact list
-        let table = `<div style="margin-top:12px"><div style="font-weight:800;margin-bottom:8px">మోడల్ ప్రకారం అవసరమైన యూనిట్‌లు</div>`;
-        res.recommendations.forEach(r=>{
-          const card = r.card;
-          const modelName = card.querySelector('.model-name') ? card.querySelector('.model-name').textContent : r.key;
-          table += `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:10px;background:#f8faf8;margin-bottom:8px">`;
-          table += `<div><span style="font-weight:800;color:#065f46;margin-right:8px">${r.fans} ఫ్యాన్స్</span> ${modelName}</div>`;
-          table += `<div style="text-align:right"><div style="font-weight:800;color:#0b6b3a">${r.units} యూనిట్</div><div style="font-size:13px;color:#334155">(${formatNum(r.totalFlow)} L/h)</div></div>`;
-          table += `</div>`;
+        const units = calculateUnitsNeeded(acres, sizeKey);
+        // display big units (rounded)
+        $('unitsBig').textContent = Math.ceil(units).toLocaleString('en-IN');
+        // compute per model devices
+        const devices = computeDevicesFromUnits(units);
+        // display summary list (only counts + model name). Highlight recommended (devices[0])
+        const summary = $('modelsSummary');
+        summary.innerHTML = '';
+        devices.forEach((r, idx) => {
+          const nameEl = r.card.querySelector('.model-name');
+          const modelName = (nameEl) ? nameEl.textContent : r.key;
+          const big = document.createElement('div');
+          big.className = 'p-3 rounded-lg flex items-center justify-between';
+          big.style.background = (idx===0) ? '#ecfdf5' : '#fbfbfb';
+          big.innerHTML = `<div style="font-weight:800">${r.fans} — ${escapeHtml(modelName)}</div><div style="font-weight:900;color:${idx===0? '#065f46':'#0f172a'};font-size:18px">${r.devicesReq.toLocaleString('en-IN')} units<br/><span style="font-size:12px;color:#475569">(${r.totalPrice ? '₹'+r.totalPrice.toLocaleString('en-IN') : ''})</span></div>`;
+          summary.appendChild(big);
         });
-        table += `</div>`;
 
-        resultPanel.innerHTML = lines.join('') + table + `<div style="margin-top:12px;display:flex;gap:8px"><button id="viewModelsBtn" class="btn">మోడల్స్ చూపించు</button><button id="selectBestBtn" class="btn primary">ఎంచుకో & కోట్ అడగు</button></div>`;
-        resultPanel.classList.remove('hidden');
+        // show result panel
+        $('resultPanel').classList.remove('hidden');
+        // highlight recommended model in grid (when user opens models)
+        // store last computed results for later use
+        window._lastCalculation = { acres, depthFt, sizeKey, units, devices };
+      });
 
-        highlightBest(best);
+      $('resetBtn').addEventListener('click', () => {
+        $('acreInput').value=''; $('depthFtInput').value=''; $('resultPanel').classList.add('hidden'); $('modelsSummary').innerHTML=''; $('unitsBig').textContent='0';
+        // clear highlights
+        qsa('#modelsGrid article').forEach(c => { c.classList.remove('recommended'); const rb = c.querySelector('.recommend-badge'); if (rb) rb.remove(); });
+      });
 
-        // wiring buttons
-        document.getElementById('viewModelsBtn').addEventListener('click', ()=> showModels('new'));
-        document.getElementById('selectBestBtn').addEventListener('click', ()=> {
-          if (!best) { showToast('ఎక్కడా సరైన మోడల్ లేదు.'); return; }
-          openBuyModal(best.card.getAttribute('data-key'), best.totalPrice || best.card.getAttribute('data-price'));
+      // show new/old from result
+      $('showNewBtn').addEventListener('click', ()=> showModels('new'));
+      $('showOldBtn').addEventListener('click', ()=> showModels('old'));
+
+      // tabs in models area
+      $('tabNew').addEventListener('click', ()=> showModels('new'));
+      $('tabOld').addEventListener('click', ()=> showModels('old'));
+      $('backToCalcBtn').addEventListener('click', ()=> {
+        $('modelsArea').classList.add('hidden');
+        document.querySelector('main').scrollIntoView({behavior:'smooth'});
+      });
+
+      // details / buy delegation
+      qsa('#modelsGrid').forEach(grid => {
+        grid.addEventListener('click', (ev) => {
+          const btn = ev.target.closest('button');
+          if (!btn) return;
+          const article = btn.closest('article');
+          if (btn.classList.contains('detailsBtn')) {
+            openDetailModal(article);
+          } else if (btn.classList.contains('buyBtn')) {
+            openPurchaseModal(article.getAttribute('data-key'), article.getAttribute('data-price'));
+          }
         });
-      }
+      });
 
+      // modal close handlers
+      $('closeDetail').addEventListener('click', ()=> $('detailsModal').style.display='none');
+      $('detailClose').addEventListener('click', ()=> $('detailsModal').style.display='none');
+      $('detailBuy').addEventListener('click', ()=> {
+        // open purchase for model shown
+        const k = $('detailTitle').getAttribute('data-key');
+        const p = $('detailTitle').getAttribute('data-price');
+        $('detailsModal').style.display='none'; openPurchaseModal(k,p);
+      });
+
+      $('closePurchase').addEventListener('click', ()=> $('purchaseModal').style.display='none');
+      $('cancelPurchaseBtn').addEventListener('click', ()=> $('purchaseModal').style.display='none');
+
+      // purchase submit
+      $('purchaseForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = $('buyerName').value.trim(); const phone = $('buyerPhone').value.trim();
+        if (!name || !phone) { showToast((lang==='te')?'దయచేసి పేరు మరియు ఫోన్ ఇవ్వండి.':'Please enter name and phone'); return; }
+        // put prefill into hidden element for later handling
+        const model = $('purchaseModelKey').value; const price = $('purchasePrice').value;
+        const card = qsa(`#modelsGrid article[data-key="${model}"]`)[0];
+        const modelName = card ? (card.querySelector('.model-name').textContent) : model;
+        const en = `Purchase request: ${modelName} (${price? '₹'+price : ''}). Buyer: ${name}, Phone: ${phone}.`;
+        const te = `కొనుగోలు అభ్యర్థన: ${modelName} (${price? '₹'+price : ''}). పేరు: ${name}, ఫోన్: ${phone}.`;
+        // For demo we store in window._lastPurchase
+        window._lastPurchase = { en, te, model, price, name, phone, place: $('buyerPlace').value.trim() || '-' };
+        $('purchaseModal').style.display='none';
+        showToast((lang==='te')? 'మీ అభ్యర్థన అందుకుంది — మేము సంప్రదిస్తాము.' : 'Request received — we will contact you.');
+      });
+
+      // initial: hide modelsArea
+      $('modelsArea').classList.add('hidden');
+
+      // helper: when opening models, apply highlight for recommended model from last calculation
       function showModels(type) {
-        calculatorArea.classList.add('hidden');
-        modelsArea.classList.remove('hidden');
-        getModelCards().forEach(c=>{
-          if (c.getAttribute('data-type') === type) c.style.display = '';
-          else c.style.display = 'none';
+        // show models area, filter by data-type
+        $('modelsArea').classList.remove('hidden');
+        qsa('#modelsGrid article').forEach(a => {
+          if (a.getAttribute('data-type') === type) a.style.display = '';
+          else a.style.display = 'none';
         });
-        showNewBtn.classList.toggle('primary', type === 'new');
-        showOldBtn.classList.toggle('primary', type === 'old');
-      }
-      function backToCalculator() {
-        modelsArea.classList.add('hidden');
-        calculatorArea.classList.remove('hidden');
+        // set tab highlight
+        $('tabNew').classList.toggle('primary', type==='new');
+        $('tabOld').classList.toggle('primary', type==='old');
+
+        // if last calculation exists, highlight cheapest total-price model among visible ones
+        const last = window._lastCalculation;
+        if (last && last.devices) {
+          // find first visible in last.devices sorted by totalPrice
+          const visible = last.devices.find(d => d.card.getAttribute('data-type') === type);
+          if (visible) {
+            // highlight that card
+            qsa('#modelsGrid article').forEach(c => { c.classList.remove('recommended'); const rb=c.querySelector('.recommend-badge'); if(rb) rb.remove(); });
+            const card = visible.card;
+            card.classList.add('recommended');
+            const badge = document.createElement('div'); badge.className='recommend-badge';
+            badge.textContent = `${visible.devicesReq} ×`;
+            card.appendChild(badge);
+            setTimeout(()=> card.scrollIntoView({behavior:'smooth', block:'center'}),120);
+          }
+        } else {
+          // nothing to highlight
+          qsa('#modelsGrid article').forEach(c => { c.classList.remove('recommended'); const rb=c.querySelector('.recommend-badge'); if(rb) rb.remove(); });
+        }
       }
 
-      function openDetailsModal(card) {
-        const name = card.querySelector('.model-name') ? card.querySelector('.model-name').textContent : card.getAttribute('data-key');
-        const flow = card.getAttribute('data-flow');
-        const power = card.getAttribute('data-power');
-        const fans = card.getAttribute('data-fans');
-        detailsTitle.textContent = name;
-        detailsSub.textContent = `ఫ్లో: ${flow} L/h · శక్తి: ${power} W · ఫ్యాన్స్: ${fans}`;
-        // bilingual description (Telugu first, English below)
-        const teDesc = card.querySelector('.model-desc') ? card.querySelector('.model-desc').textContent : '';
-        const enDesc = `Model: ${name}\nFlow: ${flow} L/h · Power: ${power} W · Fans: ${fans}.`;
-        detailsBody.innerHTML = `<div style="font-weight:700;margin-bottom:6px">వివరాలు (తెలుగు)</div><div style="margin-bottom:10px;color:#334155">${escapeHtml(teDesc)}</div><div style="font-weight:700;margin-bottom:6px">Details (English)</div><pre style="white-space:pre-wrap;color:#334155">${escapeHtml(enDesc)}</pre>`;
-        detailsModalBackdrop.style.display = 'flex';
-
-        // set detailsBuy to open purchase modal for this card
-        detailsBuy.onclick = function(){ openBuyModal(card.getAttribute('data-key'), card.getAttribute('data-price')); detailsModalBackdrop.style.display='none'; };
+      // detail modal opener
+      function openDetailModal(article) {
+        const name = (article.querySelector('.model-name')||{}).textContent || article.getAttribute('data-key');
+        const flow = article.getAttribute('data-flow') || '-';
+        const price = article.getAttribute('data-price') || '-';
+        const fans = (article.querySelector('.fans-pill')||{}).textContent || '';
+        $('detailTitle').textContent = name; $('detailTitle').setAttribute('data-key', article.getAttribute('data-key')); $('detailTitle').setAttribute('data-price', price);
+        $('detailSub').textContent = `${fans} • ${flow} L/h • ₹ ${price}`;
+        const teDesc = article.querySelector('.model-desc') ? article.querySelector('.model-desc').getAttribute('data-desc-te') : '';
+        const enDesc = article.querySelector('.model-desc') ? article.querySelector('.model-desc').getAttribute('data-desc-en') : '';
+        $('detailBody').innerHTML = `<div style="font-weight:700">${(lang==='te')? 'వివరణ (తెలుగు)' : 'Description'}</div><div style="margin-top:6px;color:#334155">${(lang==='te')? (teDesc || enDesc) : (enDesc || teDesc)}</div>`;
+        $('detailsModal').style.display='flex';
       }
 
-      function openBuyModal(key, price) {
-        modalModelKey.value = key;
-        modalPrice.value = price || '';
-        modalOverlay.style.display = 'flex';
+      function openPurchaseModal(key, price) {
+        $('purchaseModelKey').value = key; $('purchasePrice').value = price || '';
+        $('purchaseModal').style.display = 'flex';
       }
-      function closeBuyModal() { modalOverlay.style.display = 'none'; }
 
-      // safe HTML escape for descriptions
+      // Provide escapeHtml helper
       function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
-      // events
-      calcBtn.addEventListener('click', ()=> {
-        const acres = parseFloat(acreInput.value) || 0;
-        const depthFt = parseFloat(depthFtInput.value) || 0;
-        if (acres <= 0 || depthFt <= 0) {
-          showToast('దయచేసి సరైన విలువలు ఇవ్వండి (ఎకరాలు మరియు ఫుట్స్).');
-          return;
-        }
-        const res = estimateFromAcresFeet(acres, depthFt);
-        showResultTelugu(res);
-      });
+      // initial labels update for model buttons
+      updateModelI18n();
 
-      resetBtn.addEventListener('click', ()=> {
-        acreInput.value=''; depthFtInput.value=''; resultPanel.classList.add('hidden'); resultPanel.innerHTML=''; clearHighlights(); backToCalculator();
-      });
+    }); // DOMContentLoaded
 
-      showNewBtn.addEventListener('click', ()=> showModels('new'));
-      showOldBtn.addEventListener('click', ()=> showModels('old'));
-      backToCalcBtn.addEventListener('click', ()=> backToCalculator());
-
-      // details & buy delegation
-      document.getElementById('modelsGrid').addEventListener('click', (e)=>{
-        const btn = e.target.closest('button');
-        if (!btn) return;
-        if (btn.classList.contains('detailsBtn')) {
-          const card = btn.closest('article');
-          openDetailsModal(card);
-          return;
-        }
-        if (btn.classList.contains('buyBtn')) {
-          const card = btn.closest('article');
-          openBuyModal(card.getAttribute('data-key'), card.getAttribute('data-price'));
-          return;
-        }
-      });
-
-      // details modal close
-      closeDetails.addEventListener('click', ()=> detailsModalBackdrop.style.display='none');
-      detailsClose.addEventListener('click', ()=> detailsModalBackdrop.style.display='none');
-
-      // purchase modal handlers
-      closeModal.addEventListener('click', closeBuyModal);
-      cancelPurchase.addEventListener('click', closeBuyModal);
-      purchaseForm.addEventListener('submit', (e)=> {
-        e.preventDefault();
-        const name = document.getElementById('buyerName').value.trim();
-        const phone = document.getElementById('buyerPhone').value.trim();
-        const place = document.getElementById('buyerPlace').value.trim();
-        if (!name || !phone) {
-          showToast('దయచేసి పేరు మరియు ఫోన్ నంబర్ ఇవ్వండి.');
-          return;
-        }
-        const key = modalModelKey.value;
-        const price = modalPrice.value;
-        const card = getModelCards().find(c => c.getAttribute('data-key') === key);
-        const modelName = card ? (card.querySelector('.model-name').textContent) : key;
-        const en = `Purchase request: ${modelName} (${price ? '₹'+price : ''}). Buyer: ${name}, Phone: ${phone}, Place: ${place || '-'}.`;
-        const te = `కొనుగోలు అభ్యర్థన: ${modelName} (${price ? '₹'+price : ''}). కొనుగోలు దారుడు: ${name}, ఫోన్: ${phone}, స్థలం: ${place || '-'}.`;
-        document.getElementById('chatPrefill').textContent = en + "\n" + te;
-        closeBuyModal();
-        showToast('మీ అభ్యర్థన స్వీకరించబడింది — మేము త్వరలో సంప్రదిస్తాము.');
-      });
-
-      // initial state: only calculator visible
-      // everything else already hidden
-    })();
   </script>
 </body>
 </html>
