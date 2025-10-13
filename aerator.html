@@ -17,11 +17,23 @@
     .navbtn { border:1px solid rgb(226,232,240); padding:.55rem .9rem; border-radius:.75rem; background:#fff; text-align:center; font-weight:700; font-size:1rem; white-space:nowrap; }
     .dark .navbtn { background:#0b1220; border-color:#1f2937; color:#fff; }
     .shadow-soft { box-shadow: 0 12px 28px rgba(2,6,23,.06); }
+
     .tab { padding: .45rem .9rem; border-radius: 999px; cursor: pointer; border: 1px solid transparent; }
     .tab.active { background: #0b6b6b; color: #fff; border-color: #0b6b6b; }
+
+    /* cards */
     .card-img { height:120px; width:100%; object-fit:cover; border-top-left-radius:0.5rem; border-top-right-radius:0.5rem; }
     .card { border-radius:.75rem; overflow:hidden; }
     .card-body { padding:1rem; }
+
+    /* highlighted recommended model */
+    .recommended { outline: 3px solid rgba(16,185,129,0.18); box-shadow: 0 6px 24px rgba(16,185,129,0.08); position: relative; }
+    .recommend-badge { position:absolute; right:10px; top:10px; background:#10b981; color:white; padding:6px 10px; border-radius:999px; font-weight:700; font-size:13px; }
+
+    /* fans badge */
+    .fans-badge { display:inline-block; background:#ecfeff; color:#065f46; border-radius:999px; padding:.25rem .5rem; font-weight:700; margin-right:.25rem; box-shadow: inset 0 -1px 0 rgba(0,0,0,0.03); }
+
+    /* chat */
     .chat-btn { position: fixed; right: 16px; bottom: 78px; width: 56px; height: 56px; border-radius: 50%; background: #0b6b6b; color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 18px rgba(11,107,107,0.18); border: none; z-index: 2000; font-size: 20px; }
     .chat-panel { position: fixed; right: 14px; bottom: 148px; width: 92%; max-width: 360px; height: 56vh; max-height: 520px; background: #fff; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); display: none; flex-direction: column; overflow: hidden; z-index: 2000; }
     .chat-panel.open { display: flex; }
@@ -31,8 +43,11 @@
     .msg.bot { align-self:flex-start; background:#fff; color:#111; border:1px solid #eee; }
     .reply-en { font-weight:700; margin-bottom:4px; }
     .reply-te { color:#475569; font-size:13px; opacity:0.95; }
+
+    /* modal */
     .modal-overlay { position: fixed; inset:0; background: rgba(0,0,0,0.35); display:none; align-items:center; justify-content:center; z-index:3000; }
     .modal-overlay.open { display:flex; }
+
     @media(max-width:420px){ .chat-panel{ right:8px; left:8px; max-width:none } .card-img{height:110px} }
   </style>
 </head>
@@ -68,173 +83,182 @@
   </header>
 
   <main class="max-w-7xl mx-auto p-4 space-y-4 pb-40">
-    <!-- Hero -->
+
+    <!-- Hero + tabs -->
     <section class="rounded-2xl p-4 bg-white dark:bg-slate-900 shadow-soft border">
       <div class="flex items-start justify-between gap-4">
         <div>
           <h2 class="text-lg font-semibold flex items-center gap-2">⚙️ <span data-i18n="m_aerator">Aerator</span></h2>
-          <p class="mt-2 text-slate-600 dark:text-slate-300" data-i18n="aerator_desc">Aerators help maintain oxygen levels in ponds — models, power and maintenance guidance shown below.</p>
+          <p id="heroDesc" class="mt-2 text-slate-600 dark:text-slate-300" data-i18n="aerator_desc">Aerators help maintain oxygen levels in ponds — models, power and maintenance guidance shown below.</p>
         </div>
 
         <div class="flex items-center gap-2">
-          <div id="tabNew" class="tab active" role="button" aria-pressed="true" data-sub="new" data-i18n="tab_new">New</div>
+          <div id="tabNew" class="tab" role="button" aria-pressed="false" data-sub="new" data-i18n="tab_new">New</div>
           <div id="tabOld" class="tab" role="button" aria-pressed="false" data-sub="old" data-i18n="tab_old">Old</div>
         </div>
       </div>
     </section>
 
-    <!-- Main: calculator + models -->
-    <section class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <!-- Calculator -->
-      <div class="rounded-xl p-4 bg-slate-50 dark:bg-slate-800/40 border">
-        <h3 class="font-semibold mb-2" data-i18n="calc_title">Aerator Calculator</h3>
+    <!-- Single column: left area used for calculator OR models -->
+    <section class="rounded-xl p-0">
+      <div id="mainArea" class="grid grid-cols-1 lg:grid-cols-1 gap-4">
+        <!-- Calculator container (visible initially) -->
+        <div id="calcContainer" class="rounded-xl p-4 bg-slate-50 dark:bg-slate-800/40 border max-w-3xl">
+          <h3 class="font-semibold mb-2" data-i18n="calc_title">Aerator Calculator</h3>
 
-        <label class="text-xs font-medium" for="pondArea" data-i18n="calc_area_label">Pond area (acres)</label>
-        <input id="pondArea" type="number" min="0.01" step="0.01" placeholder="eg. 0.5" class="mt-1 w-full rounded-md border px-3 py-2 dark:bg-slate-900" />
+          <label class="text-xs font-medium" for="pondArea" data-i18n="calc_area_label">Pond area (acres)</label>
+          <input id="pondArea" type="number" min="0.01" step="0.01" placeholder="eg. 0.5" class="mt-1 w-full rounded-md border px-3 py-2 dark:bg-slate-900" />
 
-        <label class="text-xs font-medium mt-3 block" for="pondDepthFt" data-i18n="calc_depth_label_ft">Average depth (ft)</label>
-        <input id="pondDepthFt" type="number" min="0.1" step="0.1" placeholder="eg. 4" class="mt-1 w-full rounded-md border px-3 py-2 dark:bg-slate-900" />
+          <label class="text-xs font-medium mt-3 block" for="pondDepthFt" data-i18n="calc_depth_label_ft">Average depth (ft)</label>
+          <input id="pondDepthFt" type="number" min="0.1" step="0.1" placeholder="eg. 4" class="mt-1 w-full rounded-md border px-3 py-2 dark:bg-slate-900" />
 
-        <div class="mt-3 flex items-center gap-2">
-          <button id="calcBtn" class="navbtn flex-1" data-i18n="calc_btn">Calculate</button>
-          <button id="calcReset" class="navbtn bg-white/60" data-i18n="calc_reset">Reset</button>
+          <div class="mt-3 flex items-center gap-2">
+            <button id="calcBtn" class="navbtn" data-i18n="calc_btn">Calculate</button>
+            <button id="calcReset" class="navbtn bg-white/60" data-i18n="calc_reset">Reset</button>
+          </div>
+
+          <div id="calcResult" class="mt-3 text-sm text-slate-700 dark:text-slate-200 hidden" aria-live="polite"></div>
+          <p class="mt-3 text-xs text-slate-500" data-i18n="calc_note">Note: This is an estimate; consult product specs for exact selection.</p>
         </div>
 
-        <div id="calcResult" class="mt-3 text-sm text-slate-700 dark:text-slate-200 hidden" aria-live="polite"></div>
-        <p class="mt-3 text-xs text-slate-500" data-i18n="calc_note">Note: This is an estimate; consult product specs for exact selection.</p>
-      </div>
-
-      <!-- Models grid -->
-      <div id="modelsArea" class="space-y-4">
-        <div id="modelsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <!-- Each card has data-name-en & data-name-te for bilingual title rendering -->
-          <article class="card bg-white dark:bg-slate-900 border" data-sub="new" data-name-en="Floating 2Fans" data-name-te="తేలే 2 ఫ్యాన్స్" data-model-key="float-2" data-price="12000" data-flow="8000" data-power="150" data-fans="2">
-            <img class="card-img" src="assets/float-2.jpg" alt="Floating 2 Fans" onerror="this.style.opacity=.6" />
-            <div class="card-body">
-              <div class="flex items-start justify-between">
-                <div>
-                  <div class="font-semibold model-title"></div>
-                  <div class="text-xs text-slate-500 mt-1 model-meta" data-i18n="model_flow">Flow: 8,000 L/h · Power: 150 W</div>
-                </div>
-                <div class="text-sm font-bold">₹ 12,000</div>
-              </div>
-              <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 model-desc" data-i18n="model_desc_float2">Surface floating type — economical for small ponds; 2 fans provide gentle circulation.</p>
-
-              <div class="mt-3 flex gap-2">
-                <button class="navbtn btn-details flex-1" data-specs='{"flow":"8000 L/h","power":"150W","fans":2}'>Details</button>
-                <button class="navbtn bg-emerald-50 text-emerald-800 btn-buy" data-model-key="float-2" data-price="12000">Buy</button>
-              </div>
+        <!-- Models container (hidden initially) - will be injected into the same mainArea when tabs clicked -->
+        <div id="modelsContainer" class="hidden">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-semibold" id="modelsHeading">Aerators</h3>
+            <div class="flex items-center gap-2">
+              <button id="backToCalc" class="navbtn bg-white/60">Back to calculator</button>
             </div>
-          </article>
+          </div>
 
-          <article class="card bg-white dark:bg-slate-900 border" data-sub="new" data-name-en="Floating 4Fans" data-name-te="తేలే 4 ఫ్యాన్స్" data-model-key="float-4" data-price="22000" data-flow="16000" data-power="300" data-fans="4">
-            <img class="card-img" src="assets/float-4.jpg" alt="Floating 4 Fans" onerror="this.style.opacity=.6" />
-            <div class="card-body">
-              <div class="flex items-start justify-between">
-                <div>
-                  <div class="font-semibold model-title"></div>
-                  <div class="text-xs text-slate-500 mt-1 model-meta" data-i18n="model_flow">Flow: 16,000 L/h · Power: 300 W</div>
+          <div id="modelsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <!-- Cards (data-name-en/data-name-te used for i18n) -->
+            <article class="card bg-white dark:bg-slate-900 border" data-sub="new" data-name-en="Floating 2Fans" data-name-te="తేలే 2 ఫ్యాన్స్" data-model-key="float-2" data-price="12000" data-flow="8000" data-power="150" data-fans="2">
+              <img class="card-img" src="assets/float-2.jpg" alt="Floating 2 Fans" onerror="this.style.opacity=.6" />
+              <div class="card-body">
+                <div class="flex items-start justify-between">
+                  <div>
+                    <div class="inline-block fans-badge">2</div>
+                    <div class="font-semibold model-title">Floating — 2 Fans</div>
+                    <div class="text-xs text-slate-500 mt-1 model-meta">Flow: 8,000 L/h · Power: 150 W</div>
+                  </div>
+                  <div class="text-sm font-bold">₹ 12,000</div>
                 </div>
-                <div class="text-sm font-bold">₹ 22,000</div>
-              </div>
-              <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 model-desc" data-i18n="model_desc_float4">Best for medium ponds — stronger surface aeration and mixing.</p>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 model-desc" data-i18n="model_desc_float2">Surface floating type — economical for small ponds; 2 fans provide gentle circulation.</p>
 
-              <div class="mt-3 flex gap-2">
-                <button class="navbtn btn-details flex-1" data-specs='{"flow":"16000 L/h","power":"300W","fans":4}'>Details</button>
-                <button class="navbtn bg-emerald-50 text-emerald-800 btn-buy" data-model-key="float-4" data-price="22000">Buy</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="card bg-white dark:bg-slate-900 border" data-sub="new" data-name-en="Floating 6Fans" data-name-te="తేలే 6 ఫ్యాన్స్" data-model-key="float-6" data-price="32000" data-flow="24000" data-power="450" data-fans="6">
-            <img class="card-img" src="assets/float-6.jpg" alt="Floating 6 Fans" onerror="this.style.opacity=.6" />
-            <div class="card-body">
-              <div class="flex items-start justify-between">
-                <div>
-                  <div class="font-semibold model-title"></div>
-                  <div class="text-xs text-slate-500 mt-1 model-meta" data-i18n="model_flow">Flow: 24,000 L/h · Power: 450 W</div>
+                <div class="mt-3 flex gap-2">
+                  <button class="navbtn btn-details flex-1" data-specs='{"flow":"8000 L/h","power":"150W","fans":2}'>Details</button>
+                  <button class="navbtn bg-emerald-50 text-emerald-800 btn-buy" data-model-key="float-2" data-price="12000">Buy</button>
                 </div>
-                <div class="text-sm font-bold">₹ 32,000</div>
               </div>
-              <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 model-desc" data-i18n="model_desc_float6">For larger ponds — high circulation and oxygenation.</p>
+            </article>
 
-              <div class="mt-3 flex gap-2">
-                <button class="navbtn btn-details flex-1" data-specs='{"flow":"24000 L/h","power":"450W","fans":6}'>Details</button>
-                <button class="navbtn bg-emerald-50 text-emerald-800 btn-buy" data-model-key="float-6" data-price="32000">Buy</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="card bg-white dark:bg-slate-900 border" data-sub="new" data-name-en="Floating 8Fans" data-name-te="తేలే 8 ఫ్యాన్స్" data-model-key="float-8" data-price="42000" data-flow="32000" data-power="600" data-fans="8">
-            <img class="card-img" src="assets/float-8.jpg" alt="Floating 8 Fans" onerror="this.style.opacity=.6" />
-            <div class="card-body">
-              <div class="flex items-start justify-between">
-                <div>
-                  <div class="font-semibold model-title"></div>
-                  <div class="text-xs text-slate-500 mt-1 model-meta" data-i18n="model_flow">Flow: 32,000 L/h · Power: 600 W</div>
+            <article class="card bg-white dark:bg-slate-900 border" data-sub="new" data-name-en="Floating 4Fans" data-name-te="తేలే 4 ఫ్యాన్స్" data-model-key="float-4" data-price="22000" data-flow="16000" data-power="300" data-fans="4">
+              <img class="card-img" src="assets/float-4.jpg" alt="Floating 4 Fans" onerror="this.style.opacity=.6" />
+              <div class="card-body">
+                <div class="flex items-start justify-between">
+                  <div>
+                    <div class="inline-block fans-badge">4</div>
+                    <div class="font-semibold model-title">Floating — 4 Fans</div>
+                    <div class="text-xs text-slate-500 mt-1 model-meta">Flow: 16,000 L/h · Power: 300 W</div>
+                  </div>
+                  <div class="text-sm font-bold">₹ 22,000</div>
                 </div>
-                <div class="text-sm font-bold">₹ 42,000</div>
-              </div>
-              <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 model-desc" data-i18n="model_desc_float8">Commercial ponds — maximum surface aeration from single unit.</p>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 model-desc" data-i18n="model_desc_float4">Best for medium ponds — stronger surface aeration and mixing.</p>
 
-              <div class="mt-3 flex gap-2">
-                <button class="navbtn btn-details flex-1" data-specs='{"flow":"32000 L/h","power":"600W","fans":8}'>Details</button>
-                <button class="navbtn bg-emerald-50 text-emerald-800 btn-buy" data-model-key="float-8" data-price="42000">Buy</button>
-              </div>
-            </div>
-          </article>
-
-          <!-- Old / used -->
-          <article class="card bg-white dark:bg-slate-900 border" data-sub="old" data-name-en="Used 2Fans" data-name-te="రెండవ చేతి 2 ఫ్యాన్స్" data-model-key="used-2" data-price="7500" data-flow="7000" data-power="140" data-fans="2" style="display:none;">
-            <img class="card-img" src="assets/used-2.jpg" alt="Used 2 Fans" onerror="this.style.opacity=.6" />
-            <div class="card-body">
-              <div class="flex items-start justify-between">
-                <div>
-                  <div class="font-semibold model-title"></div>
-                  <div class="text-xs text-slate-500 mt-1 model-meta" data-i18n="model_flow">Flow: 7,000 L/h · Power: 140 W</div>
+                <div class="mt-3 flex gap-2">
+                  <button class="navbtn btn-details flex-1" data-specs='{"flow":"16000 L/h","power":"300W","fans":4}'>Details</button>
+                  <button class="navbtn bg-emerald-50 text-emerald-800 btn-buy" data-model-key="float-4" data-price="22000">Buy</button>
                 </div>
-                <div class="text-sm font-bold">₹ 7,500</div>
               </div>
-              <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 model-desc" data-i18n="model_desc_used2">Second-hand, checked; warranty limited — economical option.</p>
+            </article>
 
-              <div class="mt-3 flex gap-2">
-                <button class="navbtn btn-details flex-1" data-specs='{"flow":"7000 L/h","power":"140W","fans":2}'>Details</button>
-                <button class="navbtn bg-amber-50 text-amber-800 btn-buy" data-model-key="used-2" data-price="7500">Buy</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="card bg-white dark:bg-slate-900 border" data-sub="old" data-name-en="Used 4Fans" data-name-te="రెండవ చేతి 4 ఫ్యాన్స్" data-model-key="used-4" data-price="13500" data-flow="14000" data-power="280" data-fans="4" style="display:none;">
-            <img class="card-img" src="assets/used-4.jpg" alt="Used 4 Fans" onerror="this.style.opacity=.6" />
-            <div class="card-body">
-              <div class="flex items-start justify-between">
-                <div>
-                  <div class="font-semibold model-title"></div>
-                  <div class="text-xs text-slate-500 mt-1 model-meta" data-i18n="model_flow">Flow: 14,000 L/h · Power: 280 W</div>
+            <article class="card bg-white dark:bg-slate-900 border" data-sub="new" data-name-en="Floating 6Fans" data-name-te="తేలే 6 ఫ్యాన్స్" data-model-key="float-6" data-price="32000" data-flow="24000" data-power="450" data-fans="6">
+              <img class="card-img" src="assets/float-6.jpg" alt="Floating 6 Fans" onerror="this.style.opacity=.6" />
+              <div class="card-body">
+                <div class="flex items-start justify-between">
+                  <div>
+                    <div class="inline-block fans-badge">6</div>
+                    <div class="font-semibold model-title">Floating — 6 Fans</div>
+                    <div class="text-xs text-slate-500 mt-1 model-meta">Flow: 24,000 L/h · Power: 450 W</div>
+                  </div>
+                  <div class="text-sm font-bold">₹ 32,000</div>
                 </div>
-                <div class="text-sm font-bold">₹ 13,500</div>
-              </div>
-              <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 model-desc" data-i18n="model_desc_used4">Checked & serviced — good for medium ponds on budget.</p>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 model-desc" data-i18n="model_desc_float6">For larger ponds — high circulation and oxygenation.</p>
 
-              <div class="mt-3 flex gap-2">
-                <button class="navbtn btn-details flex-1" data-specs='{"flow":"14000 L/h","power":"280W","fans":4}'>Details</button>
-                <button class="navbtn bg-amber-50 text-amber-800 btn-buy" data-model-key="used-4" data-price="13500">Buy</button>
+                <div class="mt-3 flex gap-2">
+                  <button class="navbtn btn-details flex-1" data-specs='{"flow":"24000 L/h","power":"450W","fans":6}'>Details</button>
+                  <button class="navbtn bg-emerald-50 text-emerald-800 btn-buy" data-model-key="float-6" data-price="32000">Buy</button>
+                </div>
               </div>
-            </div>
-          </article>
+            </article>
 
+            <article class="card bg-white dark:bg-slate-900 border" data-sub="new" data-name-en="Floating 8Fans" data-name-te="తేలే 8 ఫ్యాన్స్" data-model-key="float-8" data-price="42000" data-flow="32000" data-power="600" data-fans="8">
+              <img class="card-img" src="assets/float-8.jpg" alt="Floating 8 Fans" onerror="this.style.opacity=.6" />
+              <div class="card-body">
+                <div class="flex items-start justify-between">
+                  <div>
+                    <div class="inline-block fans-badge">8</div>
+                    <div class="font-semibold model-title">Floating — 8 Fans</div>
+                    <div class="text-xs text-slate-500 mt-1 model-meta">Flow: 32,000 L/h · Power: 600 W</div>
+                  </div>
+                  <div class="text-sm font-bold">₹ 42,000</div>
+                </div>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 model-desc" data-i18n="model_desc_float8">Commercial ponds — maximum surface aeration from single unit.</p>
+
+                <div class="mt-3 flex gap-2">
+                  <button class="navbtn btn-details flex-1" data-specs='{"flow":"32000 L/h","power":"600W","fans":8}'>Details</button>
+                  <button class="navbtn bg-emerald-50 text-emerald-800 btn-buy" data-model-key="float-8" data-price="42000">Buy</button>
+                </div>
+              </div>
+            </article>
+
+            <!-- old items (kept but hidden until old tab) -->
+            <article class="card bg-white dark:bg-slate-900 border" data-sub="old" data-name-en="Used 2Fans" data-name-te="రెండవ చేతి 2 ఫ్యాన్స్" data-model-key="used-2" data-price="7500" data-flow="7000" data-power="140" data-fans="2" style="display:none;">
+              <img class="card-img" src="assets/used-2.jpg" alt="Used 2 Fans" onerror="this.style.opacity=.6" />
+              <div class="card-body">
+                <div class="flex items-start justify-between">
+                  <div>
+                    <div class="inline-block fans-badge">2</div>
+                    <div class="font-semibold model-title">Used — 2 Fans</div>
+                    <div class="text-xs text-slate-500 mt-1 model-meta">Flow: 7,000 L/h · Power: 140 W</div>
+                  </div>
+                  <div class="text-sm font-bold">₹ 7,500</div>
+                </div>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 model-desc" data-i18n="model_desc_used2">Second-hand, checked; warranty limited — economical option.</p>
+
+                <div class="mt-3 flex gap-2">
+                  <button class="navbtn btn-details flex-1" data-specs='{"flow":"7000 L/h","power":"140W","fans":2}'>Details</button>
+                  <button class="navbtn bg-amber-50 text-amber-800 btn-buy" data-model-key="used-2" data-price="7500">Buy</button>
+                </div>
+              </div>
+            </article>
+
+            <article class="card bg-white dark:bg-slate-900 border" data-sub="old" data-name-en="Used 4Fans" data-name-te="రెండవ చేతి 4 ఫ్యాన్స్" data-model-key="used-4" data-price="13500" data-flow="14000" data-power="280" data-fans="4" style="display:none;">
+              <img class="card-img" src="assets/used-4.jpg" alt="Used 4 Fans" onerror="this.style.opacity=.6" />
+              <div class="card-body">
+                <div class="flex items-start justify-between">
+                  <div>
+                    <div class="inline-block fans-badge">4</div>
+                    <div class="font-semibold model-title">Used — 4 Fans</div>
+                    <div class="text-xs text-slate-500 mt-1 model-meta">Flow: 14,000 L/h · Power: 280 W</div>
+                  </div>
+                  <div class="text-sm font-bold">₹ 13,500</div>
+                </div>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 model-desc" data-i18n="model_desc_used4">Checked & serviced — good for medium ponds on budget.</p>
+
+                <div class="mt-3 flex gap-2">
+                  <button class="navbtn btn-details flex-1" data-specs='{"flow":"14000 L/h","power":"280W","fans":4}'>Details</button>
+                  <button class="navbtn bg-amber-50 text-amber-800 btn-buy" data-model-key="used-4" data-price="13500">Buy</button>
+                </div>
+              </div>
+            </article>
+
+          </div>
         </div>
 
-        <!-- FAQs -->
-        <div class="rounded-xl p-3 bg-slate-50 dark:bg-slate-800/40 border">
-          <div class="font-semibold" data-i18n="faq_title">FAQs</div>
-          <ul class="mt-2 text-sm text-slate-600 dark:text-slate-300 space-y-1">
-            <li><strong data-i18n="faq_q1">How often to maintain?</strong> <span data-i18n="faq_a1">Monthly check & cleaning recommended.</span></li>
-            <li><strong data-i18n="faq_q2">Power consumption?</strong> <span data-i18n="faq_a2">See model specs — typical range 140W–600W.</span></li>
-          </ul>
-        </div>
       </div>
     </section>
+
   </main>
 
   <!-- Bottom nav -->
@@ -247,7 +271,7 @@
   <!-- Chat -->
   <button class="chat-btn" id="openChat" aria-label="Open chat">💬</button>
   <div class="chat-panel" id="chatPanel" role="dialog" aria-label="Chat with Aqua A-Z">
-    <div class="chat-header">
+    <div class="chat-header flex items-center justify-between px-3 py-2 border-b">
       <div class="chat-title" id="chatTitle" data-i18n="chat_title">Help & Chat</div>
       <button id="closeChat" aria-label="Close chat" style="background:none;border:none;font-size:18px;padding:6px;cursor:pointer">✕</button>
     </div>
@@ -289,9 +313,9 @@
   </div>
 
   <script>
-    // ----------------------------
-    // i18n dictionary (English + Telugu)
-    // ----------------------------
+    /* -------------------------
+       i18n dictionary
+       ------------------------- */
     window.dict = window.dict || {};
     window.dict.en = {
       m_aerator:"Aerator", m_home:"Home", m_history:"History",
@@ -306,13 +330,11 @@
       model_desc_float8:"Commercial ponds — maximum surface aeration from single unit.",
       model_desc_used2:"Second-hand, checked; warranty limited — economical option.",
       model_desc_used4:"Checked & serviced — good for medium ponds on budget.",
-      faq_title:"FAQs", faq_q1:"How often to maintain?", faq_a1:"Monthly check & cleaning recommended.", faq_q2:"Power consumption?", faq_a2:"See model specs — typical range 140W–600W.",
+      faq_title:"FAQs", faq_q1:"How often to maintain?", faq_a1:"Monthly check & cleaning recommended.",
       chat_title:"Help & Chat", chat_greeting:"Hi! How can I help you today?", chat_placeholder:"Type a message...",
       chat_reply_default:"Sorry, I cannot perform that now; but I can help. Please give more details.",
       chat_reply_aerator:"What details about aerators do you need? Model, capacity, or services?",
-      chat_more_info:"Please type a more detailed message.",
-      lbl_name:"Name", lbl_phone:"Phone", lbl_place:"Village / City", purchase_btn:"Request Purchase", btn_cancel:"Cancel",
-      purchase_note:"We will contact you to confirm price and delivery. (Demo flow)", purchase_request_subject:"Purchase request"
+      lbl_name:"Name", lbl_phone:"Phone", lbl_place:"Village / City", purchase_btn:"Request Purchase", btn_cancel:"Cancel", purchase_note:"We will contact you to confirm price and delivery. (Demo flow)"
     };
     window.dict.te = {
       m_aerator:"ఎరేటర్", m_home:"హోమ్", m_history:"చరిత్ర",
@@ -327,21 +349,18 @@
       model_desc_float8:"వాణిజ్య చెరువులకు — ఒకే యూనిట్ నుండి గరిష్ట ఉపరితల ఏరేషన్.",
       model_desc_used2:"రెండవ చేతి, చెక్ చేసినది; వారంటీ పరిమితి — సరసమైన ఎంపిక.",
       model_desc_used4:"సర్వీస్ చేసినది — బడ్జెట్‌పై మధ్యమ చెరువులకు బాగుంది.",
-      faq_title:"ప్రశ్నల జవాబులు", faq_q1:"ఎన్ని సార్లు నిర్వహించాలి?", faq_a1:"మాసపర్యవేక్షణ & శుభ్రపరిచుకోవడం సిఫార్సు.", faq_q2:"శక్తి వినియోగం?", faq_a2:"మోడల్ స్పెక్స్ చూడండి — సగటు శ్రేణి 140W–600W.",
+      faq_title:"ప్రశ్నల జవాబులు", faq_q1:"ఎన్ని సార్లు నిర్వహించాలి?", faq_a1:"మాసపర్యవేక్షణ & శుభ్రపరిచుకోవడం సిఫార్సు.",
       chat_title:"సహాయం & చాట్", chat_greeting:"హాయ్! నేను ఈరోజు ఎలా సహాయం చేయగలను?", chat_placeholder:"మీ సందేశం రాయండి...",
       chat_reply_default:"క్షమించండి, నేను దాన్ని ఇప్పుడే చేయలేను; కానీ నేను సహాయపడగలను. దయచేసి మరిన్ని వివరాలు ఇవ్వండి.",
-      chat_reply_aerator:"ఎరేటర్ల గురించి మీరు ఏమి తెలుసుకోదలచుకుంటున్నారు? మోడల్, సామర్థ్యం లేదా సేవలు?",
-      chat_more_info:"దయచేసి మీ సందేశాన్ని వివరంగా టైప్ చేయండి.",
-      lbl_name:"పేరు", lbl_phone:"ఫోన్", lbl_place:"గ్రామం / పట్టణం", purchase_btn:"కొనుగోలు అభ్యర్థన", btn_cancel:"రద్దు చేయి",
-      purchase_note:"మేము ధర మరియు డెలివరీ నిర్ధారించడానికి మీను సంప్రదిస్తాము. (డెమో ఫ్లో)", purchase_request_subject:"కొనుగోలు అభ్యర్థన"
+      chat_reply_aerator:"ఎరేటర్ల గురించి మీరు ఏమి తెలుసుకోవాలని కోరుకుంటున్నారు? మోడల్, సామర్థ్యం లేదా సేవలు?",
+      lbl_name:"పేరు", lbl_phone:"ఫోన్", lbl_place:"గ్రామం / పట్టణం", purchase_btn:"కొనుగోలు అభ్యర్థన", btn_cancel:"రద్దు చేయి", purchase_note:"మేము ధర మరియు డెలివరీ నిర్ధారించడానికి మీను సంప్రదిస్తాము. (డెమో ఫ్లో)"
     };
 
-    // ----------------------------
-    // helpers
-    // ----------------------------
+    /* -------------------------
+       helpers & init
+       ------------------------- */
     const $id = id => document.getElementById(id);
-    const qsa = sel => Array.from(document.querySelectorAll(sel));
-
+    const qsa = s => Array.from(document.querySelectorAll(s));
     function applyI18n() {
       const lang = localStorage.getItem('lang') || 'te';
       document.documentElement.lang = lang;
@@ -355,56 +374,33 @@
       if ($id('pondDepthFt')) $id('pondDepthFt').placeholder = (lang === 'te' ? 'ఉదా. 4' : 'eg. 4');
       if ($id('chatInput')) $id('chatInput').placeholder = window.dict[lang].chat_placeholder || '';
 
-      // purchase modal labels (they use data-i18n above)
-      // model titles (dynamic)
+      // model titles / meta
       renderModelTitles();
     }
 
     function renderModelTitles() {
       const lang = localStorage.getItem('lang') || 'te';
-      qsa('#modelsGrid [data-name-en]').forEach(card => {
+      qsa('#modelsGrid article').forEach(card => {
         const titleEl = card.querySelector('.model-title');
-        if (!titleEl) return;
-        const nameEn = card.dataset.nameEn || card.getAttribute('data-name-en') || '';
-        const nameTe = card.dataset.nameTe || card.getAttribute('data-name-te') || '';
-        titleEl.textContent = (lang === 'te') ? (nameTe || nameEn) : (nameEn || nameTe);
-      });
+        const nameEn = card.getAttribute('data-name-en') || '';
+        const nameTe = card.getAttribute('data-name-te') || '';
+        if (titleEl) titleEl.textContent = (lang === 'te') ? (nameTe || nameEn) : (nameEn || nameTe);
 
-      // update model-meta flow/power tokens with i18n pattern if any
-      qsa('#modelsGrid [data-flow]').forEach(card => {
-        const meta = card.querySelector('.model-meta');
-        if (!meta) return;
-        const flow = card.getAttribute('data-flow') || '-';
-        const power = card.getAttribute('data-power') || '-';
-        const lang = localStorage.getItem('lang') || 'te';
-        const pattern = window.dict[lang].model_flow || 'Flow: {flow} · Power: {power}';
-        meta.textContent = pattern.replace('{flow}', flow).replace('{power}', power);
-      });
+        const metaEl = card.querySelector('.model-meta');
+        if (metaEl) {
+          const flow = card.getAttribute('data-flow') || '-';
+          const power = card.getAttribute('data-power') || '-';
+          const pat = window.dict[localStorage.getItem('lang')||'te'].model_flow || 'Flow: {flow} · Power: {power}';
+          metaEl.textContent = pat.replace('{flow}', flow).replace('{power}', power);
+        }
 
-      // descriptions already use data-i18n keys so applyI18n handled them
+        // update fans badge color in Telugu/English same
+        const fans = card.getAttribute('data-fans') || '';
+        const fb = card.querySelector('.fans-badge');
+        if (fb) fb.textContent = fans;
+      });
     }
 
-    // ----------------------------
-    // models metadata (for JS logic)
-    // ----------------------------
-    const MODELS_MAP = {};
-    qsa('#modelsGrid article').forEach(card => {
-      const key = card.getAttribute('data-model-key');
-      if (!key) return;
-      MODELS_MAP[key] = {
-        element: card,
-        name_en: card.getAttribute('data-name-en'),
-        name_te: card.getAttribute('data-name-te'),
-        price: card.getAttribute('data-price'),
-        flow: card.getAttribute('data-flow'),
-        power: card.getAttribute('data-power'),
-        fans: card.getAttribute('data-fans') || '-'
-      };
-    });
-
-    // ----------------------------
-    // calculator: acres + depth (ft)
-    // ----------------------------
     const ACRE_TO_M2 = 4046.85642;
     const FT_TO_M = 0.3048;
 
@@ -414,89 +410,97 @@
       const volume_m3 = area_m2 * depthM;
       const liters = volume_m3 * 1000;
       const needed_lph = Math.max(500, Math.round(liters * 0.10));
-      // simple best-match using existing models (choose cheapest total price assuming single-unit price)
+      // compute cheapest single-model option
       const recs = [];
       qsa('#modelsGrid [data-model-key]').forEach(card => {
         const key = card.getAttribute('data-model-key');
         const flow = parseFloat(card.getAttribute('data-flow') || 0);
-        const power = parseFloat(card.getAttribute('data-power') || 0);
         const price = parseFloat(card.getAttribute('data-price') || 0);
         if (!flow) return;
         const units = Math.ceil(needed_lph / flow);
-        recs.push({ key, units, model: { flow, power, price }, totalPrice: units * price, totalFlow: units * flow, totalPower: units * power });
+        recs.push({ key, units, flow, price, totalPrice: units * price, totalFlow: units * flow });
       });
       recs.sort((a,b) => a.totalPrice - b.totalPrice);
       const best = recs[0] || null;
       return { area_m2:+area_m2.toFixed(2), depth_m:+depthM.toFixed(2), volume_m3:+volume_m3.toFixed(2), liters:Math.round(liters), needed_lph, bestRecommendation:best, allRecommendations:recs };
     }
 
+    function clearRecommendationsHighlight() {
+      qsa('#modelsGrid [data-model-key]').forEach(card => {
+        card.classList.remove('recommended');
+        const badge = card.querySelector('.recommend-badge');
+        if (badge) badge.remove();
+      });
+    }
+
+    function highlightRecommendation(key, units) {
+      clearRecommendationsHighlight();
+      const card = qsa(`#modelsGrid [data-model-key="${key}"]`)[0];
+      if (!card) return;
+      card.classList.add('recommended');
+      const span = document.createElement('div');
+      span.className = 'recommend-badge';
+      span.textContent = `${units} ×`;
+      card.appendChild(span);
+      // scroll into view a bit
+      setTimeout(()=> card.scrollIntoView({behavior:'smooth', block:'center'}),100);
+    }
+
+    // show calculation result — language-specific (only one language displayed)
     function showCalcResult(obj) {
       const el = $id('calcResult');
       if (!el) return;
       const lang = localStorage.getItem('lang') || 'te';
       const best = obj.bestRecommendation;
-      let en='', te='';
-      if (best) {
-        // find readable model name
-        const card = qsa(`#modelsGrid [data-model-key="${best.key}"]`)[0];
-        const nameEn = card ? (card.dataset.nameEn || card.getAttribute('data-name-en')) : best.key;
-        const nameTe = card ? (card.dataset.nameTe || card.getAttribute('data-name-te')) : best.key;
-        en = `Estimated pond: ${obj.volume_m3} m³ (${obj.liters.toLocaleString()} L). Recommend ~${obj.needed_lph} L/h. Best: ${best.units} × ${nameEn} (total flow ${best.totalFlow} L/h).`;
-        te = `అంచనా చెరువు: ${obj.volume_m3} m³ (${obj.liters.toLocaleString()} L). సుమారు ${obj.needed_lph} L/h అవసరం. ఉత్తమ సూచన: ${best.units} × ${nameTe} (మొత్తం ఫ్లో ${best.totalFlow} L/h).`;
+      let msg='';
+      if (lang === 'te') {
+        if (best) {
+          const card = qsa(`#modelsGrid [data-model-key="${best.key}"]`)[0];
+          const nameTe = card ? (card.getAttribute('data-name-te') || best.key) : best.key;
+          msg = `అంచనా చెరువు: ${obj.volume_m3} m³ (${obj.liters.toLocaleString()} L). సుమారు ${obj.needed_lph} L/h అవసరం. ఉత్తమ సూచన: ${best.units} × ${nameTe} (మొత్తం ఫ్లో ${best.totalFlow} L/h).`;
+        } else {
+          msg = `అంచనా చెరువు: ${obj.volume_m3} m³ (${obj.liters.toLocaleString()} L). సుమారు ${obj.needed_lph} L/h అవసరం.`;
+        }
       } else {
-        en = `Estimated pond: ${obj.volume_m3} m³ (${obj.liters.toLocaleString()} L). Recommend ~${obj.needed_lph} L/h.`;
-        te = `అంచనా చెరువు: ${obj.volume_m3} m³ (${obj.liters.toLocaleString()} L). సుమారు ${obj.needed_lph} L/h అవసరం.`;
+        if (best) {
+          const card = qsa(`#modelsGrid [data-model-key="${best.key}"]`)[0];
+          const nameEn = card ? (card.getAttribute('data-name-en') || best.key) : best.key;
+          msg = `Estimated pond: ${obj.volume_m3} m³ (${obj.liters.toLocaleString()} L). Recommend ~${obj.needed_lph} L/h. Best: ${best.units} × ${nameEn} (total flow ${best.totalFlow} L/h).`;
+        } else {
+          msg = `Estimated pond: ${obj.volume_m3} m³ (${obj.liters.toLocaleString()} L). Recommend ~${obj.needed_lph} L/h.`;
+        }
       }
 
-      el.innerHTML = `<div class="font-medium">${en}</div><div class="text-sm text-slate-600 dark:text-slate-300 mt-1">${te}</div>`;
-      el.innerHTML += `<div class="mt-3 flex gap-2"><button class="navbtn" id="applyRecBtn" data-i18n="calc_apply_btn">Select & Request Quote</button><button class="navbtn bg-white/60" id="viewOptionsBtn" data-i18n="view_models">View Models</button></div>`;
+      el.textContent = msg;
       el.classList.remove('hidden');
-      applyI18n(); // to translate the new buttons
 
-      // wiring
-      setTimeout(() => {
-        $id('applyRecBtn').onclick = () => {
-          if (!obj.bestRecommendation) return;
-          const key = obj.bestRecommendation.key;
-          const card = qsa(`#modelsGrid [data-model-key="${key}"]`)[0];
-          if (!card) return;
-          const modelName = (localStorage.getItem('lang') === 'te') ? (card.dataset.nameTe || card.getAttribute('data-name-te')) : (card.dataset.nameEn || card.getAttribute('data-name-en'));
-          const total = obj.bestRecommendation.totalPrice;
-          // open chat and prefill
-          $id('openChat').click();
-          setTimeout(() => {
-            const input = $id('chatInput');
-            if (input) {
-              const enMsg = `Requesting quote: ${obj.bestRecommendation.units} × ${card.dataset.nameEn} (₹${total}). Please assist.`;
-              const teMsg = `కోట్ కావాలి: ${obj.bestRecommendation.units} × ${card.dataset.nameTe} (₹${total}). దయచేసి సహాయపడండి.`;
-              input.value = `${enMsg}\n${teMsg}`;
-              input.focus();
-            }
-          }, 300);
-        };
-        $id('viewOptionsBtn').onclick = () => {
-          document.querySelector('#modelsGrid').scrollIntoView({ behavior: 'smooth', block: 'center' });
-        };
-      }, 50);
+      // Automatically switch to models view (new tab) to display and highlight recommended model
+      // Show models container and hide calculator
+      showModelsFor('new');
+
+      if (best) {
+        highlightRecommendation(best.key, best.units);
+      }
     }
 
-    // ----------------------------
-    // chat (simple bilingual)
-    // ----------------------------
-    function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-    function appendUserMessage(text){ const d=document.createElement('div'); d.className='msg user'; d.innerText=text; $id('chatMessages').appendChild(d); $id('chatMessages').scrollTop = $id('chatMessages').scrollHeight; }
-    function appendBotMessage(en, te){ const d=document.createElement('div'); d.className='msg bot'; d.innerHTML = `<div class="reply-en">${escapeHtml(en)}</div><div class="reply-te">${escapeHtml(te)}</div>`; $id('chatMessages').appendChild(d); $id('chatMessages').scrollTop = $id('chatMessages').scrollHeight; }
+    /* -------------------------
+       chat functions
+       ------------------------- */
+    function escapeHtml(str){ return (str||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+    function appendUserMessage(text){ const div=document.createElement('div'); div.className='msg user'; div.innerText=text; $id('chatMessages').appendChild(div); $id('chatMessages').scrollTop=$id('chatMessages').scrollHeight; }
+    function appendBotMessage(en, te){ const div=document.createElement('div'); div.className='msg bot'; div.innerHTML=`<div class="reply-en">${escapeHtml(en)}</div><div class="reply-te">${escapeHtml(te)}</div>`; $id('chatMessages').appendChild(div); $id('chatMessages').scrollTop=$id('chatMessages').scrollHeight; }
     function injectInitialGreeting(){ const en = window.dict.en.chat_greeting; const te = window.dict.te.chat_greeting; appendBotMessage(en, te); }
-    function botReply(txt){ const t=(txt||'').toLowerCase(); let en=window.dict.en.chat_reply_default, te=window.dict.te.chat_reply_default; if (t.includes('aerator')||t.includes('ఎరేటర్')) { en=window.dict.en.chat_reply_aerator; te=window.dict.te.chat_reply_aerator; } setTimeout(()=>appendBotMessage(en,te),400); }
+    function botReply(text){ const t=(text||'').toLowerCase(); let en = window.dict.en.chat_reply_default, te = window.dict.te.chat_reply_default; if (t.includes('aerator')||t.includes('ఎరేటర్')) { en = window.dict.en.chat_reply_aerator; te = window.dict.te.chat_reply_aerator; } setTimeout(()=> appendBotMessage(en, te), 400); }
 
-    // ----------------------------
-    // details, buy, purchase modal
-    // ----------------------------
+    /* -------------------------
+       details, buy, purchase modal
+       ------------------------- */
     function showSpecsOf(button) {
       const specs = JSON.parse(button.getAttribute('data-specs') || '{}');
-      const flow = specs.flow || button.closest('.card').getAttribute('data-flow') || '-';
-      const power = specs.power || button.closest('.card').getAttribute('data-power') || '-';
-      const fans = specs.fans || button.closest('.card').getAttribute('data-fans') || '-';
+      const card = button.closest('article[data-model-key]');
+      const flow = specs.flow || card.getAttribute('data-flow') || '-';
+      const power = specs.power || card.getAttribute('data-power') || '-';
+      const fans = specs.fans || card.getAttribute('data-fans') || '-';
       const lang = localStorage.getItem('lang') || 'te';
       const en = `Specs — Flow: ${flow}, Power: ${power}, Fans: ${fans}`;
       const te = `వివరాలు — ఫ్లో: ${flow}, శక్తి: ${power}, ఫ్యాన్స్: ${fans}`;
@@ -504,12 +508,12 @@
     }
 
     function openPurchaseModalFor(card) {
-      const modelName = (localStorage.getItem('lang') === 'te') ? (card.dataset.nameTe || card.getAttribute('data-name-te')) : (card.dataset.nameEn || card.getAttribute('data-name-en'));
+      const modelName = (localStorage.getItem('lang') === 'te') ? (card.getAttribute('data-name-te') || card.getAttribute('data-name-en')) : (card.getAttribute('data-name-en') || card.getAttribute('data-name-te'));
       const price = card.getAttribute('data-price') || '';
       $id('purchaseModel').value = modelName;
       $id('purchasePrice').value = price;
       $id('modalModel').textContent = `${modelName}${price ? ' • ₹' + price : ''}`;
-      $id('buyerName').value = ''; $id('buyerPhone').value=''; $id('buyerPlace').value='';
+      $id('buyerName').value=''; $id('buyerPhone').value=''; $id('buyerPlace').value='';
       $id('modalOverlay').classList.add('open'); $id('modalOverlay').setAttribute('aria-hidden','false');
     }
 
@@ -528,46 +532,68 @@
         alert(localStorage.getItem('lang') === 'te' ? 'దయచేసి పేరు మరియు ఫోన్ నంబర్ ఇవ్వండి.' : 'Please enter name and phone number.');
         return;
       }
-      // open chat and prefill
+      // open chat and prefill purchase message
       $id('openChat').click();
       setTimeout(()=> {
         const input = $id('chatInput');
         if (input) {
           const en = `Purchase request: ${model}${price ? ' (₹'+price+')' : ''}. Buyer: ${name}, Phone: ${phone}, Place: ${place || '-'}.`;
           const te = `కొనుగోలు అభ్యర్థన: ${model}${price ? ' (₹'+price+')' : ''}. కొనుగోలు దారుడు: ${name}, ఫోన్: ${phone}, స్థలం: ${place || '-'}.`;
-          input.value = `${en}\n${te}`;
-          input.focus();
+          input.value = `${en}\n${te}`; input.focus();
         }
-      }, 300);
+      },300);
       closePurchaseModal();
     }
 
-    // ----------------------------
-    // init
-    // ----------------------------
+    /* -------------------------
+       show/hide models vs calculator
+       ------------------------- */
+    function showModelsFor(sub) {
+      // sub = 'new' or 'old'
+      // hide calculator, show modelsContainer and show only cards with matching data-sub
+      $id('calcContainer').classList.add('hidden');
+      $id('modelsContainer').classList.remove('hidden');
+      // mark tabs active
+      qsa('.tab').forEach(t => t.classList.remove('active'));
+      const tabEl = $id(sub === 'old' ? 'tabOld' : 'tabNew');
+      if (tabEl) tabEl.classList.add('active');
+      // show/hide cards
+      qsa('#modelsGrid article').forEach(card => {
+        card.style.display = (card.getAttribute('data-sub') === sub) ? '' : 'none';
+      });
+      // update heading
+      const lang = localStorage.getItem('lang') || 'te';
+      $id('modelsHeading').textContent = (lang === 'te') ? (sub === 'old' ? 'పాత ఎరేటర్లు' : 'కొత్త ఎరేటర్లు') : (sub === 'old' ? 'Used Aerators' : 'New Aerators');
+      // render titles in selected language
+      renderModelTitles();
+    }
+
+    function showCalculatorView() {
+      $id('modelsContainer').classList.add('hidden');
+      $id('calcContainer').classList.remove('hidden');
+      qsa('.tab').forEach(t => t.classList.remove('active'));
+    }
+
+    /* -------------------------
+       init wiring
+       ------------------------- */
     document.addEventListener('DOMContentLoaded', () => {
       if (!localStorage.getItem('lang')) localStorage.setItem('lang','te');
       $id('langSel').value = localStorage.getItem('lang') || 'te';
       applyI18n();
 
-      // theme toggle
+      // theme
       const saved = localStorage.getItem('theme');
       if (saved === 'dark' || (!saved && matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
-      $id('themeToggle').addEventListener('click', () => {
-        document.documentElement.classList.toggle('dark');
-        localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
-      });
+      $id('themeToggle').addEventListener('click', ()=> { document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark')?'dark':'light'); });
 
-      // render model titles now (they use data attributes)
-      renderModelTitles();
+      // tabs behavior - show models replacing calculator
+      $id('tabNew').addEventListener('click', ()=> showModelsFor('new'));
+      $id('tabOld').addEventListener('click', ()=> showModelsFor('old'));
+      $id('backToCalc').addEventListener('click', ()=> showCalculatorView());
 
-      // tabs
-      $id('tabNew').addEventListener('click', () => setActiveTab('new'));
-      $id('tabOld').addEventListener('click', () => setActiveTab('old'));
-      setActiveTab('new');
-
-      // calc
-      $id('calcBtn').addEventListener('click', () => {
+      // calculate button
+      $id('calcBtn').addEventListener('click', ()=> {
         const acres = parseFloat($id('pondArea').value) || 0;
         const depthFt = parseFloat($id('pondDepthFt').value) || 0;
         if (acres <= 0 || depthFt <= 0) {
@@ -575,29 +601,30 @@
           return;
         }
         const res = estimateFromAcresFeet(acres, depthFt);
+        // show result in selected language only and highlight recommended model
         showCalcResult(res);
       });
-      $id('calcReset').addEventListener('click', () => { $id('pondArea').value=''; $id('pondDepthFt').value=''; $id('calcResult').classList.add('hidden'); $id('calcResult').innerHTML=''; });
+      $id('calcReset').addEventListener('click', ()=> {
+        $id('pondArea').value=''; $id('pondDepthFt').value=''; $id('calcResult').classList.add('hidden'); $id('calcResult').innerHTML='';
+        clearRecommendationsHighlight();
+        showCalculatorView();
+      });
 
       // chat wiring
       const openChat = $id('openChat'), chatPanel = $id('chatPanel'), closeChat = $id('closeChat'), sendBtn = $id('sendBtn'), chatInput = $id('chatInput');
       injectInitialGreeting();
-      openChat.addEventListener('click', () => { chatPanel.classList.add('open'); applyI18n(); chatInput.focus(); });
-      closeChat.addEventListener('click', () => { chatPanel.classList.remove('open'); openChat.focus(); });
-      sendBtn.addEventListener('click', () => { const txt = chatInput.value.trim(); if (!txt) return; appendUserMessage(txt); chatInput.value=''; botReply(txt); });
-      chatInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); sendBtn.click(); }});
-      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && chatPanel.classList.contains('open')) { chatPanel.classList.remove('open'); openChat.focus(); }});
+      openChat.addEventListener('click', ()=> { chatPanel.classList.add('open'); applyI18n(); chatInput.focus(); });
+      closeChat.addEventListener('click', ()=> { chatPanel.classList.remove('open'); openChat.focus(); });
+      sendBtn.addEventListener('click', ()=> { const txt = chatInput.value.trim(); if (!txt) return; appendUserMessage(txt); chatInput.value=''; botReply(txt); });
+      chatInput.addEventListener('keydown', (e)=> { if (e.key === 'Enter') { e.preventDefault(); sendBtn.click(); }});
+      document.addEventListener('keydown', (e)=> { if (e.key === 'Escape' && chatPanel.classList.contains('open')) { chatPanel.classList.remove('open'); openChat.focus(); }});
 
-      // details & buy buttons event delegation
-      document.body.addEventListener('click', (ev) => {
+      // details & buy event delegation
+      document.body.addEventListener('click', (ev)=> {
         const t = ev.target;
         if (!t) return;
-        if (t.matches('.btn-details')) {
-          showSpecsOf(t);
-          return;
-        }
+        if (t.matches('.btn-details')) { showSpecsOf(t); return; }
         if (t.matches('.btn-buy')) {
-          // find card (closest article)
           const card = t.closest('article[data-model-key]');
           if (card) openPurchaseModalFor(card);
           return;
@@ -610,14 +637,14 @@
       $id('purchaseForm').addEventListener('submit', submitPurchaseForm);
 
       // language select
-      $id('langSel').addEventListener('change', (e) => {
+      $id('langSel').addEventListener('change', (e)=> {
         localStorage.setItem('lang', e.target.value);
         applyI18n();
       });
-    });
 
-    // re-render titles & meta whenever languageChanged event fired
-    document.addEventListener('languageChanged', () => { renderModelTitles(); });
+      // ensure initial state: only calculator displayed
+      showCalculatorView();
+    });
   </script>
 </body>
 </html>
