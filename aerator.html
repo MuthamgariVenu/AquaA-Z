@@ -29,10 +29,42 @@
     .modal{width:94%;max-width:520px;background:white;border-radius:12px;padding:16px}
     .toast{position:fixed;right:16px;bottom:24px;z-index:80;min-width:220px;background:rgba(2,6,23,0.9);color:white;padding:10px 14px;border-radius:12px;display:none}
     @media(min-width:768px){ .two-col{display:grid;grid-template-columns:1fr 420px;gap:16px} }
+
+    /* LIGHT / DARK MODE */
     .dark body{background:linear-gradient(135deg,#081426 0%,#052733 100%);color:#e6f0f6}
     .dark .card{background:#06202c;border-color:#08303f}
     .dark .btn{background:#071822;color:#cfeff1;border-color:#0b2b36}
     .dark .btn.primary{background:#10b981}
+
+    /* Units/Results box - use classes not inline styles so dark mode works cleanly */
+    .units-box {
+      padding: 16px;
+      border-radius: 10px;
+      border: 1px solid #bbf7d0;
+      background: #ecfdf5;
+      color: #064e3b;
+    }
+    .units-box .units-note { color: #475569; font-size: 13px; margin-top: 8px; }
+
+    /* dark overrides for result area */
+    .dark .units-box {
+      background: linear-gradient(180deg, rgba(2,10,15,0.35), rgba(2,10,15,0.10));
+      border-color: rgba(16,185,129,0.12);
+      color: #95f3d7;
+    }
+    .dark .units-box .units-note { color: #9fbfc2; }
+
+    /* card image dark fallback */
+    .dark .card-img { background: linear-gradient(90deg,#042231,#06202c); opacity: 0.95; }
+
+    /* models summary entries (kept minimal) */
+    .summary-block { padding:12px; border-radius:10px; background:#fbfbfb; display:flex; justify-content:space-between; align-items:center; }
+    .dark .summary-block { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.02); }
+
+    /* small ui niceties */
+    .recommend-badge { position:absolute; right:8px; top:8px; background:#10b981;color:white;padding:6px 8px;border-radius:999px; font-weight:800 }
+    .pulse-on { animation: pulse 1.4s infinite; }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0,150,0,0.18);} 70% { box-shadow: 0 0 0 10px rgba(0,150,0,0); } 100% { box-shadow: 0 0 0 0 rgba(0,150,0,0);} }
   </style>
 </head>
 <body>
@@ -83,10 +115,10 @@
 
       <!-- Result -->
       <div id="resultPanel" class="mt-4 hidden">
-        <div id="unitsBox" class="p-4 rounded-lg" style="background:#ecfdf5;border:1px solid #bbf7d0">
+        <div id="unitsBox" class="units-box">
           <div id="unitsLabel" class="text-sm text-slate-700">Units required</div>
           <div id="unitsBig" class="big-units mt-2">0 units</div>
-          <div id="unitsNote" class="text-xs text-slate-600 mt-2">Devices measured as 'units' based on motor HP.</div>
+          <div class="units-note" id="unitsNote">Devices measured as 'units' based on motor HP.</div>
 
           <!-- Aerator mapping (only two mapped entries) -->
           <div class="mapping-title" id="mappingTitle">Aerator Mapping</div>
@@ -94,10 +126,11 @@
           <div class="mapping-row" id="mapping4">4-fans → 2 HP = 2 units</div>
 
           <!-- explicit mapping counts (1HP/2HP) -->
-          <div id="hpCounts" class="mt-3 text-sm" style="color:#064e3b;font-weight:700"></div>
+          <div id="hpCounts" class="mt-3 text-sm" style="font-weight:700"></div>
         </div>
 
         <div class="mt-4 flex gap-2">
+          <!-- These are small quick buttons; they no longer open a big lower list (that list was removed) -->
           <button id="showNewBtn" class="btn">New Aerators</button>
           <button id="showOldBtn" class="btn">Old Aerators</button>
         </div>
@@ -108,18 +141,15 @@
       <p class="mt-4 text-xs text-slate-500" id="calcNote">Note: estimate only — verify product specs.</p>
     </section>
 
-    <!-- Models listing (shown when clicking New/Old) -->
-    <section id="modelsArea" class="hidden mb-8">
-      <div class="flex items-center justify-between mb-3">
-        <div class="flex items-center gap-2">
-          <button id="tabNew" class="btn">New Aerators</button>
-          <button id="tabOld" class="btn">Old Aerators</button>
-        </div>
-        <div><button id="backToCalcBtn" class="btn">Back to calculator</button></div>
-      </div>
+    <!-- NOTE: The previous "lower results list" has been removed completely as requested.
+         We keep the model cards in a compact area (below) so the calculator can compute using them.
+         If you prefer those cards also removed, tell me and I'll remove the block as well.
+    -->
 
+    <!-- Compact Models Grid (kept minimal, used for computation) -->
+    <section id="modelsCompact" class="mb-8">
       <div id="modelsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <!-- New -->
+        <!-- Model cards (used by calculator for cost/devices) -->
         <article class="card p-3" data-type="new" data-key="float-2" data-units="1" data-price="12000" data-fans="2" data-hp="1">
           <img class="card-img" src="assets/float-2.jpg" alt="2 Fans" onerror="this.style.opacity=.6" />
           <div class="mt-3">
@@ -196,45 +226,6 @@
           </div>
         </article>
 
-        <!-- Used (hidden by default) -->
-        <article class="card p-3" data-type="old" data-key="used-2" data-units="1" data-price="7500" data-fans="2" data-hp="1" style="display:none">
-          <img class="card-img" src="assets/used-2.jpg" alt="Used 2 Fans" onerror="this.style.opacity=.6" />
-          <div class="mt-3">
-            <div class="flex items-start justify-between">
-              <div>
-                <span class="fans-pill">2</span><span class="hp-pill">≈ 1 HP • 1 unit</span>
-                <div class="font-bold model-name" data-name-en="Used — 2 Fans" data-name-te="రెండవ చేతి — 2 ఫ్యాన్స్">Used — 2 Fans</div>
-                <div class="text-xs text-slate-500 mt-1">Flow: 7,000 L/h · Power: 140 W</div>
-              </div>
-              <div class="font-semibold">₹ 7,500</div>
-            </div>
-            <p class="mt-2 text-sm text-slate-600 model-desc" data-desc-en="Checked used unit." data-desc-te="సరి చూసిన రెండవ చేతి యూనిట్.">Checked used unit.</p>
-            <div class="mt-3 flex gap-2">
-              <button class="btn detailsBtn flex-1">Details</button>
-              <button class="btn primary buyBtn" data-key="used-2" data-price="7500">Buy</button>
-            </div>
-          </div>
-        </article>
-
-        <article class="card p-3" data-type="old" data-key="used-4" data-units="2" data-price="13500" data-fans="4" data-hp="2" style="display:none">
-          <img class="card-img" src="assets/used-4.jpg" alt="Used 4 Fans" onerror="this.style.opacity=.6" />
-          <div class="mt-3">
-            <div class="flex items-start justify-between">
-              <div>
-                <span class="fans-pill">4</span><span class="hp-pill">≈ 2 HP • 2 units</span>
-                <div class="font-bold model-name" data-name-en="Used — 4 Fans" data-name-te="రెండవ చేతి — 4 ఫ్యాన్స్">Used — 4 Fans</div>
-                <div class="text-xs text-slate-500 mt-1">Flow: 14,000 L/h · Power: 280 W</div>
-              </div>
-              <div class="font-semibold">₹ 13,500</div>
-            </div>
-            <p class="mt-2 text-sm text-slate-600 model-desc" data-desc-en="Serviced used unit." data-desc-te="సర్వీస్ చేసిన రెండవ చేతి.">Serviced used unit.</p>
-            <div class="mt-3 flex gap-2">
-              <button class="btn detailsBtn flex-1">Details</button>
-              <button class="btn primary buyBtn" data-key="used-4" data-price="13500">Buy</button>
-            </div>
-          </div>
-        </article>
-
       </div>
     </section>
 
@@ -297,29 +288,33 @@
 
   function applyLang(){
     lang = localStorage.getItem('lang') || lang;
-    const d = dict[lang];
-    $('lblBack').textContent = d.Back;
-    $('pageTitle').textContent = d.pageTitle;
-    $('pageDesc').textContent = d.pageDesc;
-    $('calcTitle').textContent = d.calcTitle;
-    $('lblArea').textContent = d.lblArea;
-    $('lblDepth').textContent = d.lblDepth;
-    $('lblPrawn').textContent = d.lblPrawn;
-    $('prawnSize').options[0].text = d.small;
-    $('prawnSize').options[1].text = d.medium;
-    $('prawnSize').options[2].text = d.large;
-    $('calcBtn').textContent = d.calcBtn;
-    $('resetBtn').textContent = d.resetBtn;
-    $('unitsLabel').textContent = d.unitsLabel;
-    $('unitsNote').textContent = d.unitsNote;
-    $('showNewBtn').textContent = d.viewNew;
-    $('showOldBtn').textContent = d.viewOld;
-    $('calcNote').textContent = d.calcNote;
-    $('tabNew').textContent = d.viewNew;
-    $('tabOld').textContent = d.viewOld;
-    $('mappingTitle').textContent = (lang==='te')? 'ఎరేటర్ మ్యాపింగ్' : 'Aerator Mapping';
-    $('mapping2').textContent = d.mapping2;
-    $('mapping4').textContent = d.mapping4;
+    const d = dict[lang] || dict.en;
+    const safeSet = (id, text) => { const el = $(id); if(el) el.textContent = text; };
+
+    safeSet('lblBack', d.Back);
+    safeSet('pageTitle', d.pageTitle);
+    safeSet('pageDesc', d.pageDesc);
+    safeSet('calcTitle', d.calcTitle);
+    safeSet('lblArea', d.lblArea);
+    safeSet('lblDepth', d.lblDepth);
+    safeSet('lblPrawn', d.lblPrawn);
+
+    const prSel = $('prawnSize');
+    if(prSel){
+      prSel.options[0].text = d.small;
+      prSel.options[1].text = d.medium;
+      prSel.options[2].text = d.large;
+    }
+
+    safeSet('calcBtn', d.calcBtn);
+    safeSet('resetBtn', d.resetBtn);
+    safeSet('unitsLabel', d.unitsLabel);
+    const unitsNoteEl = $('unitsNote'); if(unitsNoteEl) unitsNoteEl.textContent = d.unitsNote;
+    safeSet('showNewBtn', d.viewNew);
+    safeSet('showOldBtn', d.viewOld);
+    safeSet('calcNote', d.calcNote);
+    safeSet('mapping2', d.mapping2);
+    safeSet('mapping4', d.mapping4);
 
     // models text
     qsa('.model-name').forEach(el=>{
@@ -336,7 +331,7 @@
     qsa('.buyBtn').forEach(b=>b.textContent = d.buy);
   }
 
-  function showToast(txt, time=3000){ const t=$('toast'); t.textContent=txt; t.style.display='block'; clearTimeout(t._t); t._t=setTimeout(()=>t.style.display='none', time); }
+  function showToast(txt, time=3000){ const t=$('toast'); if(!t) return; t.textContent=txt; t.style.display='block'; clearTimeout(t._t); t._t=setTimeout(()=>t.style.display='none', time); }
 
   // Calculation logic
   const BASE_UNITS_PER_ACRE = 8;
@@ -347,15 +342,33 @@
     return Math.max(0, units);
   }
 
+  // compute using DOM cards if present; otherwise fallback to modelsData array
+  const modelsDataFallback = [
+    { key:'float-2', deviceUnits:1, price:12000, fans:'2', hp:'1', type:'new', name:'Floating — 2 Fans' },
+    { key:'float-4', deviceUnits:2, price:22000, fans:'4', hp:'2', type:'new', name:'Floating — 4 Fans' },
+    { key:'float-6', deviceUnits:3, price:32000, fans:'6', hp:'3', type:'new', name:'Floating — 6 Fans' },
+    { key:'float-8', deviceUnits:4, price:42000, fans:'8', hp:'4', type:'new', name:'Floating — 8 Fans' }
+  ];
+
   function computeDevicesFromUnits(unitsNeeded){
+    // try DOM first
     const cards = qsa('#modelsGrid article');
-    const results = cards.map(card=>{
-      const key = card.getAttribute('data-key');
-      const deviceUnits = parseFloat(card.getAttribute('data-units'))||1;
-      const price = parseFloat(card.getAttribute('data-price'))||0;
-      const devicesReq = Math.ceil(unitsNeeded / deviceUnits);
-      return { key, card, deviceUnits, price, devicesReq, totalPrice: devicesReq*price, fans: card.getAttribute('data-fans')||'', hp: card.getAttribute('data-hp')||'' };
-    });
+    let results = [];
+    if(cards && cards.length){
+      results = cards.map(card=>{
+        const key = card.getAttribute('data-key');
+        const deviceUnits = parseFloat(card.getAttribute('data-units'))||1;
+        const price = parseFloat(card.getAttribute('data-price'))||0;
+        const devicesReq = Math.ceil(unitsNeeded / deviceUnits);
+        return { key, card, deviceUnits, price, devicesReq, totalPrice: devicesReq*price, fans: card.getAttribute('data-fans')||'', hp: card.getAttribute('data-hp')||'', type: card.getAttribute('data-type') };
+      });
+    } else {
+      // fallback to JS-defined array
+      results = modelsDataFallback.map(m=>{
+        const devicesReq = Math.ceil(unitsNeeded / (m.deviceUnits||1));
+        return { key:m.key, card:null, deviceUnits:m.deviceUnits, price:m.price, devicesReq, totalPrice:devicesReq*m.price, fans:m.fans, hp:m.hp, type:m.type, modelName:m.name };
+      });
+    }
     results.sort((a,b)=> a.totalPrice - b.totalPrice );
     return results;
   }
@@ -367,145 +380,147 @@
     const t = localStorage.getItem('theme') || 'light';
     if(t==='dark') document.documentElement.classList.add('dark');
     else document.documentElement.classList.remove('dark');
-    $('themeToggle').textContent = (t==='dark')? '☀️' : '🌙';
+    const themeBtn = $('themeToggle'); if(themeBtn) themeBtn.textContent = (t==='dark')? '☀️' : '🌙';
   }
 
   document.addEventListener('DOMContentLoaded', ()=>{
     // init lang & theme selectors
-    $('langSel').value = localStorage.getItem('lang') || lang;
-    $('langSel').addEventListener('change', e=>{ localStorage.setItem('lang', e.target.value); applyLang(); });
+    const initLangSel = $('langSel');
+    if(initLangSel){
+      initLangSel.value = localStorage.getItem('lang') || lang;
+      initLangSel.addEventListener('change', e=>{ localStorage.setItem('lang', e.target.value); applyLang(); });
+    }
     applyLang();
 
     applyThemeFromStorage();
-    $('themeToggle').addEventListener('click', ()=>{
-      document.documentElement.classList.toggle('dark');
-      localStorage.setItem('theme', document.documentElement.classList.contains('dark')? 'dark' : 'light');
-      applyThemeFromStorage();
-    });
+    const themeBtn = $('themeToggle');
+    if(themeBtn){
+      themeBtn.addEventListener('click', ()=>{
+        document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', document.documentElement.classList.contains('dark')? 'dark' : 'light');
+        applyThemeFromStorage();
+      });
+    }
 
     // calculate/reset
-    $('calcBtn').addEventListener('click', ()=>{
-      const acres = parseFloat($('acreInput').value) || 0;
-      const depthFt = parseFloat($('depthFtInput').value) || 0;
-      const sizeKey = $('prawnSize').value||'small';
-      if(acres<=0 || depthFt<=0){ showToast((lang==='te')? 'దయచేసి సరైన విలువలు ఇవ్వండి.' : 'Please enter valid values.'); return; }
+    const calcBtn = $('calcBtn');
+    if(calcBtn){
+      calcBtn.addEventListener('click', ()=>{
+        const acres = parseFloat($('acreInput').value) || 0;
+        const depthFt = parseFloat($('depthFtInput').value) || 0;
+        const sizeKey = $('prawnSize').value||'small';
+        if(acres<=0 || depthFt<=0){ showToast((lang==='te')? 'దయచేసి సరైన విలువలు ఇవ్వండి.' : 'Please enter valid values.'); return; }
 
-      const units = calculateUnitsNeeded(acres, sizeKey);
-      const unitsRounded = Math.ceil(units);
-      const unitWord = (lang==='te')? ' యూనిట్లు' : ' units';
-      $('unitsBig').textContent = unitsRounded.toLocaleString('en-IN') + unitWord;
+        const units = calculateUnitsNeeded(acres, sizeKey);
+        const unitsRounded = Math.ceil(units);
+        const unitWord = (lang==='te')? ' యూనిట్లు' : ' units';
+        const unitsBig = $('unitsBig'); if(unitsBig) unitsBig.textContent = unitsRounded.toLocaleString('en-IN') + unitWord;
 
-      // also compute hp mapping counts:
-      // 1 HP devices (2-fans) -> deviceUnits=1
-      // 2 HP devices (4-fans) -> deviceUnits=2
-      const hp1Count = Math.ceil(units / 1);
-      const hp2Count = Math.ceil(units / 2);
-      const hp1Label = dict[lang].hp1Label;
-      const hp2Label = dict[lang].hp2Label;
-      $('hpCounts').textContent = `${hp1Label} ${hp1Count.toLocaleString('en-IN')}  •  ${hp2Label} ${hp2Count.toLocaleString('en-IN')}`;
+        // hp mapping counts:
+        const hp1Count = Math.ceil(units / 1);
+        const hp2Count = Math.ceil(units / 2);
+        const hp1Label = dict[lang].hp1Label;
+        const hp2Label = dict[lang].hp2Label;
+        const hpCounts = $('hpCounts'); if(hpCounts) hpCounts.textContent = `${hp1Label} ${hp1Count.toLocaleString('en-IN')}  •  ${hp2Label} ${hp2Count.toLocaleString('en-IN')}`;
 
-      // render devices summary
-      const devices = computeDevicesFromUnits(units);
-      const summary = $('modelsSummary'); summary.innerHTML='';
-      devices.forEach((r, idx)=>{
-        if (r.card.getAttribute('data-type') === 'new' || r.card.getAttribute('data-type')==='old') {
-          const modelNameEl = r.card.querySelector('.model-name');
-          const modelName = modelNameEl ? modelNameEl.textContent : r.key;
-          const block = document.createElement('div');
-          block.className = 'p-3 rounded-lg flex items-center justify-between';
-          block.style.background = (idx===0)? '#ecfdf5' : '#fbfbfb';
-          block.innerHTML = `<div style="font-weight:800">${escapeHtml(r.fans)} — ${escapeHtml(modelName)}</div>
-            <div style="text-align:right">
-              <div style="font-weight:900;color:${idx===0? '#065f46':'#0f172a'};font-size:20px">${r.devicesReq.toLocaleString('en-IN')}<span style="font-size:14px;font-weight:700;color:#64748b"> ${(lang==='te')? ' యూనిట్లు' : ' units'}</span></div>
-              <div style="font-size:12px;color:#475569">(${r.totalPrice? '₹'+r.totalPrice.toLocaleString('en-IN') : ''})</div>
-            </div>`;
-          summary.appendChild(block);
-        }
+        // render devices summary
+        const devices = computeDevicesFromUnits(units);
+        const summary = $('modelsSummary'); if(summary) summary.innerHTML='';
+        devices.forEach((r, idx)=>{
+          const modelName = r.card ? (r.card.querySelector('.model-name') ? r.card.querySelector('.model-name').textContent : r.key) : (r.modelName || r.key);
+          if(summary){
+            const block = document.createElement('div');
+            block.className = 'summary-block';
+            block.innerHTML = `<div style="font-weight:800">${escapeHtml(r.fans || '')} — ${escapeHtml(modelName)}</div>
+              <div style="text-align:right">
+                <div style="font-weight:900;color:${idx===0? '#065f46':'#0f172a'};font-size:20px">${r.devicesReq.toLocaleString('en-IN')}<span style="font-size:14px;font-weight:700;color:#64748b"> ${(lang==='te')? ' యూనిట్లు' : ' units'}</span></div>
+                <div style="font-size:12px;color:#475569">(${r.totalPrice? '₹'+r.totalPrice.toLocaleString('en-IN') : ''})</div>
+              </div>`;
+            summary.appendChild(block);
+          }
+        });
+
+        const resultPanel = $('resultPanel'); if(resultPanel) resultPanel.classList.remove('hidden');
+        window._lastCalc = { acres, depthFt, sizeKey, units, devices };
       });
+    }
 
-      $('resultPanel').classList.remove('hidden');
-      window._lastCalc = { acres, depthFt, sizeKey, units, devices };
-    });
+    const resetBtn = $('resetBtn');
+    if(resetBtn){
+      resetBtn.addEventListener('click', ()=>{
+        if($('acreInput')) $('acreInput').value='';
+        if($('depthFtInput')) $('depthFtInput').value='';
+        if($('prawnSize')) $('prawnSize').value='small';
+        const rp = $('resultPanel'); if(rp) rp.classList.add('hidden');
+        const ms = $('modelsSummary'); if(ms) ms.innerHTML='';
+        const hc = $('hpCounts'); if(hc) hc.textContent='';
+        const ub = $('unitsBig'); if(ub) ub.textContent='0 units';
+      });
+    }
 
-    $('resetBtn').addEventListener('click', ()=>{
-      $('acreInput').value=''; $('depthFtInput').value=''; $('prawnSize').value='small';
-      $('resultPanel').classList.add('hidden'); $('modelsSummary').innerHTML=''; $('hpCounts').textContent=''; $('unitsBig').textContent='0 units';
-      qsa('#modelsGrid article').forEach(a=>{ a.classList.remove('recommended'); const rb=a.querySelector('.recommend-badge'); if(rb) rb.remove(); });
-    });
+    // New/Old quick buttons - we keep them but only scroll to models grid (they will not open any removed lower list)
+    const showNewBtn = $('showNewBtn');
+    if(showNewBtn) showNewBtn.addEventListener('click', ()=>{ const grid = $('modelsGrid'); if(grid) grid.scrollIntoView({behavior:'smooth'}); });
 
-    // New/Old buttons
-    $('showNewBtn').addEventListener('click', ()=> showModels('new'));
-    $('showOldBtn').addEventListener('click', ()=> showModels('old'));
-    $('tabNew').addEventListener('click', ()=> showModels('new'));
-    $('tabOld').addEventListener('click', ()=> showModels('old'));
-    $('backToCalcBtn').addEventListener('click', ()=> { $('modelsArea').classList.add('hidden'); window.scrollTo({top:0,behavior:'smooth'}); });
+    const showOldBtn = $('showOldBtn');
+    if(showOldBtn) showOldBtn.addEventListener('click', ()=>{ const grid = $('modelsGrid'); if(grid) grid.scrollIntoView({behavior:'smooth'}); });
 
     // model card actions (details & buy)
-    $('modelsGrid').addEventListener('click', ev=>{
-      const btn = ev.target.closest('button'); if(!btn) return;
-      const article = btn.closest('article');
-      if(btn.classList.contains('detailsBtn')) openDetailModal(article);
-      if(btn.classList.contains('buyBtn')) openPurchaseModal(article.getAttribute('data-key'), article.getAttribute('data-price'));
-    });
+    const modelsGrid = $('modelsGrid');
+    if(modelsGrid){
+      modelsGrid.addEventListener('click', ev=>{
+        const btn = ev.target.closest('button'); if(!btn) return;
+        const article = btn.closest('article');
+        if(btn.classList.contains('detailsBtn') && article) openDetailModal(article);
+        if(btn.classList.contains('buyBtn') && article) openPurchaseModal(article.getAttribute('data-key'), article.getAttribute('data-price'));
+      });
+    }
 
     // modal handlers
-    $('closeDetail').addEventListener('click', ()=> $('detailsModal').style.display='none');
-    $('detailClose').addEventListener('click', ()=> $('detailsModal').style.display='none');
-    $('detailBuy').addEventListener('click', ()=> {
+    const closeDetail = $('closeDetail'); if(closeDetail) closeDetail.addEventListener('click', ()=> $('detailsModal').style.display='none');
+    const detailClose = $('detailClose'); if(detailClose) detailClose.addEventListener('click', ()=> $('detailsModal').style.display='none');
+    const detailBuy = $('detailBuy'); if(detailBuy) detailBuy.addEventListener('click', ()=> {
       const k = $('detailTitle').getAttribute('data-key'), p = $('detailTitle').getAttribute('data-price');
       $('detailsModal').style.display='none'; openPurchaseModal(k,p);
     });
 
-    $('closePurchase').addEventListener('click', ()=> $('purchaseModal').style.display='none');
-    $('cancelPurchaseBtn').addEventListener('click', ()=> $('purchaseModal').style.display='none');
+    const closePurchase = $('closePurchase'); if(closePurchase) closePurchase.addEventListener('click', ()=> $('purchaseModal').style.display='none');
+    const cancelPurchaseBtn = $('cancelPurchaseBtn'); if(cancelPurchaseBtn) cancelPurchaseBtn.addEventListener('click', ()=> $('purchaseModal').style.display='none');
 
-    $('purchaseForm').addEventListener('submit', e=>{
-      e.preventDefault();
-      const name = $('buyerName').value.trim(), phone = $('buyerPhone').value.trim();
-      if(!name || !phone){ showToast((lang==='te')? 'దయచేసి పేరు మరియు ఫోన్ ఇవ్వండి.' : 'Please enter name and phone'); return; }
-      $('purchaseModal').style.display='none';
-      showToast((lang==='te')? 'మీ అభ్యర్థన అందుకుంది — మేము సంప్రదిస్తాము.' : 'Request received — we will contact you.');
-    });
-
-    function showModels(type){
-      $('modelsArea').classList.remove('hidden');
-      qsa('#modelsGrid article').forEach(a=> a.style.display = (a.getAttribute('data-type')===type) ? '' : 'none');
-      $('tabNew').classList.toggle('primary', type==='new');
-      $('tabOld').classList.toggle('primary', type==='old');
-
-      // highlight cheapest visible model
-      qsa('#modelsGrid article').forEach(a=>{ a.classList.remove('recommended'); const rb=a.querySelector('.recommend-badge'); if(rb) rb.remove(); });
-      const last = window._lastCalc;
-      if(last && last.devices){
-        const visible = last.devices.find(d => d.card.getAttribute('data-type')===type);
-        if(visible){
-          const c = visible.card; c.classList.add('recommended');
-          const badge = document.createElement('div'); badge.className='recommend-badge'; badge.textContent = `${visible.devicesReq} ×`;
-          c.appendChild(badge); setTimeout(()=> c.scrollIntoView({behavior:'smooth', block:'center'}),120);
-        }
-      }
-    }
-
-    function openDetailModal(article){
-      const name = article.querySelector('.model-name').textContent;
-      const fans = article.getAttribute('data-fans'), hp = article.getAttribute('data-hp'), price = article.getAttribute('data-price');
-      $('detailTitle').textContent = name; $('detailTitle').setAttribute('data-key', article.getAttribute('data-key')); $('detailTitle').setAttribute('data-price', price);
-      $('detailSub').textContent = `${fans}-fans • ≈ ${hp} HP • ₹ ${price}`;
-      const desc = (lang==='te')? (article.querySelector('.model-desc').getAttribute('data-desc-te')||article.querySelector('.model-desc').getAttribute('data-desc-en')) : (article.querySelector('.model-desc').getAttribute('data-desc-en')||article.querySelector('.model-desc').getAttribute('data-desc-te'));
-      $('detailBody').innerHTML = `<div style="font-weight:700">${(lang==='te')?'వివరణ':'Description'}</div><div style="margin-top:6px;color:#334155">${escapeHtml(desc)}</div>`;
-      $('detailsModal').style.display='flex';
-    }
-
-    function openPurchaseModal(key, price){
-      $('purchaseModelKey').value = key; $('purchasePrice').value = price||'';
-      $('purchaseModal').style.display='flex';
+    const purchaseForm = $('purchaseForm');
+    if(purchaseForm){
+      purchaseForm.addEventListener('submit', e=>{
+        e.preventDefault();
+        const name = $('buyerName').value.trim(), phone = $('buyerPhone').value.trim();
+        if(!name || !phone){ showToast((lang==='te')? 'దయచేసి పేరు మరియు ఫోన్ ఇవ్వండి.' : 'Please enter name and phone'); return; }
+        $('purchaseModal').style.display='none';
+        showToast((lang==='te')? 'మీ అభ్యర్థన అందుకుంది — మేము సంప్రదిస్తాము.' : 'Request received — we will contact you.');
+      });
     }
 
     // set initial mapping text & language from storage
-    $('langSel').value = localStorage.getItem('lang') || lang;
-    $('langSel').addEventListener('change', ()=> applyLang());
+    if($('langSel')) { $('langSel').value = localStorage.getItem('lang') || lang; }
+
     applyLang();
   });
+
+  function openDetailModal(article){
+    if(!article) return;
+    const name = article.querySelector('.model-name') ? article.querySelector('.model-name').textContent : article.getAttribute('data-key');
+    const fans = article.getAttribute('data-fans'), hp = article.getAttribute('data-hp'), price = article.getAttribute('data-price');
+    const descEl = article.querySelector('.model-desc');
+    const desc = descEl ? (lang==='te' ? (descEl.getAttribute('data-desc-te')||descEl.getAttribute('data-desc-en')) : (descEl.getAttribute('data-desc-en')||descEl.getAttribute('data-desc-te')) ) : '';
+    const titleEl = $('detailTitle'); if(titleEl){ titleEl.textContent = name; titleEl.setAttribute('data-key', article.getAttribute('data-key')); titleEl.setAttribute('data-price', price); }
+    const sub = $('detailSub'); if(sub) sub.textContent = `${fans}-fans • ≈ ${hp} HP • ₹ ${price}`;
+    const body = $('detailBody'); if(body) body.innerHTML = `<div style="font-weight:700">${(lang==='te')?'వివరణ':'Description'}</div><div style="margin-top:6px;color:#334155">${escapeHtml(desc)}</div>`;
+    const dm = $('detailsModal'); if(dm) dm.style.display='flex';
+  }
+
+  function openPurchaseModal(key, price){
+    const k = $('purchaseModelKey'); if(k) k.value = key||'';
+    const p = $('purchasePrice'); if(p) p.value = price||'';
+    const pm = $('purchaseModal'); if(pm) pm.style.display='flex';
+  }
 </script>
 </body>
 </html>
