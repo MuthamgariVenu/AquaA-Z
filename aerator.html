@@ -30,7 +30,7 @@
     .toast{position:fixed;right:16px;bottom:24px;z-index:80;min-width:220px;background:rgba(2,6,23,0.9);color:white;padding:10px 14px;border-radius:12px;display:none}
     @media(min-width:768px){ .two-col{display:grid;grid-template-columns:1fr 420px;gap:16px} }
 
-    /* LIGHT / DARK MODE */
+    /* DARK MODE */
     .dark body{background:linear-gradient(135deg,#081426 0%,#052733 100%);color:#e6f0f6}
     .dark .card{background:#06202c;border-color:#08303f}
     .dark .btn{background:#071822;color:#cfeff1;border-color:#0b2b36}
@@ -38,45 +38,26 @@
     .dark input, .dark select, .dark textarea { background:#042231; color: #e6f0f6; border-color:#08303f; }
     input, select, textarea { border:1px solid #e6eef6; background:white; color:inherit; }
 
-    /* Units/Results box - use classes not inline styles so dark mode works cleanly */
-    .units-box {
-      padding: 16px;
-      border-radius: 10px;
-      border: 1px solid #bbf7d0;
-      background: #ecfdf5;
-      color: #064e3b;
-    }
+    /* Units box */
+    .units-box { padding: 16px; border-radius: 10px; border: 1px solid #bbf7d0; background: #ecfdf5; color: #064e3b; }
     .units-box .units-note { color: #475569; font-size: 13px; margin-top: 8px; }
-
-    /* dark overrides for result area */
-    .dark .units-box {
-      background: linear-gradient(180deg, rgba(2,10,15,0.35), rgba(2,10,15,0.10));
-      border-color: rgba(16,185,129,0.12);
-      color: #95f3d7;
-    }
+    .dark .units-box { background: linear-gradient(180deg, rgba(2,10,15,0.35), rgba(2,10,15,0.10)); border-color: rgba(16,185,129,0.12); color: #95f3d7; }
     .dark .units-box .units-note { color: #9fbfc2; }
 
-    /* card image dark fallback */
     .dark .card-img { background: linear-gradient(90deg,#042231,#06202c); opacity: 0.95; }
-
-    /* models summary entries */
     .summary-block { padding:12px; border-radius:10px; background:#fbfbfb; display:flex; justify-content:space-between; align-items:center; }
     .dark .summary-block { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.02); }
 
-    /* compact models grid (cards) */
+    /* models area hidden by default */
     #modelsCompact { display:none; margin-bottom: 40px; }
-    .models-area-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; gap:10px; }
+
     .recommend-badge { position:absolute; right:8px; top:8px; background:#10b981;color:white;padding:6px 8px;border-radius:999px; font-weight:800 }
     .pulse-on { animation: pulse 1.4s infinite; }
     @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0,150,0,0.18);} 70% { box-shadow: 0 0 0 10px rgba(0,150,0,0); } 100% { box-shadow: 0 0 0 0 rgba(0,150,0,0);} }
-
-    /* small UI tweaks */
-    .card .mt-3 .font-semibold { font-weight:800; }
   </style>
 </head>
 <body>
 
-  <!-- Header: Back, language, theme toggle -->
   <header>
     <div class="container flex items-center justify-between py-3">
       <div class="flex items-center gap-3">
@@ -98,7 +79,6 @@
       <p id="pageDesc" class="mt-2 text-slate-600">Aerators help maintain oxygen levels in ponds — use the calculator to see how many devices you need.</p>
     </section>
 
-    <!-- Calculator -->
     <section id="calculatorArea" class="card p-4 mb-4">
       <h2 id="calcTitle" class="font-semibold mb-3">Aerator Calculator</h2>
 
@@ -120,19 +100,17 @@
         <button id="resetBtn" class="btn">Reset</button>
       </div>
 
-      <!-- Result -->
       <div id="resultPanel" class="mt-4 hidden">
         <div id="unitsBox" class="units-box">
           <div id="unitsLabel" class="text-sm text-slate-700">Units required</div>
           <div id="unitsBig" class="big-units mt-2">0 units</div>
           <div class="units-note" id="unitsNote">Devices measured as 'units' based on motor HP.</div>
 
-          <!-- Aerator mapping (user specified text exactly) -->
           <div class="mapping-title" id="mappingTitle">Aerator Mapping</div>
+          <!-- EXACT strings requested by you -->
           <div class="mapping-row" id="mapping2">2 fans - 1hp --> 1 units</div>
           <div class="mapping-row" id="mapping4">4 pans ->2hp  2 units</div>
 
-          <!-- explicit mapping counts (1HP/2HP) -->
           <div id="hpCounts" class="mt-3 text-sm" style="font-weight:700"></div>
         </div>
 
@@ -147,16 +125,11 @@
       <p class="mt-4 text-xs text-slate-500" id="calcNote">Note: estimate only — verify product specs.</p>
     </section>
 
-    <!-- Compact Models Grid (hidden by default; appears when clicking New/Old) -->
+    <!-- Models area (initially hidden). New/Old buttons show and filter this. -->
     <section id="modelsCompact" class="mb-8">
-      <div class="models-area-header">
-        <div>
-          <button id="backToCalcBtn" class="btn">◀ Back to calculator</button>
-        </div>
-        <div>
-          <span class="text-xs text-slate-500 mr-2">Showing models:</span>
-          <span id="modelsFilterLabel" style="font-weight:800">All</span>
-        </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <button id="backToCalcBtn" class="btn">◀ Back to calculator</button>
+        <div><strong id="modelsFilterLabel">All</strong></div>
       </div>
 
       <div id="modelsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -237,7 +210,7 @@
           </div>
         </article>
 
-        <!-- Example used items (old) -->
+        <!-- Old examples (kept but hidden by default style) -->
         <article class="card p-3" data-type="old" data-key="used-2" data-units="1" data-price="7500" data-fans="2" data-hp="1" style="display:none">
           <img class="card-img" src="assets/used-2.jpg" alt="Used 2 Fans" onerror="this.style.opacity=.6" />
           <div class="mt-3">
@@ -403,7 +376,6 @@
         return { key, card, deviceUnits, price, devicesReq, totalPrice: devicesReq*price, fans: card.getAttribute('data-fans')||'', hp: card.getAttribute('data-hp')||'', type: card.getAttribute('data-type') };
       });
     } else {
-      // fallback if no DOM cards
       const fallback = [
         { key:'float-2', deviceUnits:1, price:12000, fans:'2', hp:'1', type:'new', modelName:'Floating — 2 Fans' },
         { key:'float-4', deviceUnits:2, price:22000, fans:'4', hp:'2', type:'new', modelName:'Floating — 4 Fans' },
@@ -425,9 +397,8 @@
     const themeBtn = $('themeToggle'); if(themeBtn) themeBtn.textContent = (t==='dark')? '☀️' : '🌙';
   }
 
-  // UI behaviour
   document.addEventListener('DOMContentLoaded', ()=>{
-    // init lang & theme selectors
+    // init lang & theme
     const initLangSel = $('langSel');
     if(initLangSel){
       initLangSel.value = localStorage.getItem('lang') || lang;
@@ -445,7 +416,7 @@
       });
     }
 
-    // calculate/reset
+    // calculate button
     const calcBtn = $('calcBtn');
     if(calcBtn){
       calcBtn.addEventListener('click', ()=>{
@@ -465,7 +436,6 @@
         const hp2Label = dict[lang].hp2Label;
         const hpCounts = $('hpCounts'); if(hpCounts) hpCounts.textContent = `${hp1Label} ${hp1Count.toLocaleString('en-IN')}  •  ${hp2Label} ${hp2Count.toLocaleString('en-IN')}`;
 
-        // render devices summary
         const devices = computeDevicesFromUnits(units);
         const summary = $('modelsSummary'); if(summary) summary.innerHTML='';
         devices.forEach((r, idx)=>{
@@ -487,6 +457,7 @@
       });
     }
 
+    // reset
     const resetBtn = $('resetBtn');
     if(resetBtn){
       resetBtn.addEventListener('click', ()=>{
@@ -500,24 +471,21 @@
       });
     }
 
-    // New/Old buttons show models area and filter
+    // showNew / showOld: show models area and filter
     const showNewBtn = $('showNewBtn');
     const showOldBtn = $('showOldBtn');
     const modelsCompact = $('modelsCompact');
-    const modelsGrid = $('modelsGrid');
     const modelsFilterLabel = $('modelsFilterLabel');
 
     function showModels(type){
       if(!modelsCompact) return;
       modelsCompact.style.display = '';
       modelsFilterLabel.textContent = (type==='new')? 'New' : (type==='old')? 'Old' : 'All';
-      // show/hide cards
       qsa('#modelsGrid article').forEach(a=>{
         const t = a.getAttribute('data-type');
         if(type==='all') a.style.display = '';
         else a.style.display = (t===type) ? '' : 'none';
       });
-      // scroll to models area
       setTimeout(()=> modelsCompact.scrollIntoView({behavior:'smooth'}), 80);
     }
 
@@ -530,7 +498,8 @@
       window.scrollTo({top:0, behavior:'smooth'});
     });
 
-    // model card actions (details & buy)
+    // model actions
+    const modelsGrid = $('modelsGrid');
     if(modelsGrid){
       modelsGrid.addEventListener('click', ev=>{
         const btn = ev.target.closest('button'); if(!btn) return;
@@ -562,7 +531,6 @@
       });
     }
 
-    // set initial mapping text & language
     if($('langSel')) { $('langSel').value = localStorage.getItem('lang') || lang; }
     applyLang();
   });
