@@ -29,7 +29,7 @@
     /* THEME ICONS / toggle */
     #themeToggle { display:flex; align-items:center; justify-content:center; gap:8px; border-radius:9999px; padding:.35rem .6rem; background:transparent; cursor:pointer; border:1px solid rgba(148,163,184,0.12); }
     #themeToggle .icon-sun, #themeToggle .icon-moon { display:inline-flex; width:18px; height:18px; line-height:1; }
-    /* PER REQUEST: show moon icon in light mode, sun icon in dark mode */
+    /* show moon in light, sun in dark */
     html.dark #themeToggle .icon-sun { display:inline-flex; }
     html.dark #themeToggle .icon-moon { display:none; }
     html:not(.dark) #themeToggle .icon-sun { display:none; }
@@ -50,7 +50,7 @@
     .chat-panel {
       position: fixed;
       right: 14px;
-      bottom: calc(90px + env(safe-area-inset-bottom)); /* raised to avoid bottom nav */
+      bottom: calc(90px + env(safe-area-inset-bottom));
       width: 92%;
       max-width: 380px;
       height: 56vh;
@@ -101,8 +101,7 @@
       .chat-panel{ right:8px; left:8px; max-width:none; width: calc(100% - 16px); bottom: calc(140px + env(safe-area-inset-bottom)); height: 50vh; max-height: 70vh; }
       .chat-input { padding: 8px; gap:6px; }
       .chat-input input { padding:9px; border-radius:10px; font-size:15px; }
-      /* increased bottom offset on small screens to avoid overlap with footer/nav/aerator area */
-      .chat-btn { right: 12px; bottom: calc(90px + env(safe-area-inset-bottom)); transform: translateY(0); }
+      .chat-btn { right: 12px; bottom: calc(110px + env(safe-area-inset-bottom)); transform: translateY(0); }
     }
 
     /* Ticker/flash dark-mode visibility */
@@ -111,14 +110,11 @@
     .ticker-track .blink { background: #facc15; color: #111; }
     html.dark .ticker-track .blink { background: #f59e0b; color:#04101a; }
 
-    /* ensure ticker doesn't block gestures */
     .ticker, .ticker-track { touch-action: pan-y; -webkit-user-select: text; user-select: text; }
 
-    /* Flash news heading clear colors */
     .flash-section h3 { color: #0b1f2a; }
     html.dark .flash-section h3 { color: #e6f6f0; }
 
-    /* utility to hide aerator section (we removed DOM block but keep rule) */
     .hide-aerator { display:none !important; }
 
   </style>
@@ -131,32 +127,22 @@
         <img src="assets/logo.png" alt="Logo" class="h-9 w-9 object-contain block dark:hidden">
         <img src="assets/logo-dark.png" alt="Logo" class="h-9 w-9 object-contain hidden dark:block">
       </div>
-      <h1 class="text-xl font-bold hidden sm:inline">Aquaculture A–Z</h1>
-      <h1 class="text-xl font-bold sm:hidden mr-14 sm:mr-0">Aquaa A–Z</h1>
-      <nav class="hidden sm:flex gap-2 flex-1 justify-center">
-        <a href="index.html" class="navbtn">🏠 <span data-i18n="m_home">Home</span></a>
-        <a href="harvest.html" class="navbtn">🚚 <span data-i18n="t_harvest">Harvest</span></a>
-        <a href="seeds.html" class="navbtn">🦐 <span data-i18n="t_seeds">Seeds</span></a>
-        <a href="vendors.html" class="navbtn">🏪 <span data-i18n="t_dealers">Dealers</span></a>
-        <!-- Keep Aerator link in nav as requested -->
-        <a href="aerator.html" class="navbtn">⚙️ <span data-i18n="m_aerator">Aerator</span></a>
-        <a href="history.html" class="navbtn">📜 <span data-i18n="m_history">History</span></a>
-      </nav>
-      <div class="flex items-center gap-2 flex-none">
-        <label for="langSel" class="text-sm text-slate-600 dark:text-slate-300 select-none">Ln</label>
+
+      <h1 class="text-xl font-bold flex-1">Aquaa A–Z</h1>
+
+      <!-- Right-side controls (language + theme) -->
+      <div class="flex items-center gap-2">
+        <label for="langSel" class="text-sm text-slate-600 dark:text-slate-300 select-none hidden sm:inline">Ln</label>
         <select id="langSel" class="text-sm border rounded-md px-2 py-1 dark:bg-slate-900 dark:border-slate-700">
           <option value="te">తెలుగు</option>
           <option value="en">English</option>
         </select>
 
-        <!-- Theme toggle: per your request, moon shows in light, sun shows in dark -->
         <button id="themeToggle" class="rounded-full px-3 py-1.5 text-sm border border-slate-200 dark:border-slate-800" aria-label="Toggle theme">
           <span class="icon-moon" aria-hidden="true">
-            <!-- Moon SVG (visible in light mode) -->
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="18" height="18" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </span>
           <span class="icon-sun" aria-hidden="true">
-            <!-- Sun SVG (visible in dark mode) -->
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="18" height="18" xmlns="http://www.w3.org/2000/svg"><path d="M12 3v2M12 19v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke-width="1.6"/></svg>
           </span>
         </button>
@@ -220,8 +206,7 @@
       </div>
     </section>
 
-    <!-- NOTE: Aerator homepage card removed from dashboard/footer as you requested.
-         The Aerator link remains in the nav and the separate aerator.html page is unchanged. -->
+    <!-- Aerator removed from homepage per request -->
 
   </main>
 
@@ -239,7 +224,7 @@
     </a>
   </nav>
 
-  <!-- Chat: floating button + panel (bilingual replies) -->
+  <!-- Chat: floating button + panel (follows selected language only) -->
   <button class="chat-btn" id="openChat" aria-label="Open chat">💬</button>
 
   <div class="chat-panel" id="chatPanel" role="dialog" aria-label="Chat with Aqua A-Z" aria-hidden="true">
@@ -259,17 +244,31 @@
   </div>
 
   <script>
+    // ========== CONFIG: admin contact (as requested) ==========
+    const ADMIN_CONTACT_PHONE = '+91 9963643062';
+    const ADMIN_CONTACT_EMAIL = 'mvenu139@gmail.com';
+
     // small helpers
     const $id = s=>document.getElementById(s);
+
+    // expose rates/news/promos to global for chatbot use
+    window.APP_DATA = { rates: [], news: [], promos: [] };
+
     async function loadCSV(url){
-      try{const res=await fetch(url,{cache:'no-store'});if(!res.ok) throw 0;
-        const txt=await res.text();const lines=txt.trim().split(/\r?\n/);
+      try{
+        const res=await fetch(url,{cache:'no-store'});
+        if(!res.ok) throw 0;
+        const txt=await res.text();
+        const lines=txt.trim().split(/\r?\n/);
+        if(lines.length<2) return [];
         const headers=lines[0].split(',').map(h=>h.trim());
-        return lines.slice(1).map(line=>{const vals=line.split(',');const o={};headers.forEach((h,i)=>o[h]=vals[i]);return o;});
-      }catch(e){return [];}
+        return lines.slice(1).map(line=>{const vals=line.split(',');const o={};headers.forEach((h,i)=>o[h]=vals[i]||'' ); return o;});
+      }catch(e){
+        return [];
+      }
     }
 
-    // i18n dictionary (defaults) - flash_news Telugu -> "తాజా వార్త"
+    // i18n dictionary (flash_news Telugu -> "తాజా వార్త")
     window.dict = {
       en:{
         snapshot:"Live Snapshot",updated:"Updated",lbl_type:"Type",th_count:"Count",th_price:"Price (₹/kg)",th_change:"Change",
@@ -277,12 +276,12 @@
         t_harvest:"Harvest",t_seeds:"Seeds",t_dealers:"Dealers",contact:"Contact",flash_news:"Flash News",
         type_van:"Vannamei",type_tig:"Tiger",
         aerator_summary:"Aerators help maintain oxygen levels in ponds. Open full aerator tools & models.",
-        chat_title:"Help & Chat",chat_greeting:"Hi! How can I help you today?",chat_greeting_te:"హాయ్! నేను ఈరోజు ఎలా సహాయం చేయగలను?",
+        chat_title:"Help & Chat",chat_greeting:"Hi! How can I help you today?",
         chat_placeholder:"Type a message...",chat_open_aria:"Open chat",chat_close_aria:"Close chat",
         chat_reply_default:"Sorry, I cannot perform that now; but I can help. Please give more details.",
         chat_reply_aerator:"What details about aerators do you need? Model, capacity, or services?",
         chat_reply_history:"History: latest updates are managed by site admin and shown here when available.",
-        chat_more_info:"Please type a more detailed message."
+        chat_reply_contact:"You can reach admin at %PHONE% or %EMAIL%."
       },
       te:{
         snapshot:"లైవ్ స్నాప్‌షాట్",updated:"అప్‌డేట్",lbl_type:"రకం",th_count:"కౌంట్",th_price:"ధర (₹/kg)",th_change:"మార్పు",
@@ -290,12 +289,12 @@
         t_harvest:"హార్వెస్ట్",t_seeds:"సీడ్స్",t_dealers:"వెండర్లు",contact:"సంప్రదింపులు",flash_news:"తాజా వార్త",
         type_van:"వన్నామీ",type_tig:"టైగర్",
         aerator_summary:"ఎరేటర్లు చెరువుల ఆక్సిజన్ స్థాయిలను నిలుపుకోవడానికి సహాయపడతాయి. పూర్తి టూల్స్ & మోడల్స్ కోసం తెరవండి.",
-        chat_title:"సహాయం & చాట్",chat_greeting:"హాయ్! నేను ఈరోజు ఎలా సహాయం చేయగలను?",chat_greeting_te:"Hi! How can I help you today?",
+        chat_title:"సహాయం & చాట్",chat_greeting:"హాయ్! నేను మీకు ఎలా సహాయం చేయగలను?",
         chat_placeholder:"మీ సందేశం రాయండి...",chat_open_aria:"చాట్ ఓపెన్ చేయండి",chat_close_aria:"చాట్ మూసివేయండి",
-        chat_reply_default:"క్షమించండి, నేను దాన్ని ఇప్పుడే అమలు చేయలేను; కానీ నేను సహాయపడగలను. దయచేసి మరిన్ని వివరాలు ఇవ్వండి.",
+        chat_reply_default:"క్షమించండి, నేను ఇప్పుడే అది చేయలేను; కానీ నేను సహాయపడగలను. దయచేసి వివరాలు ఇవ్వండి.",
         chat_reply_aerator:"ఎరేటర్ల గురించి మీరు ఏమి తెలుసుకోవాలనుకుంటున్నారు? మోడల్, సామర్థ్యం లేదా సేవలు?",
-        chat_reply_history:"చరిత్ర: తాజా అప్‌డేట్స్ సైట్ అడ్మిన్ ద్వారా నిర్వహింపబడి ఇక్కడ చూపబడతాయి.",
-        chat_more_info:"దయచేసి మీ సందేశాన్ని వివరంగా టైప్ చేయండి."
+        chat_reply_history:"చరిత్ర: తాజా అప్‌డేట్స్ సైట్ అడ్మిన్ ద్వారా ఇక్కడ చూపబడతాయి.",
+        chat_reply_contact:"నిర్వాహకునిని ఈ నంబర్‌లో సంప్రదించండి %PHONE% లేదా ఈ మెయిల్ %EMAIL%."
       }
     };
 
@@ -306,7 +305,7 @@
         const k=el.dataset.i18n;
         if(window.dict[lang] && window.dict[lang][k]) el.textContent = window.dict[lang][k];
       });
-      // chat placeholders & aria
+      // placeholders & aria
       const langNow = localStorage.getItem('lang')||'te';
       if($id('chatInput')) $id('chatInput').placeholder = window.dict[langNow]['chat_placeholder'] || '';
       if($id('openChat')) $id('openChat').setAttribute('aria-label', window.dict[langNow]['chat_open_aria'] || '');
@@ -314,7 +313,6 @@
       if($id('chatTitle')) $id('chatTitle').textContent = window.dict[langNow]['chat_title'] || '';
     }
 
-    // badge helper
     function badge(d){
       if(d===null) return `<span class="inline-flex px-2 py-0.5 rounded-full text-xs bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">—</span>`;
       if(d>0) return `<span class="inline-flex gap-1 px-2 py-0.5 rounded-full text-xs bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">▲ +₹${d}</span>`;
@@ -322,10 +320,12 @@
       return `<span class="inline-flex px-2 py-0.5 rounded-full text-xs bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">—</span>`;
     }
 
-    function renderRates(data,type){const body=$id('ratesTable').querySelector('tbody');body.innerHTML='';
+    function renderRates(data,type){
+      const body=$id('ratesTable').querySelector('tbody'); body.innerHTML='';
       const rows=(data||[]).filter(r=>r.type===type);
-      rows.forEach(r=>{const diff=(+r.current||0)-(+r.previous||0);
-        const tr=document.createElement('tr');tr.className="border-b last:border-0 dark:border-slate-800";
+      rows.forEach(r=>{
+        const diff=(+r.current||0)-(+r.previous||0);
+        const tr=document.createElement('tr'); tr.className="border-b last:border-0 dark:border-slate-800";
         tr.innerHTML=`<td class="py-2 pr-4 font-medium">${r.count}c</td>
                       <td class="py-2 pr-4">₹ ${r.current}</td>
                       <td class="py-2 pr-4">${badge(diff)}</td>`;
@@ -341,18 +341,15 @@
       const row=rowItems.map(n=>{
         const blink=String(n.tag||'').toLowerCase().includes('harvest')||String(n.tag||'').includes('హార్వెస్ట్');
         const tagHtml = n.tag ? `<span class="px-2 py-0.5 rounded-full text-[11px] ${blink?'blink bg-sky-200':'bg-sky-100'}">${n.tag}</span>` : '';
-        return `<div class="flex items-center gap-2 pr-4" role="listitem">
-                  ${tagHtml}
-                  <span>${n.text||''}</span>
-                </div>`;
+        return `<div class="flex items-center gap-2 pr-4" role="listitem">${tagHtml}<span>${n.text||''}</span></div>`;
       }).join('');
       $id('newsTrackTop').innerHTML=(row || '') + (row || '') + (row || '');
       $id('newsUpdatedTop').textContent=new Intl.DateTimeFormat('en-IN',{dateStyle:'medium',timeStyle:'short'}).format(new Date());
     }
 
-    let PROMOS=[],promoIdx=0,timer=null;
-    function renderPromo(){const lang=localStorage.getItem('lang')||'te';
-      const track=$id('promoTrack'),dots=$id('promoDots');
+    let PROMOS=[], promoIdx=0, timer=null;
+    function renderPromo(){ const lang=localStorage.getItem('lang')||'te';
+      const track=$id('promoTrack'), dots=$id('promoDots');
       track.innerHTML=PROMOS.map((r,i)=>`
         <div class="promo-slide rounded-xl p-4 bg-blue-50 dark:bg-slate-800/40 ${i===promoIdx?'active':''}">
           ${r.badge?`<span class="inline-block text-xs px-3 py-1 rounded-full bg-sky-200/70">${r.badge}</span>`:''}
@@ -362,29 +359,165 @@
       dots.innerHTML=PROMOS.map((_,i)=>`<button class="promo-dot ${i===promoIdx?'active':''}" data-i="${i}"></button>`).join('');
       dots.querySelectorAll('button').forEach(b=>b.onclick=()=>{promoIdx=+b.dataset.i;renderPromo();startPromo();});
     }
-    function startPromo(){if(timer)clearInterval(timer);if(PROMOS.length>0) timer=setInterval(()=>{promoIdx=(promoIdx+1)%PROMOS.length;renderPromo();},6000);}
+    function startPromo(){ if(timer)clearInterval(timer); if(PROMOS.length>0) timer=setInterval(()=>{ promoIdx=(promoIdx+1)%PROMOS.length; renderPromo(); },6000); }
 
-    /* ---------------- Chat (bilingual replies) ---------------- */
-    function escapeHtml(str){return (str||'').replace(/[&<>"']/g, function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];});}
-    function appendUserMessage(text){const div=document.createElement('div');div.className='msg user';div.innerText=text; $id('chatMessages').appendChild(div); $id('chatMessages').scrollTop=$id('chatMessages').scrollHeight;}
-    function appendBotMessage(en, te){const div=document.createElement('div');div.className='msg bot';div.innerHTML=`<div class="reply-en">${escapeHtml(en)}</div><div class="reply-te">${escapeHtml(te)}</div>`;$id('chatMessages').appendChild(div); $id('chatMessages').scrollTop=$id('chatMessages').scrollHeight;}
+    /* ---------------- Chat behavior (now data-driven & language-aware) ---------------- */
+    function escapeHtml(str){ return (str||'').replace(/[&<>"']/g, function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];}); }
+
+    function appendUserMessage(text){
+      const div=document.createElement('div'); div.className='msg user'; div.innerText=text;
+      $id('chatMessages').appendChild(div); $id('chatMessages').scrollTop=$id('chatMessages').scrollHeight;
+    }
+    function appendBotMessage(text){
+      const div=document.createElement('div'); div.className='msg bot';
+      div.innerHTML = `<div class="reply-te">${escapeHtml(text)}</div>`; // single language reply (te/en) depending on lang
+      $id('chatMessages').appendChild(div); $id('chatMessages').scrollTop=$id('chatMessages').scrollHeight;
+    }
+
+    // Build language-specific reply
+    function makeReply(lang, key, payload){
+      // key can be: 'default','rates','news','promo','contact','aerator','history'
+      payload = payload || {};
+      if(lang === 'en'){
+        switch(key){
+          case 'rates':
+            return buildRatesSummary('en', payload);
+          case 'news':
+            return buildNewsSummary('en', payload);
+          case 'promo':
+            return buildPromoSummary('en', payload);
+          case 'contact':
+            return window.dict.en.chat_reply_contact.replace('%PHONE%', ADMIN_CONTACT_PHONE).replace('%EMAIL%', ADMIN_CONTACT_EMAIL);
+          case 'aerator':
+            return window.dict.en.chat_reply_aerator;
+          case 'history':
+            return window.dict.en.chat_reply_history;
+          default:
+            return window.dict.en.chat_reply_default;
+        }
+      } else {
+        switch(key){
+          case 'rates':
+            return buildRatesSummary('te', payload);
+          case 'news':
+            return buildNewsSummary('te', payload);
+          case 'promo':
+            return buildPromoSummary('te', payload);
+          case 'contact':
+            return window.dict.te.chat_reply_contact.replace('%PHONE%', ADMIN_CONTACT_PHONE).replace('%EMAIL%', ADMIN_CONTACT_EMAIL);
+          case 'aerator':
+            return window.dict.te.chat_reply_aerator;
+          case 'history':
+            return window.dict.te.chat_reply_history;
+          default:
+            return window.dict.te.chat_reply_default;
+        }
+      }
+    }
+
+    function buildRatesSummary(lang, {type}){
+      const rates = window.APP_DATA.rates || [];
+      const rows = (rates.filter(r=>r.type===type));
+      if(!rows.length) return (lang==='en') ? 'No rates available.' : 'ధరలు అందుబాటులో లేవు.';
+      // pick top 5
+      const top = rows.slice(0,6);
+      if(lang==='en'){
+        let out = `Current ${type} rates: `;
+        out += top.map(r => `${r.count}c = ₹${r.current}`).join(', ');
+        out += `. (Updated)`;
+        return out;
+      } else {
+        let out = `${type} ధరలు: `;
+        out += top.map(r => `${r.count}c = ₹${r.current}`).join(', ');
+        out += `.`; return out;
+      }
+    }
+
+    function buildNewsSummary(lang){
+      const news = window.APP_DATA.news || [];
+      const langNow = localStorage.getItem('lang')||'te';
+      const list = news.filter(n=>n.lang===langNow).slice(0,3);
+      if(!list.length) return (lang==='en') ? 'No news available.' : 'వార్తలు అందుబాటులో లేవు.';
+      if(lang==='en'){
+        return 'Latest: ' + list.map(n=>n.text).join(' | ');
+      } else {
+        return 'తాజా వార్తలు: ' + list.map(n=>n.text).join(' | ');
+      }
+    }
+
+    function buildPromoSummary(lang){
+      const promos = window.APP_DATA.promos || [];
+      if(!promos.length) return (lang==='en') ? 'No promotions.' : 'ప్రోమోషన్స్ లేవు.';
+      const p = promos[0];
+      if(lang==='en') return `${p.title_en || p.title_te} — ${p.desc_en || ''}`;
+      return `${p.title_te || p.title_en} — ${p.desc_te || ''}`;
+    }
 
     function injectInitialGreeting(){
-      const enGreeting = window.dict.en.chat_greeting || 'Hi! How can I help you today?';
-      const teGreeting = window.dict.te.chat_greeting || 'హాయ్! నేను ఈరోజు ఎలా సహాయం చేయగలను?';
-      appendBotMessage(enGreeting, teGreeting);
+      const lang = localStorage.getItem('lang')||'te';
+      const greeting = (lang==='en') ? window.dict.en.chat_greeting : window.dict.te.chat_greeting;
+      appendBotMessage(greeting);
     }
 
+    // Main bot reply: keyword detection and data-driven answers
     function botReply(userText){
-      const t=(userText||'').toLowerCase();
-      let en=window.dict.en.chat_reply_default, te=window.dict.te.chat_reply_default;
-      if(t.includes('aerator')||t.includes('ఎరేటర్')){ en=window.dict.en.chat_reply_aerator; te=window.dict.te.chat_reply_aerator; }
-      else if(t.includes('history')||t.includes('చరిత్ర')){ en=window.dict.en.chat_reply_history; te=window.dict.te.chat_reply_history; }
-      else if((userText||'').trim().length<3){ en=window.dict.en.chat_more_info; te=window.dict.te.chat_more_info; }
-      setTimeout(()=>appendBotMessage(en,te),450);
+      const lang = localStorage.getItem('lang')||'te';
+      const t = (userText||'').toLowerCase();
+
+      // contact requests
+      const contactKeywords = ['contact','phone','email','number','సంప్రదింపులు','ఫోన్','నమ్బర్','ఇమెయిల్','ఇమెయిల్'];
+      for(const k of contactKeywords) if(t.includes(k)){ appendBotMessage(makeReply(lang,'contact')); return; }
+
+      // history
+      const historyKeys = ['history','చరిత్ర','history:','హిస్టరీ'];
+      for(const k of historyKeys) if(t.includes(k)){ appendBotMessage(makeReply(lang,'history')); return; }
+
+      // aerator
+      const aerKeys = ['aerator','ఎరేటర్','ఎరేటర్లు'];
+      for(const k of aerKeys) if(t.includes(k)){ appendBotMessage(makeReply(lang,'aerator')); return; }
+
+      // news request
+      const newsKeys = ['news','వార్త','flash','తాజా'];
+      for(const k of newsKeys) if(t.includes(k)){ appendBotMessage(makeReply(lang,'news')); return; }
+
+      // promo request
+      const promoKeys = ['promo','promotion','ప్రోమో','డిస్కౌంట్','offer'];
+      for(const k of promoKeys) if(t.includes(k)){ appendBotMessage(makeReply(lang,'promo')); return; }
+
+      // rates / price requests: look for words like 'rate','price','ధర','rate for 100c' or '100c'
+      const rateKeys = ['rate','price','ధర','rates','price of','ధరల'];
+      let askedForCount = null;
+      // detect specific count like '100c' or '100 c'
+      const countMatch = userText.match(/(\d{2,3})\s*c?/i);
+      if(countMatch) askedForCount = countMatch[1] + 'c';
+      for(const k of rateKeys) if(t.includes(k) || askedForCount){ 
+        // use selected prawnType to filter
+        const selectedType = $id('prawnType') ? $id('prawnType').value : 'Vannamei';
+        if(askedForCount){
+          // find specific row
+          const row = (window.APP_DATA.rates||[]).find(r=>r.type===selectedType && r.count === askedForCount);
+          if(row){
+            if(lang==='en') appendBotMessage(`Price for ${row.count}: ₹${row.current} (previous: ₹${row.previous || '—'})`);
+            else appendBotMessage(`${row.count} ధర: ₹${row.current} (మునుపటి: ₹${row.previous || '—'})`);
+            return;
+          }
+        }
+        // otherwise give summary
+        appendBotMessage(makeReply(lang,'rates', { type: $id('prawnType') ? $id('prawnType').value : 'Vannamei' }));
+        return;
+      }
+
+      // fallback for short messages
+      if((userText||'').trim().length < 3){
+        appendBotMessage((lang==='en') ? window.dict.en.chat_reply_default : window.dict.te.chat_reply_default);
+        return;
+      }
+
+      // default: generic helpful message
+      appendBotMessage((lang==='en') ? window.dict.en.chat_reply_default : window.dict.te.chat_reply_default);
     }
 
-    /* Chat keyboard / viewport safety: manage panel bottom when mobile keyboard opens */
+    // Chat keyboard / viewport safety: manage panel bottom when mobile keyboard opens
     function enableChatViewportSync(){
       const panel = $id('chatPanel');
       const btn = $id('openChat');
@@ -398,7 +531,6 @@
             const offset = Math.max(0, baseInner - vv.height);
             panel.style.bottom = `calc(${90 + offset}px + env(safe-area-inset-bottom))`;
             btn.style.bottom = `calc(${90 + offset}px + env(safe-area-inset-bottom))`;
-            // ensure extra lift on narrow screens
             if(window.innerWidth <= 420){
               btn.style.bottom = `calc(${110 + offset}px + env(safe-area-inset-bottom))`;
             }
@@ -439,10 +571,10 @@
         localStorage.setItem('theme', document.documentElement.classList.contains('dark')?'dark':'light');
       };
 
-      // load CSVs (if present)
-      const rates = await loadCSV('data/rates.csv');
-      const NEWS = await loadCSV('data/news.csv');
-      PROMOS = await loadCSV('data/promotions.csv');
+      // load CSVs (if present) and store globally for chat usage
+      const rates = await loadCSV('data/rates.csv'); window.APP_DATA.rates = rates || [];
+      const NEWS = await loadCSV('data/news.csv'); window.APP_DATA.news = NEWS || [];
+      PROMOS = await loadCSV('data/promotions.csv'); window.APP_DATA.promos = PROMOS || [];
 
       // fill prawn type options
       function fillTypeOptions(){
@@ -450,15 +582,15 @@
         $id('prawnType').innerHTML=`<option value="Vannamei">${window.dict[lang].type_van}</option><option value="Tiger">${window.dict[lang].type_tig}</option>`;
       }
       fillTypeOptions();
-      $id('prawnType').onchange=()=>renderRates(rates,$id('prawnType').value);
-      renderRates(rates,"Vannamei");
-      renderNews(NEWS); renderPromo(); startPromo();
+      $id('prawnType').onchange=()=>renderRates(window.APP_DATA.rates,$id('prawnType').value);
+      renderRates(window.APP_DATA.rates,"Vannamei");
+      renderNews(window.APP_DATA.news); renderPromo(); startPromo();
 
-      // language change
+      // language change: ensure chat follows selected language
       $id('langSel').value = localStorage.getItem('lang') || 'te';
       $id('langSel').onchange = e => {
         localStorage.setItem('lang', e.target.value);
-        applyI18n(); fillTypeOptions(); renderRates(rates,$id('prawnType').value); renderNews(NEWS); renderPromo();
+        applyI18n(); fillTypeOptions(); renderRates(window.APP_DATA.rates,$id('prawnType').value); renderNews(window.APP_DATA.news); renderPromo();
       };
 
       // chat wiring
