@@ -26,22 +26,97 @@
     .promo-slide{display:none}
     .promo-slide.active{display:block}
 
+    /* THEME ICONS */
+    #themeToggle { display:flex; align-items:center; justify-content:center; gap:8px; }
+    #themeToggle .icon-sun, #themeToggle .icon-moon { display:inline-flex; width:18px; height:18px; line-height:1; }
+    /* show/hide based on .dark on html */
+    html.dark #themeToggle .icon-sun { display:none; }
+    html:not(.dark) #themeToggle .icon-moon { display:none; }
+
+    /* make the toggle visually consistent */
+    #themeToggle { border-radius:9999px; padding:.35rem .6rem; background:transparent; cursor:pointer; border:1px solid var(--tw-border-opacity,1); }
+
     /* Chat styles */
-    .chat-btn { position: fixed; right: 16px; bottom: 78px; width: 56px; height: 56px; border-radius: 50%; background: #0b6b6b; color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 18px rgba(11,107,107,0.18); border: none; z-index: 1000; font-size: 20px; }
-    .chat-panel { position: fixed; right: 14px; bottom: 148px; width: 92%; max-width: 360px; height: 56vh; max-height: 520px; background: #fff; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); display: none; flex-direction: column; overflow: hidden; z-index: 1000; }
-    .chat-panel.open { display: flex; }
+    .chat-btn {
+      position: fixed;
+      right: 16px;
+      bottom: calc(78px + env(safe-area-inset-bottom)); /* dynamic with safe area */
+      width: 56px; height: 56px; border-radius: 50%;
+      background: #0b6b6b; color: #fff; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 6px 18px rgba(11,107,107,0.18); border: none; z-index: 1000; font-size: 20px;
+    }
+    /* dark-friendly chat button */
+    html.dark .chat-btn { background:#0b9a9a; }
+
+    .chat-panel {
+      position: fixed;
+      right: 14px;
+      bottom: calc(148px + env(safe-area-inset-bottom));
+      width: 92%;
+      max-width: 360px;
+      height: 56vh;
+      max-height: 520px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+      display: none; flex-direction: column; overflow: hidden; z-index: 1000;
+      color: #111;
+    }
+    .chat-panel.open { display:flex; }
+
+    /* dark mode for chat */
+    html.dark .chat-panel { background: #071824; color: #e6eef3; box-shadow: 0 10px 30px rgba(2,6,23,0.5); }
     .chat-header { padding: 12px; border-bottom: 1px solid #eee; display:flex;align-items:center;justify-content:space-between; }
+    html.dark .chat-header { border-color: rgba(255,255,255,0.06); }
+
     .chat-title { font-weight:600; font-size:15px; color:#0b5b5b; }
-    .chat-messages { flex:1; padding:12px; overflow:auto; display:flex;flex-direction:column; gap:8px; background:#fbfbfb; }
+    html.dark .chat-title { color: #dff3ef; }
+
+    .chat-messages {
+      flex:1; padding:12px; overflow:auto; display:flex;flex-direction:column; gap:8px;
+      background:#fbfbfb;
+    }
+    html.dark .chat-messages { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); }
+
     .msg { max-width:78%; padding:8px 10px; border-radius:10px; font-size:14px; }
     .msg.user { align-self:flex-end; background:#0b6b6b; color:#fff; border-bottom-right-radius:4px; }
+    html.dark .msg.user { background:#0b9a9a; color:#012; }
+
     .msg.bot { align-self:flex-start; background:#fff; color:#111; border:1px solid #eee; }
-    .reply-en { font-weight:700; margin-bottom:4px; }
+    html.dark .msg.bot { background: rgba(255,255,255,0.03); color:#e6eef3; border: 1px solid rgba(255,255,255,0.04); }
+
+    .reply-en { font-weight:700; margin-bottom:4px; color:#0b3b3b; }
+    html.dark .reply-en { color:#dff3ef; }
     .reply-te { color:#475569; font-size:13px; opacity:0.95; }
-    .chat-input { display:flex; gap:8px; padding:10px; border-top:1px solid #eee; }
-    .chat-input input { flex:1;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px }
+    html.dark .reply-te { color:#bfe8dc; opacity:0.95; }
+
+    .chat-input { display:flex; gap:8px; padding:10px; border-top:1px solid #eee; align-items:center; }
+    html.dark .chat-input { border-top-color: rgba(255,255,255,0.04); }
+    .chat-input input { flex:1;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px; background:#fff; color:#111; }
+    html.dark .chat-input input { background: rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.06); color:#e6eef3; }
+    .chat-input input::placeholder { color: #9aa3ad; }
+    html.dark .chat-input input::placeholder { color: #95b5ac; opacity:0.9; }
+
     .chat-input button { padding:10px 12px;border-radius:8px;border:none;background:#0b6b6b;color:#fff;font-weight:600 }
-    @media(max-width:420px){ .chat-panel{right:8px;left:8px;max-width:none} }
+    html.dark .chat-input button { background:#0b9a9a; color:#012; font-weight:700; }
+
+    @media(max-width:420px){
+      .chat-panel{ right:8px; left:8px; max-width:none; width: calc(100% - 16px); bottom: calc(110px + env(safe-area-inset-bottom)); height: 48vh; max-height: 60vh; }
+      .chat-input { padding: 8px; gap:6px; }
+      .chat-input input { padding:9px; border-radius:10px; font-size:15px; }
+      .chat-btn { right: 12px; bottom: calc(18px + env(safe-area-inset-bottom)); }
+    }
+
+    /* Ticker/flash dark-mode visibility */
+    .ticker-track > div { color: #0b1f2a; } /* default */
+    html.dark .ticker-track > div { color: #e6f6f0; } /* bright text in dark mode */
+    /* ensure tag badges visible in dark */
+    .ticker-track .blink { background: #facc15; color: #111; }
+    html.dark .ticker-track .blink { background: #f59e0b; color:#04101a; }
+
+    /* Hide aerator permanently (removed section in markup but keep rule if present) */
+    .hide-aerator { display:none !important; }
+
   </style>
 </head>
 <body class="text-slate-900 dark:text-slate-100">
@@ -59,7 +134,7 @@
         <a href="harvest.html" class="navbtn">🚚 <span data-i18n="t_harvest">Harvest</span></a>
         <a href="seeds.html" class="navbtn">🦐 <span data-i18n="t_seeds">Seeds</span></a>
         <a href="vendors.html" class="navbtn">🏪 <span data-i18n="t_dealers">Dealers</span></a>
-        <a href="aerator.html" class="navbtn">⚙️ <span data-i18n="m_aerator">Aerator</span></a>
+        <!-- Aerator removed as requested -->
         <a href="history.html" class="navbtn">📜 <span data-i18n="m_history">History</span></a>
       </nav>
       <div class="flex items-center gap-2 flex-none">
@@ -68,7 +143,18 @@
           <option value="te">తెలుగు</option>
           <option value="en">English</option>
         </select>
-        <button id="themeToggle" class="rounded-full px-3 py-1.5 text-sm border border-slate-200 dark:border-slate-800">🌙/☀️</button>
+
+        <!-- Theme toggle: shows sun in light, moon in dark -->
+        <button id="themeToggle" class="rounded-full px-3 py-1.5 text-sm border border-slate-200 dark:border-slate-800" aria-label="Toggle theme">
+          <span class="icon-sun" aria-hidden="true">
+            <!-- Sun SVG -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="18" height="18" xmlns="http://www.w3.org/2000/svg"><path d="M12 3v2M12 19v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke-width="1.6"/></svg>
+          </span>
+          <span class="icon-moon" aria-hidden="true">
+            <!-- Moon SVG -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="18" height="18" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </button>
       </div>
     </div>
   </header>
@@ -129,14 +215,7 @@
       </div>
     </section>
 
-    <!-- Aerator summary (links to aerator.html) -->
-    <section class="rounded-2xl p-4 bg-white dark:bg-slate-900 shadow-soft border border-slate-200/60 dark:border-slate-800">
-      <div class="flex items-center justify-between">
-        <h3 class="font-semibold">⚙️ <span data-i18n="m_aerator">Aerator</span></h3>
-        <a href="aerator.html" class="navbtn">See details</a>
-      </div>
-      <p class="mt-3 text-slate-600 dark:text-slate-300" data-i18n="aerator_summary">Aerators help maintain oxygen levels in ponds. Open full aerator tools & models.</p>
-    </section>
+    <!-- Note: Aerator section removed as requested -->
 
   </main>
 
@@ -184,7 +263,7 @@
       }catch(e){return [];}
     }
 
-    // i18n dictionary (defaults)
+    // i18n dictionary (defaults) - updated flash_news Telugu -> "తాజా వార్త"
     window.dict = {
       en:{
         snapshot:"Live Snapshot",updated:"Updated",lbl_type:"Type",th_count:"Count",th_price:"Price (₹/kg)",th_change:"Change",
@@ -202,7 +281,7 @@
       te:{
         snapshot:"లైవ్ స్నాప్‌షాట్",updated:"అప్‌డేట్",lbl_type:"రకం",th_count:"కౌంట్",th_price:"ధర (₹/kg)",th_change:"మార్పు",
         promotions_title:"ప్రోమోషన్స్",m_aerator:"ఎరేటర్",m_home:"హోమ్",m_history:"చరిత్ర",m_shrimp:"రొయ్యలు",
-        t_harvest:"హార్వెస్ట్",t_seeds:"సీడ్స్",t_dealers:"వెండర్లు",contact:"సంప్రదింపులు",flash_news:"ఫ్లാഷ్ న్యూస్",
+        t_harvest:"హార్వెస్ట్",t_seeds:"సీడ్స్",t_dealers:"వెండర్లు",contact:"సంప్రదింపులు",flash_news:"తాజా వార్త",
         type_van:"వన్నామీ",type_tig:"టైగర్",
         aerator_summary:"ఎరేటర్లు చెరువుల ఆక్సిజన్ స్థాయిలను నిలుపుకోవడానికి సహాయపడతాయి. పూర్తి టూల్స్ & మోడల్స్ కోసం తెరవండి.",
         chat_title:"సహాయం & చాట్",chat_greeting:"హాయ్! నేను ఈరోజు ఎలా సహాయం చేయగలను?",chat_greeting_te:"Hi! How can I help you today?",
@@ -238,7 +317,7 @@
     }
 
     function renderRates(data,type){const body=$id('ratesTable').querySelector('tbody');body.innerHTML='';
-      const rows=data.filter(r=>r.type===type);
+      const rows=(data||[]).filter(r=>r.type===type);
       rows.forEach(r=>{const diff=(+r.current||0)-(+r.previous||0);
         const tr=document.createElement('tr');tr.className="border-b last:border-0 dark:border-slate-800";
         tr.innerHTML=`<td class="py-2 pr-4 font-medium">${r.count}c</td>
@@ -251,15 +330,18 @@
 
     function renderNews(data){
       const lang=localStorage.getItem('lang')||'te';
-      const list=data.filter(n=>n.lang===lang);
-      const row=list.map(n=>{
-        const blink=String(n.tag).toLowerCase().includes('harvest')||String(n.tag).includes('హార్వెస్ట్');
+      const list=(data||[]).filter(n=>n.lang===lang);
+      // fallback: if none, use any language
+      const rowItems = list.length? list : (data||[]).slice(0,5);
+      const row=rowItems.map(n=>{
+        const blink=String(n.tag||'').toLowerCase().includes('harvest')||String(n.tag||'').includes('హార్వెస్ట్');
         return `<div class="flex items-center gap-2 pr-4">
-                  <span class="px-2 py-0.5 rounded-full text-[11px] ${blink?'blink bg-sky-200':'bg-sky-100'}">${n.tag}</span>
-                  <span>${n.text}</span>
+                  <span class="px-2 py-0.5 rounded-full text-[11px] ${blink?'blink bg-sky-200':'bg-sky-100'}">${n.tag||''}</span>
+                  <span>${n.text||''}</span>
                 </div>`;
       }).join('');
-      $id('newsTrackTop').innerHTML=row+row+row;
+      // duplicate to make ticker long
+      $id('newsTrackTop').innerHTML=(row || '') + (row || '') + (row || '');
       $id('newsUpdatedTop').textContent=new Intl.DateTimeFormat('en-IN',{dateStyle:'medium',timeStyle:'short'}).format(new Date());
     }
 
@@ -297,12 +379,60 @@
       setTimeout(()=>appendBotMessage(en,te),450);
     }
 
+    // Chat keyboard / viewport safety: manage panel bottom when mobile keyboard opens
+    function enableChatViewportSync(){
+      const panel = $id('chatPanel');
+      const btn = $id('openChat');
+      if(!panel) return;
+      // store initial viewport height
+      let baseInner = window.innerHeight;
+      // handler uses visualViewport when available
+      function adjust() {
+        try {
+          if (window.visualViewport) {
+            // place panel above keyboard by using visualViewport height difference
+            const vv = window.visualViewport;
+            const offset = Math.max(0, baseInner - vv.height); // keyboard height approx
+            const bottomPad = 16 + offset + (parseInt(getComputedStyle(document.documentElement).fontSize)||16);
+            panel.style.bottom = `calc(${148 + offset}px + env(safe-area-inset-bottom))`;
+            btn.style.bottom = `calc(${18 + offset}px + env(safe-area-inset-bottom))`;
+          } else {
+            // fallback: if innerHeight decreased significantly, move up by difference
+            const diff = Math.max(0, baseInner - window.innerHeight);
+            panel.style.bottom = `calc(${148 + diff}px + env(safe-area-inset-bottom))`;
+            btn.style.bottom = `calc(${18 + diff}px + env(safe-area-inset-bottom))`;
+          }
+        } catch(e){
+          // ignore
+        }
+      }
+      // on resize/viewportchange
+      if(window.visualViewport){
+        window.visualViewport.addEventListener('resize', adjust);
+      }
+      window.addEventListener('resize', adjust);
+      // also reset base on focusin (useful if orientation changed)
+      window.addEventListener('orientationchange', ()=>{ baseInner = window.innerHeight; setTimeout(adjust,300); });
+    }
+
     document.addEventListener('DOMContentLoaded', async ()=>{
+      // default language
       if(!localStorage.getItem('lang')) localStorage.setItem('lang','te');
       applyI18n();
-      // theme
-      const saved=localStorage.getItem('theme'); if(saved==='dark'||(!saved&&matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
-      $id('themeToggle').onclick=()=>{ document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark')?'dark':'light'); };
+
+      // theme init: check saved or OS preference
+      const saved=localStorage.getItem('theme');
+      if(saved==='dark' || (!saved && matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+
+      // theme toggle behavior (now toggles .dark on <html> and stores in localStorage)
+      $id('themeToggle').onclick=()=>{
+        document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', document.documentElement.classList.contains('dark')?'dark':'light');
+      };
 
       // load CSVs (if present)
       const rates = await loadCSV('data/rates.csv');
@@ -320,6 +450,7 @@
       renderNews(NEWS); renderPromo(); startPromo();
 
       // language change
+      $id('langSel').value = localStorage.getItem('lang') || 'te';
       $id('langSel').onchange = e => {
         localStorage.setItem('lang', e.target.value);
         applyI18n(); fillTypeOptions(); renderRates(rates,$id('prawnType').value); renderNews(NEWS); renderPromo();
@@ -334,6 +465,20 @@
       sendBtn.addEventListener('click', ()=>{ const txt=chatInput.value.trim(); if(!txt) return; appendUserMessage(txt); chatInput.value=''; botReply(txt); });
       chatInput.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); sendBtn.click(); } });
       document.addEventListener('keydown', e=>{ if(e.key==='Escape' && chatPanel.classList.contains('open')){ chatPanel.classList.remove('open'); openChat.focus(); }});
+
+      // enable viewport sync for mobile keyboard safe area
+      enableChatViewportSync();
+
+      // small accessibility: ensure theme toggle aria updated
+      function updateThemeAria(){
+        const isDark = document.documentElement.classList.contains('dark');
+        $id('themeToggle').setAttribute('aria-pressed', isDark ? 'true' : 'false');
+      }
+      updateThemeAria();
+      // observe class changes to update aria when theme toggles
+      const obs = new MutationObserver(updateThemeAria);
+      obs.observe(document.documentElement, { attributes:true, attributeFilter:['class'] });
+
     });
   </script>
 </body>
