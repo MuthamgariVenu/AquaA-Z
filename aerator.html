@@ -24,6 +24,11 @@
     .recommend-badge { position:absolute; right:10px; top:10px; background:#059669; color:white; padding:6px 10px; border-radius:999px; font-weight:800; font-size:13px; }
     .hidden { display:none; }
     .container { max-width:1100px; margin:0 auto; padding:14px; }
+    .toast { position:fixed; right:16px; bottom:24px; z-index:80; min-width:220px; background: rgba(2,6,23,0.9); color:white; padding:10px 14px; border-radius:12px; box-shadow:0 10px 30px rgba(2,6,23,0.2); display:none; }
+    .modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,0.35); display:none; align-items:center; justify-content:center; z-index:70; }
+    .modal { width:94%; max-width:520px; background:white; border-radius:12px; padding:16px; box-shadow:0 18px 40px rgba(2,6,23,0.12); }
+    .modal h3 { font-weight:800; margin-bottom:8px; }
+    .modal .sub { color:#475569; font-size:13px; margin-bottom:12px; }
     @media (min-width: 768px) { .two-col { display:grid; grid-template-columns: 1fr 420px; gap:18px; } }
     @media (max-width: 767px) { .card-img{height:140px} .recommend-badge{font-size:12px;padding:5px 8px} }
   </style>
@@ -50,18 +55,18 @@
     <section class="mb-4">
       <div class="card p-4">
         <h1 class="text-xl font-bold">ఎరేటర్</h1>
-        <p class="mt-2 text-slate-600">ఎరేటర్లు చెరువులో ఆక్సిజన్ స్థాయిలను నిలుపుకోవడానికి సహాయపడతాయి — క్రింది లెక్కింపు ఉపయోగించి ఎంత సామర్థ్యం కావాలో తెలుసుకోండి.  (ఉపరితల తేలే మోడల్స్ కొరకు)</p>
+        <p class="mt-2 text-slate-600">ఎరేటర్లు చెరువులో ఆక్సిజన్ స్థాయిలను నిలుపుకోవడానికి సహాయపడతాయి — క్రింది లెక్కింపు ఉపయోగించి ఎంత సామర్థ్యం కావాలో తెలుసుకోండి.</p>
       </div>
     </section>
 
-    <!-- Main area: calculator (initial) -->
+    <!-- Calculator -->
     <section id="calculatorArea" class="card p-4">
       <h2 class="font-semibold mb-3">ఎరేటర్ కేల్క్యులేటర్</h2>
 
       <label class="text-xs font-medium">చెరువు ఉపరితలం (ఎకరాలు)</label>
       <input id="acreInput" type="number" step="0.01" min="0.01" placeholder="ఉదా. 0.5" class="mt-2 w-full rounded-lg border px-3 py-2" />
 
-      <label class="text-xs font-medium mt-3 block">సగటు లోతు (ఫుట్స్లో)</label>
+      <label class="text-xs font-medium mt-3 block">సగటు లోతు (ఫుట్స్)</label>
       <input id="depthFtInput" type="number" step="0.1" min="0.1" placeholder="ఉదా. 4" class="mt-2 w-full rounded-lg border px-3 py-2" />
 
       <div class="mt-4 flex gap-2">
@@ -69,14 +74,12 @@
         <button id="resetBtn" class="btn">రీసెట్</button>
       </div>
 
-      <div id="resultPanel" class="mt-4 hidden">
-        <!-- Telugu-only result will be placed here -->
-      </div>
+      <div id="resultPanel" class="mt-4 hidden"></div>
 
       <p class="mt-4 text-xs text-slate-500">గమనిక: ఇది ఒక అంచనా మాత్రమే; ఖచ్చిత ఎంపిక కోసం ఉత్పత్తి స్పెక్స్ చూడండి.</p>
     </section>
 
-    <!-- Models area: will replace calculator when user clicks New/Old OR after calculate -->
+    <!-- Models area -->
     <section id="modelsArea" class="hidden mt-4">
       <div class="flex items-center justify-between mb-3">
         <div class="flex items-center gap-2">
@@ -170,7 +173,7 @@
           </div>
         </article>
 
-        <!-- Old / used (hidden until 'పాత' clicked) -->
+        <!-- Old items (hidden until 'పాత' clicked) -->
         <article class="card p-3" data-type="old" data-key="used-2" data-flow="7000" data-power="140" data-price="7500" data-fans="2" style="display:none;">
           <img class="card-img" src="assets/used-2.jpg" alt="Used 2 Fans" onerror="this.style.opacity=.6" />
           <div class="mt-3">
@@ -216,35 +219,53 @@
 
   </main>
 
+  <!-- Details Modal (replaces alert) -->
+  <div id="detailsModalBackdrop" class="modal-backdrop">
+    <div class="modal">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h3 id="detailsTitle">Model Details</h3>
+        <button id="closeDetails" class="btn">✕</button>
+      </div>
+      <div class="sub" id="detailsSub"></div>
+      <div id="detailsBody" style="color:#0f172a"></div>
+      <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
+        <button id="detailsBuy" class="btn primary">కొనండి</button>
+        <button id="detailsClose" class="btn">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Purchase Modal -->
-  <div id="modalOverlay" class="hidden" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);z-index:60;">
-    <div class="card p-4" style="width:96%;max-width:420px;">
-      <div class="flex items-center justify-between">
-        <div class="font-semibold">కొనుగోలు</div>
+  <div id="modalOverlay" class="modal-backdrop">
+    <div class="modal">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h3 id="purchaseTitle">కొనుగోలు</h3>
         <button id="closeModal" class="btn">✕</button>
       </div>
-      <form id="purchaseForm" class="mt-3 space-y-2">
+      <form id="purchaseForm" class="mt-3">
         <input type="hidden" id="modalModelKey" />
         <input type="hidden" id="modalPrice" />
         <label class="text-xs">పేరు</label>
-        <input id="buyerName" class="w-full rounded-lg border px-3 py-2" required />
-        <label class="text-xs">ఫోన్</label>
-        <input id="buyerPhone" class="w-full rounded-lg border px-3 py-2" required />
-        <label class="text-xs">గ్రామం / పట్టణం</label>
-        <input id="buyerPlace" class="w-full rounded-lg border px-3 py-2" />
-        <div class="mt-3 flex gap-2">
-          <button class="btn primary flex-1" type="submit">అభ్యర్థన పంపు</button>
+        <input id="buyerName" class="w-full rounded-lg border px-3 py-2 mt-1" required />
+        <label class="text-xs mt-2">ఫోన్</label>
+        <input id="buyerPhone" class="w-full rounded-lg border px-3 py-2 mt-1" required />
+        <label class="text-xs mt-2">గ్రామం / పట్టణం</label>
+        <input id="buyerPlace" class="w-full rounded-lg border px-3 py-2 mt-1" />
+        <div class="mt-3 flex gap-2 justify-end">
+          <button class="btn primary" type="submit">అభ్యర్థన పంపు</button>
           <button id="cancelPurchase" type="button" class="btn">రద్దు</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Minimal chat placeholder (prefill target) -->
-  <div id="chatPrefill" class="hidden"></div>
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <!-- hidden chat prefill -->
+  <div id="chatPrefill" class="hidden" aria-hidden="true"></div>
 
   <script>
-    // Mobile-first single-page aerator logic in Telugu
     (function(){
       const ACRE_TO_M2 = 4046.85642;
       const FT_TO_M = 0.3048;
@@ -261,6 +282,14 @@
       const showOldBtn = document.getElementById('showOld');
       const backToCalcBtn = document.getElementById('backToCalcBtn');
 
+      const detailsModalBackdrop = document.getElementById('detailsModalBackdrop');
+      const detailsTitle = document.getElementById('detailsTitle');
+      const detailsSub = document.getElementById('detailsSub');
+      const detailsBody = document.getElementById('detailsBody');
+      const closeDetails = document.getElementById('closeDetails');
+      const detailsClose = document.getElementById('detailsClose');
+      const detailsBuy = document.getElementById('detailsBuy');
+
       const modalOverlay = document.getElementById('modalOverlay');
       const closeModal = document.getElementById('closeModal');
       const purchaseForm = document.getElementById('purchaseForm');
@@ -268,8 +297,16 @@
       const modalModelKey = document.getElementById('modalModelKey');
       const modalPrice = document.getElementById('modalPrice');
 
-      const getModelCards = () => Array.from(document.querySelectorAll('#modelsGrid article'));
+      const toast = document.getElementById('toast');
 
+      function showToast(text, time=3000) {
+        toast.textContent = text;
+        toast.style.display = 'block';
+        clearTimeout(toast._t);
+        toast._t = setTimeout(()=>{ toast.style.display='none'; }, time);
+      }
+
+      function getModelCards() { return Array.from(document.querySelectorAll('#modelsGrid article')); }
       function formatNum(n){ return Number(n).toLocaleString('en-IN'); }
 
       function estimateFromAcresFeet(acres, depthFt) {
@@ -277,9 +314,7 @@
         const area_m2 = acres * ACRE_TO_M2;
         const volume_m3 = area_m2 * depthM;
         const liters = volume_m3 * 1000;
-        // turnover 10% per hour (simple rule), ensure minimum 500 L/h
         const needed_lph = Math.max(500, Math.round(liters * 0.10));
-        // compute units for each available model (both new and old)
         const recs = [];
         getModelCards().forEach(card => {
           const key = card.getAttribute('data-key');
@@ -290,7 +325,7 @@
           const units = Math.ceil(needed_lph / flow);
           recs.push({ key, units, flow, price, fans, totalFlow: units * flow, totalPrice: units * price, card });
         });
-        recs.sort((a,b) => a.totalPrice - b.totalPrice); // cheapest total price first
+        recs.sort((a,b) => a.totalPrice - b.totalPrice);
         return { area_m2, depth_m: depthM, volume_m3, liters, needed_lph, recommendations: recs };
       }
 
@@ -301,7 +336,6 @@
           if (rb) rb.remove();
         });
       }
-
       function highlightBest(best) {
         clearHighlights();
         if (!best) return;
@@ -311,112 +345,92 @@
         badge.className = 'recommend-badge';
         badge.textContent = `${best.units} ×`;
         card.appendChild(badge);
-        // scroll into view
         setTimeout(()=> card.scrollIntoView({behavior:'smooth', block:'center'}), 120);
       }
 
       function showResultTelugu(res) {
-        // only Telugu result as requested
         const best = res.recommendations[0];
         const lines = [];
-        lines.push(`అంచనా చెరువు: ${res.volume_m3.toFixed(2)} m³ (${formatNum(res.liters)} L).`);
-        lines.push(`సమగ్ర అవసరం: సుమారు ${formatNum(res.needed_lph)} L/h.`);
+        lines.push(`<div style="font-weight:800">అంచనా చెరువు: ${res.volume_m3.toFixed(2)} m³ (${formatNum(res.liters)} L).</div>`);
+        lines.push(`<div style="margin-top:6px">సమగ్ర అవసరం: సుమారు <strong>${formatNum(res.needed_lph)} L/h</strong>.</div>`);
         if (best) {
-          // show best recommendation summary
           const card = best.card;
           const nameTe = card.querySelector('.model-name') ? card.querySelector('.model-name').textContent : best.key;
-          lines.push(`ఉత్తమ ఎంపిక: ${best.units} × ${nameTe} — మొత్తం ఫ్లో ${formatNum(best.totalFlow)} L/h. (మొత్తం ధర ₹${formatNum(best.totalPrice)})`);
-        } else {
-          lines.push('సరైన మోడల్ లేదు.');
+          lines.push(`<div style="margin-top:8px;font-weight:800">ఉత్తమ ఎంపిక: ${best.units} × ${nameTe} — మొత్తం ఫ్లో ${formatNum(best.totalFlow)} L/h. (మొత్తం ధర ₹${formatNum(best.totalPrice)})</div>`);
         }
-
-        // also show a compact table of all model unit requirements (fans highlighted)
-        let table = `<div class="mt-3">`;
-        table += `<div style="font-weight:800;margin-bottom:6px">మోడల్ ప్రకారం అవసరమైన యూనిట్‌లు</div>`;
-        table += `<div style="display:grid;gap:8px">`;
+        // compact list
+        let table = `<div style="margin-top:12px"><div style="font-weight:800;margin-bottom:8px">మోడల్ ప్రకారం అవసరమైన యూనిట్‌లు</div>`;
         res.recommendations.forEach(r=>{
           const card = r.card;
           const modelName = card.querySelector('.model-name') ? card.querySelector('.model-name').textContent : r.key;
-          table += `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:10px;background:#f8faf8">`;
+          table += `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:10px;background:#f8faf8;margin-bottom:8px">`;
           table += `<div><span style="font-weight:800;color:#065f46;margin-right:8px">${r.fans} ఫ్యాన్స్</span> ${modelName}</div>`;
           table += `<div style="text-align:right"><div style="font-weight:800;color:#0b6b3a">${r.units} యూనిట్</div><div style="font-size:13px;color:#334155">(${formatNum(r.totalFlow)} L/h)</div></div>`;
           table += `</div>`;
         });
-        table += `</div></div>`;
+        table += `</div>`;
 
-        // combine
-        resultPanel.innerHTML = `<div><div style="font-weight:800">${lines.join(' ')}</div>${table}
-          <div class="mt-3" style="display:flex;gap:8px">
-            <button id="viewModelsBtn" class="btn">మోడల్స్ చూపించు</button>
-            <button id="selectBestBtn" class="btn primary">ఎంచుకో & కోట్ అడగు</button>
-          </div>
-        </div>`;
+        resultPanel.innerHTML = lines.join('') + table + `<div style="margin-top:12px;display:flex;gap:8px"><button id="viewModelsBtn" class="btn">మోడల్స్ చూపించు</button><button id="selectBestBtn" class="btn primary">ఎంచుకో & కోట్ అడగు</button></div>`;
         resultPanel.classList.remove('hidden');
 
-        // highlight best
         highlightBest(best);
 
-        // wiring for buttons
-        document.getElementById('viewModelsBtn').addEventListener('click', ()=> {
-          showModels('new'); // show new models by default
-        });
+        // wiring buttons
+        document.getElementById('viewModelsBtn').addEventListener('click', ()=> showModels('new'));
         document.getElementById('selectBestBtn').addEventListener('click', ()=> {
-          // open buy modal prefilled for best
-          if (!best) return;
+          if (!best) { showToast('ఎక్కడా సరైన మోడల్ లేదు.'); return; }
           openBuyModal(best.card.getAttribute('data-key'), best.totalPrice || best.card.getAttribute('data-price'));
         });
       }
 
-      // show models section (type: 'new' or 'old')
       function showModels(type) {
         calculatorArea.classList.add('hidden');
         modelsArea.classList.remove('hidden');
-        // show only cards of this type
         getModelCards().forEach(c=>{
-          if (c.getAttribute('data-type') === type) {
-            c.style.display = '';
-          } else {
-            c.style.display = 'none';
-          }
+          if (c.getAttribute('data-type') === type) c.style.display = '';
+          else c.style.display = 'none';
         });
-        // mark active button
         showNewBtn.classList.toggle('primary', type === 'new');
         showOldBtn.classList.toggle('primary', type === 'old');
-        // clear previous recommend highlight (we will keep if already set)
       }
-
       function backToCalculator() {
         modelsArea.classList.add('hidden');
         calculatorArea.classList.remove('hidden');
       }
 
-      // Buy modal helpers
-      function openBuyModal(key, price) {
-        modalModelKey.value = key;
-        modalPrice.value = price || '';
-        modalOverlay.classList.remove('hidden');
-      }
-      function closeBuyModal() {
-        modalOverlay.classList.add('hidden');
-      }
-
-      // Details button show simple alert in Telugu + English (user earlier accepted simple modal)
-      function showDetails(card) {
+      function openDetailsModal(card) {
+        const name = card.querySelector('.model-name') ? card.querySelector('.model-name').textContent : card.getAttribute('data-key');
         const flow = card.getAttribute('data-flow');
         const power = card.getAttribute('data-power');
         const fans = card.getAttribute('data-fans');
-        const name = card.querySelector('.model-name') ? card.querySelector('.model-name').textContent : card.getAttribute('data-key');
-        const te = `మోడల్: ${name}\nఫ్లో: ${flow} L/h\nశక్తి: ${power} W\nఫ్యాన్స్: ${fans}`;
-        const en = `Model: ${name}\nFlow: ${flow} L/h\nPower: ${power} W\nFans: ${fans}`;
-        alert(te + "\n\n" + en);
+        detailsTitle.textContent = name;
+        detailsSub.textContent = `ఫ్లో: ${flow} L/h · శక్తి: ${power} W · ఫ్యాన్స్: ${fans}`;
+        // bilingual description (Telugu first, English below)
+        const teDesc = card.querySelector('.model-desc') ? card.querySelector('.model-desc').textContent : '';
+        const enDesc = `Model: ${name}\nFlow: ${flow} L/h · Power: ${power} W · Fans: ${fans}.`;
+        detailsBody.innerHTML = `<div style="font-weight:700;margin-bottom:6px">వివరాలు (తెలుగు)</div><div style="margin-bottom:10px;color:#334155">${escapeHtml(teDesc)}</div><div style="font-weight:700;margin-bottom:6px">Details (English)</div><pre style="white-space:pre-wrap;color:#334155">${escapeHtml(enDesc)}</pre>`;
+        detailsModalBackdrop.style.display = 'flex';
+
+        // set detailsBuy to open purchase modal for this card
+        detailsBuy.onclick = function(){ openBuyModal(card.getAttribute('data-key'), card.getAttribute('data-price')); detailsModalBackdrop.style.display='none'; };
       }
+
+      function openBuyModal(key, price) {
+        modalModelKey.value = key;
+        modalPrice.value = price || '';
+        modalOverlay.style.display = 'flex';
+      }
+      function closeBuyModal() { modalOverlay.style.display = 'none'; }
+
+      // safe HTML escape for descriptions
+      function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
       // events
       calcBtn.addEventListener('click', ()=> {
         const acres = parseFloat(acreInput.value) || 0;
         const depthFt = parseFloat(depthFtInput.value) || 0;
         if (acres <= 0 || depthFt <= 0) {
-          alert('దయచేసి సరైన విలువలు ఇవ్వండి (ఎకరాలు మరియు ఫుట్స్).');
+          showToast('దయచేసి సరైన విలువలు ఇవ్వండి (ఎకరాలు మరియు ఫుట్స్).');
           return;
         }
         const res = estimateFromAcresFeet(acres, depthFt);
@@ -424,60 +438,58 @@
       });
 
       resetBtn.addEventListener('click', ()=> {
-        acreInput.value = '';
-        depthFtInput.value = '';
-        resultPanel.classList.add('hidden');
-        resultPanel.innerHTML = '';
-        clearHighlights();
-        backToCalculator();
+        acreInput.value=''; depthFtInput.value=''; resultPanel.classList.add('hidden'); resultPanel.innerHTML=''; clearHighlights(); backToCalculator();
       });
 
-      // show new/old buttons behavior
       showNewBtn.addEventListener('click', ()=> showModels('new'));
       showOldBtn.addEventListener('click', ()=> showModels('old'));
       backToCalcBtn.addEventListener('click', ()=> backToCalculator());
 
-      // delegation for details and buy inside models
-      document.getElementById('modelsGrid').addEventListener('click', (e) => {
+      // details & buy delegation
+      document.getElementById('modelsGrid').addEventListener('click', (e)=>{
         const btn = e.target.closest('button');
         if (!btn) return;
         if (btn.classList.contains('detailsBtn')) {
           const card = btn.closest('article');
-          showDetails(card);
+          openDetailsModal(card);
           return;
         }
         if (btn.classList.contains('buyBtn')) {
           const card = btn.closest('article');
-          const key = card.getAttribute('data-key');
-          const price = card.getAttribute('data-price');
-          openBuyModal(key, price);
+          openBuyModal(card.getAttribute('data-key'), card.getAttribute('data-price'));
           return;
         }
       });
 
-      // modal handlers
+      // details modal close
+      closeDetails.addEventListener('click', ()=> detailsModalBackdrop.style.display='none');
+      detailsClose.addEventListener('click', ()=> detailsModalBackdrop.style.display='none');
+
+      // purchase modal handlers
       closeModal.addEventListener('click', closeBuyModal);
       cancelPurchase.addEventListener('click', closeBuyModal);
-      purchaseForm.addEventListener('submit', (e) => {
+      purchaseForm.addEventListener('submit', (e)=> {
         e.preventDefault();
         const name = document.getElementById('buyerName').value.trim();
         const phone = document.getElementById('buyerPhone').value.trim();
         const place = document.getElementById('buyerPlace').value.trim();
-        if (!name || !phone) { alert('దయచేసి పేరు మరియు ఫోన్ నంబర్ ఇవ్వండి.'); return; }
+        if (!name || !phone) {
+          showToast('దయచేసి పేరు మరియు ఫోన్ నంబర్ ఇవ్వండి.');
+          return;
+        }
         const key = modalModelKey.value;
         const price = modalPrice.value;
-        // Prefill simple chat text into hidden element (you can hook this to actual chat or mail)
         const card = getModelCards().find(c => c.getAttribute('data-key') === key);
         const modelName = card ? (card.querySelector('.model-name').textContent) : key;
         const en = `Purchase request: ${modelName} (${price ? '₹'+price : ''}). Buyer: ${name}, Phone: ${phone}, Place: ${place || '-'}.`;
         const te = `కొనుగోలు అభ్యర్థన: ${modelName} (${price ? '₹'+price : ''}). కొనుగోలు దారుడు: ${name}, ఫోన్: ${phone}, స్థలం: ${place || '-'}.`;
-        // put into chatPrefill so you can copy/paste or trigger an actual chat/send later
         document.getElementById('chatPrefill').textContent = en + "\n" + te;
-        alert('అభ్యర్థన చాట్లో ప్రిఫిల్ అయింది. మేము త్వరలో మీతో సంప్రదిస్తాము.\n\n' + te);
         closeBuyModal();
+        showToast('మీ అభ్యర్థన స్వీకరించబడింది — మేము త్వరలో సంప్రదిస్తాము.');
       });
 
-      // initial: only calculator visible (already)
+      // initial state: only calculator visible
+      // everything else already hidden
     })();
   </script>
 </body>
