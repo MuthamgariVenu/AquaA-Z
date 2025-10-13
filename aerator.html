@@ -107,7 +107,6 @@
           <div class="units-note" id="unitsNote">Devices measured as 'units' based on motor HP.</div>
 
           <div class="mapping-title" id="mappingTitle">Aerator Mapping</div>
-          <!-- EXACT strings requested by you -->
           <div class="mapping-row" id="mapping2">2 fans - 1hp --> 1 units</div>
           <div class="mapping-row" id="mapping4">4 pans ->2hp  2 units</div>
 
@@ -115,6 +114,7 @@
         </div>
 
         <div class="mt-4 flex gap-2">
+          <!-- buttons may be inside a hidden container initially; we also listen globally as fallback -->
           <button id="showNewBtn" class="btn">New Aerators</button>
           <button id="showOldBtn" class="btn">Old Aerators</button>
         </div>
@@ -125,7 +125,7 @@
       <p class="mt-4 text-xs text-slate-500" id="calcNote">Note: estimate only — verify product specs.</p>
     </section>
 
-    <!-- Models area (initially hidden). New/Old buttons show and filter this. -->
+    <!-- Models area (initially hidden). New/Old buttons show this and filter -->
     <section id="modelsCompact" class="mb-8">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <button id="backToCalcBtn" class="btn">◀ Back to calculator</button>
@@ -210,7 +210,7 @@
           </div>
         </article>
 
-        <!-- Old examples (kept but hidden by default style) -->
+        <!-- Old examples (kept but hidden by default) -->
         <article class="card p-3" data-type="old" data-key="used-2" data-units="1" data-price="7500" data-fans="2" data-hp="1" style="display:none">
           <img class="card-img" src="assets/used-2.jpg" alt="Used 2 Fans" onerror="this.style.opacity=.6" />
           <div class="mt-3">
@@ -368,6 +368,7 @@
     const cards = qsa('#modelsGrid article');
     let results = [];
     if(cards && cards.length){
+      // use DOM-provided cards
       results = cards.map(card=>{
         const key = card.getAttribute('data-key');
         const deviceUnits = parseFloat(card.getAttribute('data-units'))||1;
@@ -376,6 +377,7 @@
         return { key, card, deviceUnits, price, devicesReq, totalPrice: devicesReq*price, fans: card.getAttribute('data-fans')||'', hp: card.getAttribute('data-hp')||'', type: card.getAttribute('data-type') };
       });
     } else {
+      // fallback array (shouldn't be needed but safe)
       const fallback = [
         { key:'float-2', deviceUnits:1, price:12000, fans:'2', hp:'1', type:'new', modelName:'Floating — 2 Fans' },
         { key:'float-4', deviceUnits:2, price:22000, fans:'4', hp:'2', type:'new', modelName:'Floating — 4 Fans' },
@@ -397,8 +399,23 @@
     const themeBtn = $('themeToggle'); if(themeBtn) themeBtn.textContent = (t==='dark')? '☀️' : '🌙';
   }
 
+  // showModels is small pure function used by both direct listeners and delegation
+  function showModels(type){
+    const modelsCompact = $('modelsCompact');
+    const modelsFilterLabel = $('modelsFilterLabel');
+    if(!modelsCompact) return;
+    modelsCompact.style.display = '';
+    modelsFilterLabel.textContent = (type==='new')? 'New' : (type==='old')? 'Old' : 'All';
+    qsa('#modelsGrid article').forEach(a=>{
+      const t = a.getAttribute('data-type');
+      a.style.display = (type==='all' || t===type) ? '' : 'none';
+    });
+    setTimeout(()=> modelsCompact.scrollIntoView({behavior:'smooth'}), 80);
+  }
+
   document.addEventListener('DOMContentLoaded', ()=>{
-    // init lang & theme
+
+    // language & theme
     const initLangSel = $('langSel');
     if(initLangSel){
       initLangSel.value = localStorage.getItem('lang') || lang;
@@ -416,7 +433,7 @@
       });
     }
 
-    // calculate button
+    // calculate
     const calcBtn = $('calcBtn');
     if(calcBtn){
       calcBtn.addEventListener('click', ()=>{
@@ -471,34 +488,22 @@
       });
     }
 
-    // showNew / showOld: show models area and filter
+    // direct bindings if elements present
     const showNewBtn = $('showNewBtn');
     const showOldBtn = $('showOldBtn');
-    const modelsCompact = $('modelsCompact');
-    const modelsFilterLabel = $('modelsFilterLabel');
-
-    function showModels(type){
-      if(!modelsCompact) return;
-      modelsCompact.style.display = '';
-      modelsFilterLabel.textContent = (type==='new')? 'New' : (type==='old')? 'Old' : 'All';
-      qsa('#modelsGrid article').forEach(a=>{
-        const t = a.getAttribute('data-type');
-        if(type==='all') a.style.display = '';
-        else a.style.display = (t===type) ? '' : 'none';
-      });
-      setTimeout(()=> modelsCompact.scrollIntoView({behavior:'smooth'}), 80);
-    }
-
     if(showNewBtn) showNewBtn.addEventListener('click', ()=> showModels('new'));
     if(showOldBtn) showOldBtn.addEventListener('click', ()=> showModels('old'));
 
-    const backToCalcBtn = $('backToCalcBtn');
-    if(backToCalcBtn) backToCalcBtn.addEventListener('click', ()=> {
-      if(modelsCompact) modelsCompact.style.display = 'none';
-      window.scrollTo({top:0, behavior:'smooth'});
+    // delegation fallback: catch clicks on any element matching the IDs (works even if element is added later)
+    document.addEventListener('click', (ev) => {
+      const btn = ev.target.closest && ev.target.closest('button');
+      if(!btn) return;
+      if(btn.id === 'showNewBtn') { ev.preventDefault(); showModels('new'); return; }
+      if(btn.id === 'showOldBtn') { ev.preventDefault(); showModels('old'); return; }
+      if(btn.id === 'backToCalcBtn') { ev.preventDefault(); const mc = $('modelsCompact'); if(mc) mc.style.display='none'; window.scrollTo({top:0,behavior:'smooth'}); return; }
     });
 
-    // model actions
+    // model card actions (details & buy) using delegation
     const modelsGrid = $('modelsGrid');
     if(modelsGrid){
       modelsGrid.addEventListener('click', ev=>{
@@ -533,7 +538,8 @@
 
     if($('langSel')) { $('langSel').value = localStorage.getItem('lang') || lang; }
     applyLang();
-  });
+
+  }); // DOMContentLoaded
 
   function openDetailModal(article){
     if(!article) return;
