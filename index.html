@@ -98,10 +98,11 @@
     html.dark .chat-input button { background:#0b9a9a; color:#012; font-weight:700; }
 
     @media(max-width:420px){
-      .chat-panel{ right:8px; left:8px; max-width:none; width: calc(100% - 16px); bottom: calc(110px + env(safe-area-inset-bottom)); height: 48vh; max-height: 65vh; }
+      .chat-panel{ right:8px; left:8px; max-width:none; width: calc(100% - 16px); bottom: calc(140px + env(safe-area-inset-bottom)); height: 50vh; max-height: 70vh; }
       .chat-input { padding: 8px; gap:6px; }
       .chat-input input { padding:9px; border-radius:10px; font-size:15px; }
-      .chat-btn { right: 12px; bottom: calc(26px + env(safe-area-inset-bottom)); }
+      /* increased bottom offset on small screens to avoid overlap with footer/nav/aerator area */
+      .chat-btn { right: 12px; bottom: calc(90px + env(safe-area-inset-bottom)); transform: translateY(0); }
     }
 
     /* Ticker/flash dark-mode visibility */
@@ -113,7 +114,11 @@
     /* ensure ticker doesn't block gestures */
     .ticker, .ticker-track { touch-action: pan-y; -webkit-user-select: text; user-select: text; }
 
-    /* utility to hide aerator section (we remove block from DOM but keep rule) */
+    /* Flash news heading clear colors */
+    .flash-section h3 { color: #0b1f2a; }
+    html.dark .flash-section h3 { color: #e6f6f0; }
+
+    /* utility to hide aerator section (we removed DOM block but keep rule) */
     .hide-aerator { display:none !important; }
 
   </style>
@@ -168,7 +173,7 @@
     </div>
 
     <!-- Flash News -->
-    <section class="rounded-2xl p-4 bg-white dark:bg-slate-900 shadow-soft border border-slate-200/60 dark:border-slate-800">
+    <section class="flash-section rounded-2xl p-4 bg-white dark:bg-slate-900 shadow-soft border border-slate-200/60 dark:border-slate-800">
       <div class="flex items-center justify-between">
         <h3 class="font-semibold">📰 <span data-i18n="flash_news">Flash News</span></h3>
         <span class="text-xs px-2 py-1 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-200">Live</span>
@@ -392,17 +397,17 @@
             const vv = window.visualViewport;
             const offset = Math.max(0, baseInner - vv.height);
             panel.style.bottom = `calc(${90 + offset}px + env(safe-area-inset-bottom))`;
-            btn.style.bottom = `calc(${18 + offset}px + env(safe-area-inset-bottom))`;
-            // small lift if near bottom nav to avoid overlap
+            btn.style.bottom = `calc(${90 + offset}px + env(safe-area-inset-bottom))`;
+            // ensure extra lift on narrow screens
             if(window.innerWidth <= 420){
-              btn.style.bottom = `calc(${26 + offset}px + env(safe-area-inset-bottom))`;
+              btn.style.bottom = `calc(${110 + offset}px + env(safe-area-inset-bottom))`;
             }
           } else {
             const diff = Math.max(0, baseInner - window.innerHeight);
             panel.style.bottom = `calc(${90 + diff}px + env(safe-area-inset-bottom))`;
-            btn.style.bottom = `calc(${18 + diff}px + env(safe-area-inset-bottom))`;
+            btn.style.bottom = `calc(${90 + diff}px + env(safe-area-inset-bottom))`;
             if(window.innerWidth <= 420){
-              btn.style.bottom = `calc(${26 + diff}px + env(safe-area-inset-bottom))`;
+              btn.style.bottom = `calc(${110 + diff}px + env(safe-area-inset-bottom))`;
             }
           }
         } catch(e){}
