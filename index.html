@@ -25,6 +25,52 @@
     .promo-dot.active{opacity:1;background:currentColor}
     .promo-slide{display:none}
     .promo-slide.active{display:block}
+
+    /* Chat styles (simple, mobile-first) */
+    .chat-btn {
+      position: fixed;
+      right: 16px;
+      bottom: 78px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #0b6b6b;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 18px rgba(11,107,107,0.18);
+      border: none;
+      z-index: 1000;
+      font-size: 20px;
+    }
+    .chat-panel {
+      position: fixed;
+      right: 14px;
+      bottom: 148px;
+      width: 92%;
+      max-width: 360px;
+      height: 56vh;
+      max-height: 520px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 1000;
+    }
+    .chat-panel.open { display: flex; }
+    .chat-header { padding: 12px; border-bottom: 1px solid #eee; display:flex;align-items:center;justify-content:space-between; }
+    .chat-title { font-weight:600; font-size:15px; color:#0b5b5b; }
+    .chat-messages { flex:1; padding:12px; overflow:auto; display:flex;flex-direction:column; gap:8px; background:#fbfbfb; }
+    .msg { max-width:78%; padding:8px 10px; border-radius:10px; font-size:14px; }
+    .msg.user { align-self:flex-end; background:#0b6b6b; color:#fff; border-bottom-right-radius:4px; }
+    .msg.bot { align-self:flex-start; background:#fff; color:#111; border:1px solid #eee; }
+    .chat-input { display:flex; gap:8px; padding:10px; border-top:1px solid #eee; }
+    .chat-input input { flex:1;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px }
+    .chat-input button { padding:10px 12px;border-radius:8px;border:none;background:#0b6b6b;color:#fff;font-weight:600 }
+    @media(max-width:420px){ .chat-panel{right:8px;left:8px;max-width:none} }
   </style>
 </head>
 <body class="text-slate-900 dark:text-slate-100">
@@ -38,12 +84,14 @@
       <h1 class="text-xl font-bold hidden sm:inline">Aquaculture A–Z</h1>
       <h1 class="text-xl font-bold sm:hidden mr-14 sm:mr-0">Aquaa A–Z</h1>
       <nav class="hidden sm:flex gap-2 flex-1 justify-center">
-        <a href="index.html" class="navbtn">🏠 <span data-i18n="m_home">Home</span></a>
+        <!-- Home replaced with Aerator -->
+        <a href="#aerator" class="navbtn">⚙️ <span data-i18n="m_aerator">Aerator</span></a>
         <a href="harvest.html" class="navbtn">🚚 <span data-i18n="t_harvest">Harvest</span></a>
         <a href="seeds.html" class="navbtn">🦐 <span data-i18n="t_seeds">Seeds</span></a>
         <a href="vendors.html" class="navbtn">🏪 <span data-i18n="t_dealers">Dealers</span></a>
         <a href="seeds.html" class="navbtn">🦐 <span data-i18n="m_shrimp">Shrimp</span></a>
-        <a href="contact.html" class="navbtn">📞 <span data-i18n="contact">Contact</span></a>
+        <!-- Contact replaced with History -->
+        <a href="history.html" class="navbtn">📜 <span data-i18n="m_history">History</span></a>
       </nav>
       <div class="flex items-center gap-2 flex-none">
         <label for="langSel" class="text-sm text-slate-600 dark:text-slate-300 select-none">Ln</label>
@@ -56,7 +104,7 @@
     </div>
   </header>
 
-  <main class="max-w-7xl mx-auto p-3 sm:p-4 space-y-4 pb-24 sm:pb-4">
+  <main class="max-w-7xl mx-auto p-3 sm:p-4 space-y-4 pb-36 sm:pb-4">
     <!-- MOBILE nav buttons -->
     <div class="flex sm:hidden gap-2 justify-around">
       <a href="harvest.html" class="navbtn flex-1 text-center">🚚 <span data-i18n="t_harvest">Harvest</span></a>
@@ -111,21 +159,69 @@
         </div>
       </div>
     </section>
+
+    <!-- Aerator Section (replaces Home module content) -->
+    <section id="aerator" class="rounded-2xl p-4 bg-white dark:bg-slate-900 shadow-soft border border-slate-200/60 dark:border-slate-800">
+      <div class="flex items-center justify-between">
+        <h3 class="font-semibold"><span data-i18n="m_aerator">Aerator</span></h3>
+      </div>
+      <div class="mt-3">
+        <p class="text-slate-600 dark:text-slate-300" data-i18n="aerator_desc">
+          ఎరేటర్లు చెరువుల ఆక్సిజన్ స్థాయిలను నిలుపుకోవడానికి సహాయపడతాయి — మోడల్, శక్తి, మరియు నిర్వహణ సూచనలు ఇవ్వబడ్డాయి.
+        </p>
+        <ul class="mt-3">
+          <li class="mt-2" data-i18n="aerator_tip1">✔️ సరైన సామర్థ్యం ఎంచుకోండి — చెరువు పరిమాణం మరియు డివైస్ ఆర్డర్ అనుసారం.</li>
+          <li class="mt-2" data-i18n="aerator_tip2">✔️ టైమింగ్: రాత్రి సమయంలో ఎక్కువ ఉపయోగం ఉంటే వేయి.</li>
+          <li class="mt-2" data-i18n="aerator_tip3">✔️ నిర్వహణ: ఫిల్టర్లను తుడవడం మరియు ఇన్రెట్ స్లాడ్స్ చెక్ చేయాలి.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- History Section (if your history page is separate, this is a brief blurb) -->
+    <section id="history" class="rounded-2xl p-4 bg-white dark:bg-slate-900 shadow-soft border border-slate-200/60 dark:border-slate-800">
+      <div class="flex items-center justify-between">
+        <h3 class="font-semibold"><span data-i18n="m_history">History</span></h3>
+      </div>
+      <div class="mt-3">
+        <p class="text-slate-600 dark:text-slate-300" data-i18n="history_desc">చరిత్ర: తాజా అప్‌డేట్స్ మరియు మైల్స్‌టోన్‌లు సామర్థ్యంగా ఇక్కడ చూపబడతాయి.</p>
+      </div>
+    </section>
+
   </main>
 
   <!-- Bottom nav -->
   <nav class="fixed bottom-0 inset-x-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700 flex justify-around py-2 z-40 sm:hidden"
        style="padding-bottom: env(safe-area-inset-bottom);">
-    <a href="index.html" class="flex flex-col items-center text-base font-semibold">
-      <span>🏠</span><span data-i18n="m_home">Home</span>
+    <!-- Bottom: Aerator first -->
+    <a href="#aerator" class="flex flex-col items-center text-base font-semibold">
+      <span>⚙️</span><span data-i18n="m_aerator">Aerator</span>
     </a>
-    <a href="harvest.html" class="flex flex-col items-center text-base font-semibold">
+    <a href="history.html" class="flex flex-col items-center text-base font-semibold">
       <span>🕘</span><span data-i18n="m_history">History</span>
     </a>
     <a href="seeds.html" class="flex flex-col items-center text-base font-semibold">
       <span>🦐</span><span data-i18n="m_shrimp">Shrimp</span>
     </a>
   </nav>
+
+  <!-- Chat: floating button + panel -->
+  <button class="chat-btn" id="openChat" aria-label="Open chat">💬</button>
+
+  <div class="chat-panel" id="chatPanel" role="dialog" aria-label="Chat with Aqua A-Z">
+    <div class="chat-header">
+      <div class="chat-title" id="chatTitle" data-i18n="chat_title">Help & Chat</div>
+      <button id="closeChat" aria-label="Close chat" style="background:none;border:none;font-size:18px;padding:6px;cursor:pointer">✕</button>
+    </div>
+
+    <div class="chat-messages" id="chatMessages" aria-live="polite">
+      <div class="msg bot" data-i18n="chat_greeting">Hi! How can I help you today?</div>
+    </div>
+
+    <div class="chat-input" role="form" aria-label="Chat input">
+      <input id="chatInput" type="text" placeholder="Type a message..." aria-label="Type a message" />
+      <button id="sendBtn" aria-label="Send message">Send</button>
+    </div>
+  </div>
 
   <script>
     const $id = s=>document.getElementById(s);
@@ -140,12 +236,61 @@
       }catch(e){return [];}
     }
 
+    // i18n dictionary: updated keys (Aerator, History, chat strings)
     const dict={
-      en:{snapshot:"Live Snapshot",updated:"Updated",lbl_type:"Type",th_count:"Count",th_price:"Price (₹/kg)",th_change:"Change",promotions_title:"Promotions",m_home:"Home",m_history:"History",m_shrimp:"Shrimp",t_harvest:"Harvest",t_seeds:"Seeds",t_dealers:"Dealers",contact:"Contact",flash_news:"Flash News",type_van:"Vannamei",type_tig:"Tiger"},
-      te:{snapshot:"లైవ్ స్నాప్‌షాట్",updated:"అప్‌డేట్",lbl_type:"రకం",th_count:"కౌంట్",th_price:"ధర (₹/kg)",th_change:"మార్పు",promotions_title:"ప్రోమోషన్స్",m_home:"హోమ్",m_history:"చరిత్ర",m_shrimp:"రొయ్యలు",t_harvest:"హార్వెస్ట్",t_seeds:"సీడ్స్",t_dealers:"వెండర్లు",contact:"సంప్రదించండి",flash_news:"ఫ్లాష్ న్యూస్",type_van:"వన్నామీ",type_tig:"టైగర్"}
+      en:{
+        snapshot:"Live Snapshot",updated:"Updated",lbl_type:"Type",th_count:"Count",th_price:"Price (₹/kg)",th_change:"Change",
+        promotions_title:"Promotions",m_aerator:"Aerator",m_home:"Home",m_history:"History",m_shrimp:"Shrimp",
+        t_harvest:"Harvest",t_seeds:"Seeds",t_dealers:"Dealers",contact:"Contact",flash_news:"Flash News",
+        type_van:"Vannamei",type_tig:"Tiger",
+        aerator_desc:"Aerators help maintain oxygen levels in ponds — tips and recommended models.",
+        aerator_tip1:"Choose correct capacity based on pond size.",
+        aerator_tip2:"Prefer evening/night runtime for best oxygenation.",
+        aerator_tip3:"Regular maintenance: clean filters and check seals.",
+        history_desc:"History: latest updates and milestones are shown here.",
+        chat_title:"Help & Chat",chat_greeting:"Hi! How can I help you today?",chat_placeholder:"Type a message...",chat_open_aria:"Open chat",chat_close_aria:"Close chat",chat_reply_default:"Sorry, I cannot perform that now; but I can help. Please give more details.",
+        chat_reply_aerator:"What details about aerators do you need? Model, capacity, or services?",
+        chat_reply_history:"History: latest updates are managed by site admin and shown here when available.",
+        chat_more_info:"Please type a more detailed message."
+      },
+      te:{
+        snapshot:"లైవ్ స్నాప్‌షాట్",updated:"అప్‌డేట్",lbl_type:"రకం",th_count:"కౌంట్",th_price:"ధర (₹/kg)",th_change:"మార్పు",
+        promotions_title:"ప్రోమోషన్స్",m_aerator:"ఎరేటర్",m_home:"హోమ్",m_history:"చరిత్ర",m_shrimp:"రొయ్యలు",
+        t_harvest:"హార్వెస్ట్",t_seeds:"సీడ్స్",t_dealers:"వెండర్లు",contact:"సంప్రదించండి",flash_news:"ఫ్లాష్ న్యూస్",
+        type_van:"వన్నామీ",type_tig:"టైగర్",
+        aerator_desc:"ఎరేటర్లు చెరువుల ఆక్సిజన్ స్థాయిలను నిలుపుకోవడానికి సహాయపడతాయి — మోడల్, శక్తి, మరియు నిర్వహణ సూచనలు ఇవ్వబడ్డాయి.",
+        aerator_tip1:"సరైన సామర్థ్యం ఎంచుకోండి — చెరువు పరిమాణం అనుసరించి.",
+        aerator_tip2:"సమయం: రాత్రి/సాయంకాలం ఎక్కువ ప్రభావవంతం.",
+        aerator_tip3:"నిర్వాహణ: ఫిల్టర్లు మరియు సీల్స్ పరిశీలించండి.",
+        history_desc:"చరిత్ర: తాజా అప్‌డేట్స్ మరియు మైల్స్‌టోన్‌లు ఇక్కడ చూపబడతాయి.",
+        chat_title:"సహాయం & చాట్",chat_greeting:"హాయ్! నేను ఈరోజు ఎలా సహాయం చేయగలను?",chat_placeholder:"మీ సందేశం రాయండి...",chat_open_aria:"చాట్ ఓపెన్ చేయండి",chat_close_aria:"చాట్ మూసివేయండి",chat_reply_default:"క్షమించండి, నేను దాన్ని ఇప్పుడే అమలు చేయలేను; కానీ నేను సహాయపడగలను. దయచేసి మరిన్ని వివరాలు ఇవ్వండి.",
+        chat_reply_aerator:"ఎరేటర్ల గురించి మీరు ఏమి తెలుసుకోవాలనుకుంటున్నారు? మోడల్, సామర్థ్యం లేదా సేవలు?",
+        chat_reply_history:"చరిత్ర: తాజా అప్‌డేట్స్ సైట్ అడ్మిన్ ద్వారా నిర్వహింపబడి ఇక్కడ చూపబడతాయి.",
+        chat_more_info:"దయచేసి మీ సందేశాన్ని వివరంగా టైప్ చేయండి."
+      }
     };
 
-    function applyI18n(){const lang=localStorage.getItem('lang')||'te';document.documentElement.lang=lang;document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(dict[lang][k])el.textContent=dict[lang][k];});$id('langSel').value=lang;}
+    function applyI18n(){
+      const lang=localStorage.getItem('lang')||'te';
+      document.documentElement.lang=lang;
+      document.querySelectorAll('[data-i18n]').forEach(el=>{
+        const k=el.dataset.i18n;
+        if(dict[lang] && dict[lang][k]) el.textContent = dict[lang][k];
+      });
+      // handle chat-specific attributes & placeholders
+      const langNow = localStorage.getItem('lang')||'te';
+      $id('langSel').value=langNow;
+      // set chat greeting & title if present
+      document.querySelectorAll('.msg.bot').forEach(el=>{
+        const key = el.dataset.i18n || 'chat_greeting';
+        if(dict[langNow] && dict[langNow][key]) el.textContent = dict[langNow][key];
+      });
+      if($id('chatTitle') && dict[langNow]['chat_title']) $id('chatTitle').textContent = dict[langNow]['chat_title'];
+      if($id('chatInput')) $id('chatInput').placeholder = dict[langNow]['chat_placeholder'] || '';
+      // aria labels
+      if($id('openChat')) $id('openChat').setAttribute('aria-label', dict[langNow]['chat_open_aria']);
+      if($id('closeChat')) $id('closeChat').setAttribute('aria-label', dict[langNow]['chat_close_aria']);
+    }
 
     // ✅ Badge function restored
     function badge(d){
@@ -196,7 +341,7 @@
       dots.innerHTML=PROMOS.map((_,i)=>`<button class="promo-dot ${i===promoIdx?'active':''}" data-i="${i}"></button>`).join('');
       dots.querySelectorAll('button').forEach(b=>b.onclick=()=>{promoIdx=+b.dataset.i;renderPromo();startPromo();});
     }
-    function startPromo(){if(timer)clearInterval(timer);timer=setInterval(()=>{promoIdx=(promoIdx+1)%PROMOS.length;renderPromo();},6000);}
+    function startPromo(){if(timer)clearInterval(timer);if(PROMOS.length>0) timer=setInterval(()=>{promoIdx=(promoIdx+1)%PROMOS.length;renderPromo();},6000);}
 
     document.addEventListener('DOMContentLoaded',async()=>{
       if(!localStorage.getItem('lang'))localStorage.setItem('lang','te');
@@ -221,7 +366,73 @@
 
       renderNews(NEWS);renderPromo();startPromo();
 
-      $id('langSel').onchange=e=>{localStorage.setItem('lang',e.target.value);applyI18n();fillTypeOptions();renderRates(rates,$id('prawnType').value);renderNews(NEWS);renderPromo();};
+      $id('langSel').onchange=e=>{
+        localStorage.setItem('lang',e.target.value);
+        applyI18n();fillTypeOptions();renderRates(rates,$id('prawnType').value);renderNews(NEWS);renderPromo();
+      };
+    });
+
+    /* ---------------- Chat logic (local canned replies, multilingual) ---------------- */
+    const openChat = $id('openChat');
+    const chatPanel = $id('chatPanel');
+    const closeChat = $id('closeChat');
+    const sendBtn = $id('sendBtn');
+    const chatInput = $id('chatInput');
+    const chatMessages = $id('chatMessages');
+
+    function appendMessage(text, who='user') {
+      const div = document.createElement('div');
+      div.className = 'msg ' + (who === 'user' ? 'user' : 'bot');
+      div.innerText = text;
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function botReply(userText) {
+      const lang = localStorage.getItem('lang') || 'te';
+      const t = (userText||'').toLowerCase();
+      let reply = dict[lang].chat_reply_default || dict[lang].chat_more_info;
+      if (t.includes('aerator') || t.includes('ఎరేటర్')) {
+        reply = dict[lang].chat_reply_aerator;
+      } else if (t.includes('history') || t.includes('చరిత్ర')) {
+        reply = dict[lang].chat_reply_history;
+      } else if ((userText||'').trim().length < 3) {
+        reply = dict[lang].chat_more_info;
+      }
+      setTimeout(()=> appendMessage(reply, 'bot'), 500);
+    }
+
+    openChat.addEventListener('click', ()=> {
+      chatPanel.classList.add('open');
+      // refresh chat language elements on open
+      applyI18n();
+      chatInput.focus();
+    });
+    closeChat.addEventListener('click', ()=> {
+      chatPanel.classList.remove('open');
+      openChat.focus();
+    });
+
+    sendBtn.addEventListener('click', ()=> {
+      const txt = chatInput.value.trim();
+      if (!txt) return;
+      appendMessage(txt, 'user');
+      chatInput.value = '';
+      botReply(txt);
+    });
+
+    chatInput.addEventListener('keydown', (e)=> {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        sendBtn.click();
+      }
+    });
+
+    document.addEventListener('keydown', (e)=> {
+      if (e.key === 'Escape' && chatPanel.classList.contains('open')) {
+        chatPanel.classList.remove('open');
+        openChat.focus();
+      }
     });
   </script>
 </body>
